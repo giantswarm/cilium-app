@@ -1,6 +1,5 @@
 apiVersion: v2
 name: cilium
-displayName: Cilium
 home: https://cilium.io/
 version: 1.11.2
 appVersion: 1.11.2
@@ -17,9 +16,6 @@ keywords:
   - Troubleshooting
 sources:
   - https://github.com/cilium/cilium
-links:
-  - name: eBPF.io
-    url: https://ebpf.io/
 annotations:
   artifacthub.io/crds: |
     - kind: CiliumNetworkPolicy
