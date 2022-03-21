@@ -2,3 +2,6 @@ chart-dir: ./helm/cilium
 replace-chart-version-with-git: true
 replace-app-version-with-git: false
 generate-metadata: true
+skip-steps:
+  - validate
+  - static_check
