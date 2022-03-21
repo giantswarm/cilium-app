@@ -7,10 +7,9 @@ workflows:
     jobs:
       - architect/push-to-app-catalog:
           context: "architect"
-          # executor: "app-build-suite" # uncomment this if you want automatic metadata generation and helm chart linting
-          name: "package and push cilium chart"
-          app_catalog: "giantswarm-playground-catalog"
-          app_catalog_test: "giantswarm-playground-test-catalog"
+          executor: "app-build-suite"
+          app_catalog: "cluster-catalog"
+          app_catalog_test: "cluster-test-catalog"
           chart: "cilium"
           # Trigger job on git tag.
           filters:
