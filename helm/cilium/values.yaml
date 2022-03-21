@@ -259,7 +259,7 @@ bpf:
 
   # -- Configure auto-sizing for all BPF maps based on available memory.
   # ref: https://docs.cilium.io/en/stable/concepts/ebpf/maps/#ebpf-maps
-  #mapDynamicSizeRatio: 0.0025
+  # mapDynamicSizeRatio: 0.0025
 
   # -- Configure the level of aggregation for monitor notifications.
   # Valid options are none, low, medium, maximum.
@@ -277,13 +277,13 @@ bpf:
   lbExternalClusterIP: false
 
   # -- Enable native IP masquerade support in eBPF
-  #masquerade: false
+  # masquerade: false
 
   # -- Configure whether direct routing mode should route traffic via
   # host stack (true) or directly and more efficiently out of BPF (false) if
   # the kernel supports it. The latter has the implication that it will also
   # bypass netfilter in the host namespace.
-  #hostRouting: true
+  # hostRouting: true
 
   # -- Configure the eBPF-based TPROXY to reduce reliance on iptables rules
   # for implementing Layer 7 policy.
@@ -647,7 +647,7 @@ hubble:
       # Defaults to midnight of the first day of every fourth month. For syntax, see
       # https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/#schedule
       schedule: "0 0 1 */4 *"
-      
+
       # [Example]
       # certManagerIssuerRef:
       #   group: cert-manager.io
@@ -1003,7 +1003,7 @@ readinessProbe:
 # -- Configure the kube-proxy replacement in Cilium BPF datapath
 # Valid options are "disabled", "probe", "partial", "strict".
 # ref: https://docs.cilium.io/en/stable/gettingstarted/kubeproxy-free/
-#kubeProxyReplacement: "disabled"
+# kubeProxyReplacement: "disabled"
 
 # -- healthz server bind address for the kube-proxy replacement.
 # To enable set the value to '0.0.0.0:10256' for all ipv4
@@ -1170,7 +1170,7 @@ resourceQuotas:
 
 # Need to document default
 ##################
-#sessionAffinity: false
+# sessionAffinity: false
 
 # -- Do not run Cilium agent when running with clean mode. Useful to completely
 # uninstall Cilium as it will stop Cilium from starting and create artifacts
@@ -1628,7 +1628,7 @@ enableCriticalPriorityClass: true
 
 # disableEnvoyVersionCheck removes the check for Envoy, which can be useful
 # on AArch64 as the images do not currently ship a version of Envoy.
-#disableEnvoyVersionCheck: false
+# disableEnvoyVersionCheck: false
 
 clustermesh:
   # -- Deploy clustermesh-apiserver for clustermesh
@@ -1732,7 +1732,7 @@ clustermesh:
         # fourth month. For syntax, see
         # https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/#schedule
         # schedule: "0 0 1 */4 *"
-        
+
         # [Example]
         # certManagerIssuerRef:
         #   group: cert-manager.io
