@@ -1,4 +1,8 @@
-replace-chart-version-with-git: true
-generate-metadata: true
 chart-dir: ./helm/cilium
-destination: ./build
+replace-chart-version-with-git: true
+replace-app-version-with-git: false
+generate-metadata: true
+
+# https://app.circleci.com/pipelines/github/giantswarm/cilium-app/2/workflows/329a486f-9468-4aaf-818b-b0006174ed38/jobs/2
+# https://app.circleci.com/pipelines/github/giantswarm/cilium-app/5/workflows/4c744657-e9ac-49eb-9c41-371e2e62f785/jobs/5
+skip-steps: ["validate", "static_check"]
