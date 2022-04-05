@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix the version in notes.
 
+### Added
+
+- PodSecurityPolicies
+
 ## [0.1.0] - 2022-03-25
 
 [Unreleased]: https://github.com/giantswarm/cilium-app/compare/v0.1.0...HEAD
