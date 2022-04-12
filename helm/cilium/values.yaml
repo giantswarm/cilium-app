@@ -70,6 +70,12 @@ serviceAccounts:
     name: hubble-generate-certs
     annotations: {}
 
+# -- Enable default network policies
+defaultPolicies: true
+
+# -- List of namespaces to allow ingress from host node if `defaultPolicies` are enabled
+allowAllIngressFromHostIn: ["kube-system"]
+
 # -- Install the cilium agent resources.
 agent: true
 
@@ -647,7 +653,7 @@ hubble:
       # Defaults to midnight of the first day of every fourth month. For syntax, see
       # https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/#schedule
       schedule: "0 0 1 */4 *"
-      
+
       # [Example]
       # certManagerIssuerRef:
       #   group: cert-manager.io
@@ -1732,7 +1738,7 @@ clustermesh:
         # fourth month. For syntax, see
         # https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/#schedule
         # schedule: "0 0 1 */4 *"
-        
+
         # [Example]
         # certManagerIssuerRef:
         #   group: cert-manager.io

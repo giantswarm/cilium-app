@@ -1,0 +1,13 @@
+{{- if .Values.defaultPolicies }}
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-all-egress
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+spec:
+  endpointSelector: {}
+  egress:
+    - toEntities:
+      - "all"
+{{- end }}

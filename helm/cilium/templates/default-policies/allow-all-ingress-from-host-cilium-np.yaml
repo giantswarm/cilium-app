@@ -1,0 +1,16 @@
+{{- if .Values.defaultPolicies }}
+{{- range $namespace := .Values.allowAllIngressFromHostIn }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-all-ingress-from-host
+  namespace: {{ $namespace }}
+spec:
+  endpointSelector: {}
+  ingress:
+  - fromEntities:
+    - host
+    - remote-node
+---
+{{- end }}
+{{- end }}
