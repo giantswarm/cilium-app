@@ -31,10 +31,5 @@ spec:
         - name: policies
           mountPath: /policies
         args:
-        - sh
-        - -c
-        - |
-          set -o errexit ; set -o xtrace ; set -o nounset
-
-          kubectl apply --server-side=true --field-manager='kubectl-client-side-apply' --force-conflicts -f /policies/ 2>&1
+        - apply --server-side=true --field-manager='kubectl-client-side-apply' --force-conflicts -f /policies/ 2>&1
 {{- end -}}
