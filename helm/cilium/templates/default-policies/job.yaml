@@ -15,6 +15,7 @@ spec:
     spec:
       restartPolicy: OnFailure
       serviceAccountName: {{ .Values.serviceAccounts.defaultPolicies.name | quote }}
+      priorityClassName: system-cluster-critical
       {{- with .Values.defaultPolicies.tolerations }}
       tolerations:
         {{- toYaml . | nindent 6 }}
