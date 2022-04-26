@@ -1,0 +1,30 @@
+{{- if .Values.defaultPolicies.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cilium-default-policies
+  namespace: {{ .Release.Namespace }}
+data:
+  ingress.yaml: |-
+    apiVersion: cilium.io/v2
+    kind: CiliumNetworkPolicy
+    metadata:
+      name: allow-all-ingress-from-host
+      namespace: kube-system
+    spec:
+      endpointSelector: {}
+      ingress:
+      - fromEntities:
+        - host
+        - remote-node
+  egress.yaml: |-
+    apiVersion: cilium.io/v2
+    kind: CiliumClusterwideNetworkPolicy
+    metadata:
+      name: allow-all-egress
+    spec:
+      endpointSelector: {}
+      egress:
+        - toEntities:
+          - "all"
+{{- end }}

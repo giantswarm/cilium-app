@@ -1,0 +1,40 @@
+{{- if .Values.defaultPolicies.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cilium-create-default-policies
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: cilium-create-default-policies
+spec:
+  backoffLimit: 50
+  template:
+    metadata:
+      labels:
+        app: cilium-create-default-policies
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: {{ .Values.serviceAccounts.defaultPolicies.name | quote }}
+      {{- with .Values.defaultPolicies.tolerations }}
+      tolerations:
+        {{- toYaml . | indent 8 }}
+      {{- end }}
+      volumes:
+      - name: policies
+        configMap:
+          name: cilium-default-policies
+      containers:
+      - name: cilium-create-default-policies
+        image: "quay.io/giantswarm/docker-kubectl:latest"
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: policies
+          mountPath: /policies
+        args:
+        - sh
+        - -c
+        - |
+          set -o errexit ; set -o xtrace ; set -o nounset
+
+          kubectl apply --server-side=true --field-manager='kubectl-client-side-apply' --force-conflicts -f /policies/ 2>&1
+{{- end -}}
