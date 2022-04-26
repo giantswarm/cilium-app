@@ -30,6 +30,12 @@ spec:
         volumeMounts:
         - name: policies
           mountPath: /policies
+        command:
+        - sh
         args:
-        - apply --server-side=true --field-manager='kubectl-client-side-apply' --force-conflicts -f /policies/ 2>&1
+        - -c
+        - |
+          set -o errexit ; set -o xtrace ; set -o nounset
+
+          kubectl apply --server-side=true --field-manager='kubectl-client-side-apply' --force-conflicts -f /policies/ 2>&1
 {{- end -}}
