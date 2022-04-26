@@ -17,7 +17,7 @@ spec:
       serviceAccountName: {{ .Values.serviceAccounts.defaultPolicies.name | quote }}
       {{- with .Values.defaultPolicies.tolerations }}
       tolerations:
-        {{- toYaml . | indent 8 }}
+        {{- toYaml . | nindent 6 }}
       {{- end }}
       volumes:
       - name: policies
