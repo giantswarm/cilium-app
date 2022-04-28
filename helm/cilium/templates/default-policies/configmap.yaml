@@ -15,7 +15,8 @@ data:
       endpointSelector: {}
       ingress:
       - fromEntities:
-        - all
+        - host
+        - remote-node
   egress.yaml: |-
     apiVersion: cilium.io/v2
     kind: CiliumClusterwideNetworkPolicy
