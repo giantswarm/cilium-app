@@ -6,25 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 data:
   ingress.yaml: |-
-    apiVersion: cilium.io/v2
-    kind: CiliumNetworkPolicy
-    metadata:
-      name: allow-all-ingress-from-host
-      namespace: kube-system
-    spec:
-      endpointSelector: {}
-      ingress:
-      - fromEntities:
-        - host
-        - remote-node
+    {{- .Files.Get "files/policies/ingress.yaml" | nindent 4 }}
   egress.yaml: |-
-    apiVersion: cilium.io/v2
-    kind: CiliumClusterwideNetworkPolicy
-    metadata:
-      name: allow-all-egress
-    spec:
-      endpointSelector: {}
-      egress:
-        - toEntities:
-          - "all"
+    {{- .Files.Get "files/policies/egress.yaml" | nindent 4 }}
 {{- end }}
