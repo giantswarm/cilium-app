@@ -2,11 +2,6 @@ apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
   name: allow-all-egress
-  ownerReferences:
-    - apiVersion: apps/v1
-      kind: DaemonSet
-      name: cilium
-      namespace: {{ .Release.Namespace }}
 spec:
   endpointSelector: {}
   egress:
