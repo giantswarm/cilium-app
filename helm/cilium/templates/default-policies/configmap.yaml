@@ -1,0 +1,12 @@
+{{- if .Values.defaultPolicies.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cilium-default-policies
+  namespace: {{ .Release.Namespace }}
+data:
+  ingress.yaml: |-
+    {{- .Files.Get "files/policies/ingress.yaml" | nindent 4 }}
+  egress.yaml: |-
+    {{- .Files.Get "files/policies/egress.yaml" | nindent 4 }}
+{{- end }}

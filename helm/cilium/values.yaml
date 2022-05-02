@@ -69,6 +69,10 @@ serviceAccounts:
     create: true
     name: hubble-generate-certs
     annotations: {}
+  defaultPolicies:
+    create: true
+    name: cilium-default-policies
+    annotations: {}
 
 # -- Install the cilium agent resources.
 agent: true
@@ -1795,3 +1799,10 @@ cgroup:
 # -- Configure whether to enable auto detect of terminating state for endpoints
 # in order to support graceful termination.
 enableK8sTerminatingEndpoint: true
+
+defaultPolicies:
+  enabled: false
+  # -- Node tolerations for default-policies job scheduling to nodes with taints
+  # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  tolerations:
+  - operator: Exists
