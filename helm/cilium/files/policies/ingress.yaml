@@ -2,7 +2,12 @@ apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
   name: allow-all-ingress-from-host
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
+  ownerReferences:
+    - apiVersion: apps/v1
+      kind: DaemonSet
+      name: cilium
+      namespace: {{ .Release.Namespace }}
 spec:
   endpointSelector: {}
   ingress:
