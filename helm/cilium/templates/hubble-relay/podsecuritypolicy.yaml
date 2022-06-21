@@ -10,6 +10,7 @@ spec:
     - 'configMap'
     - 'projected'
     - 'hostPath'
+    - 'secrets'
   hostNetwork: false
   hostIPC: false
   hostPID: false
