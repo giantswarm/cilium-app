@@ -10,6 +10,7 @@ spec:
     - ALL
   volumes:
     - 'configMap'
+    - 'projected'
   hostNetwork: true
   hostIPC: false
   hostPID: false
