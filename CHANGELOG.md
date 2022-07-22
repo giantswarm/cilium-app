@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Use retagged images instead of upstream ones.
+- Run the default policies creation job in hostNetwork.
 
 ## [0.2.4] - 2022-06-29
 

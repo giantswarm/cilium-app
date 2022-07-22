@@ -17,6 +17,7 @@ spec:
       labels:
         app: cilium-create-default-policies
     spec:
+      hostNetwork: true
       restartPolicy: OnFailure
       serviceAccountName: {{ .Values.serviceAccounts.defaultPolicies.name | quote }}
       priorityClassName: system-cluster-critical
