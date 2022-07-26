@@ -1,7 +1,19 @@
 apiVersion: cilium.io/v2
-kind: CiliumClusterwideNetworkPolicy
+kind: CiliumNetworkPolicy
 metadata:
   name: allow-apiserver-access
+  namespace: kube-system
+spec:
+  endpointSelector: {}
+  egress:
+    toEntities:
+    - kube-apiserver
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-apiserver-access
+  namespace: giantswarm
 spec:
   endpointSelector: {}
   egress:
