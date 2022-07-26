@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Instead of allowing egress towards all endpoints, by default only allow access to the api server for all pods in `kube-system` and `giantswarm` namespaces.
+
 ## [0.2.5] - 2022-07-25
 
 ### Changed
