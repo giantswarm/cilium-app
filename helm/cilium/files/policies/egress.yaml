@@ -6,7 +6,7 @@ metadata:
 spec:
   endpointSelector: {}
   egress:
-    toEntities:
+  - toEntities:
     - kube-apiserver
 ---
 apiVersion: cilium.io/v2
@@ -17,5 +17,5 @@ metadata:
 spec:
   endpointSelector: {}
   egress:
-    toEntities:
+  - toEntities:
     - kube-apiserver
