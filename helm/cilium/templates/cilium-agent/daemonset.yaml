@@ -438,7 +438,7 @@ spec:
         resources:
           {{- toYaml . | trim | nindent 10 }}
         {{- end }}
-      {{ if and (.Values.cleanupKubeProxy (not (eq .Values.kubeProxyReplacement "disabled"))) }}
+      {{ if and (.Values.cleanupKubeProxy) (not (eq .Values.kubeProxyReplacement "disabled")) }}
       - name: cleanup-kube-proxy-iptables
         image: {{ include "cilium.image" .Values.image | quote }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
