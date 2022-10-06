@@ -443,7 +443,10 @@ spec:
         image: {{ include "cilium.image" .Values.image | quote }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-        - iptables-save | grep -v KUBE | iptables-restore
+        - sh
+        - -c
+        - |
+          iptables-save | grep -v KUBE | iptables-restore
       {{ end }}
       restartPolicy: Always
       priorityClassName: {{ include "cilium.priorityClass" (list $ .Values.priorityClassName "system-node-critical") }}
