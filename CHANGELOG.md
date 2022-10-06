@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add init container that cleans up iptables rules before starting cilium agent.
+
 ## [0.2.6] - 2022-07-26
 
 ### Changed
