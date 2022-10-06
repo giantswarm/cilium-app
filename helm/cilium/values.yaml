@@ -1806,3 +1806,5 @@ defaultPolicies:
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   tolerations:
   - operator: Exists
+
+cleanupKubeProxy: false
