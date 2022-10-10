@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Run `cleanup-kube-proxy-iptables` container in cilium agent in privileged mode.
+- Use iptables-nft binaries for `cleanup-kube-proxy-iptables` container.
+
 ## [0.3.0] - 2022-10-06
 
 ### Added
