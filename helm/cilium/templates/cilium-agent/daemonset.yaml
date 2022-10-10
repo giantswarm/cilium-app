@@ -442,11 +442,13 @@ spec:
       - name: cleanup-kube-proxy-iptables
         image: {{ include "cilium.image" .Values.image | quote }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        securityContext:
+          privileged: true
         command:
         - sh
         - -c
         - |
-          iptables-save | grep -v KUBE | iptables-restore
+          /usr/sbin/iptables-nft-save | grep -v KUBE | grep -v cali | /usr/sbin/iptables-nft-restore
       {{ end }}
       restartPolicy: Always
       priorityClassName: {{ include "cilium.priorityClass" (list $ .Values.priorityClassName "system-node-critical") }}
