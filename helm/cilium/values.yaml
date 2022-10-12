@@ -1128,7 +1128,7 @@ pprof:
 
 # -- Configure prometheus metrics on the configured port at /metrics
 prometheus:
-  enabled: false
+  enabled: true
   port: 9090
   serviceMonitor:
     # -- Enable service monitors.
