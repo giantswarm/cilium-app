@@ -19,6 +19,13 @@ spec:
   hostNetwork: true
   hostIPC: false
   hostPID: false
+  {{- if .Values.prometheus.enabled }}
+  hostPorts:
+    - min: {{ .Values.prometheus.port }}
+      max: {{ .Values.prometheus.port }}
+    - min: {{ .Values.proxy.prometheus.port }}
+      max: {{ .Values.proxy.prometheus.port }}
+  {{- end }}
   runAsUser:
     rule: 'RunAsAny'
   seLinux:
