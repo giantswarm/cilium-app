@@ -1128,7 +1128,7 @@ pprof:
 
 # -- Configure prometheus metrics on the configured port at /metrics
 prometheus:
-  enabled: false
+  enabled: true
   port: 9090
   serviceMonitor:
     # -- Enable service monitors.
@@ -1435,7 +1435,7 @@ operator:
   # -- Enable prometheus metrics for cilium-operator on the configured port at
   # /metrics
   prometheus:
-    enabled: false
+    enabled: true
     port: 6942
     serviceMonitor:
       # -- Enable service monitors.
