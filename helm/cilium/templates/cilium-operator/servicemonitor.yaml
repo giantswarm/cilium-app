@@ -1,5 +1,4 @@
 {{- if and .Values.operator.enabled .Values.operator.prometheus.enabled .Values.operator.prometheus.serviceMonitor.enabled }}
-{{- if .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -28,5 +27,4 @@ spec:
     path: /metrics
   targetLabels:
   - io.cilium/app
-{{- end }}
 {{- end }}

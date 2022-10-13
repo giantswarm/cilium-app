@@ -1,5 +1,4 @@
 {{- if and .Values.agent (not .Values.preflight.enabled) .Values.prometheus.enabled .Values.prometheus.serviceMonitor.enabled }}
-{{- if .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" }}
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -28,5 +27,4 @@ spec:
     path: /metrics
   targetLabels:
   - k8s-app
-{{- end }}
 {{- end }}

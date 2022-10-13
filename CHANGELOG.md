@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Enable prometheus exporters for `agent`, `operator` and `hubble` by default.
+
 ## [0.3.1] - 2022-10-10
 
 ### Fixed
