@@ -2,7 +2,7 @@ apiVersion: v2
 name: cilium
 displayName: Cilium
 home: https://cilium.io/
-version: 0.4.0
+version: 0.4.1
 appVersion: 1.11.2
 kubeVersion: ">= 1.16.0-0"
 icon: https://cdn.jsdelivr.net/gh/cilium/cilium@v1.11.2/Documentation/images/logo-solo.svg
