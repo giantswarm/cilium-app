@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Updated healthcheck port to match new detault introduced in v1.11.6
+
 ## [0.4.1] - 2022-10-14
 
 ### Changed
