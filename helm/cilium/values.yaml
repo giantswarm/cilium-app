@@ -86,7 +86,7 @@ rollOutCiliumPods: false
 # -- Agent container image.
 image:
   repository: quay.io/giantswarm/cilium
-  tag: v1.11.2
+  tag: v1.11.9
   pullPolicy: IfNotPresent
   # cilium-digest
   digest: ""
@@ -651,7 +651,7 @@ hubble:
       # Defaults to midnight of the first day of every fourth month. For syntax, see
       # https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/#schedule
       schedule: "0 0 1 */4 *"
-      
+
       # [Example]
       # certManagerIssuerRef:
       #   group: cert-manager.io
@@ -686,7 +686,7 @@ hubble:
     # -- Hubble-relay container image.
     image:
       repository: quay.io/giantswarm/hubble-relay
-      tag: v1.11.2
+      tag: v1.11.9
        # hubble-relay-digest
       digest: ""
       useDigest: false
@@ -1317,7 +1317,7 @@ operator:
   # -- cilium-operator image.
   image:
     repository: quay.io/giantswarm/cilium-operator
-    tag: v1.11.2
+    tag: v1.11.9
     # operator-generic-digest
     genericDigest: ""
     # operator-azure-digest
@@ -1535,7 +1535,7 @@ preflight:
   # -- Cilium pre-flight image.
   image:
     repository: quay.io/giantswarm/cilium
-    tag: v1.11.2
+    tag: v1.11.9
     # cilium-digest
     digest: ""
     useDigest: false
@@ -1642,7 +1642,7 @@ clustermesh:
     # -- Clustermesh API server image.
     image:
       repository: quay.io/giantswarm/cilium-clustermesh-apiserver
-      tag: v1.11.2
+      tag: v1.11.9
       # clustermesh-apiserver-digest
       digest: ""
       useDigest: false
@@ -1736,7 +1736,7 @@ clustermesh:
         # fourth month. For syntax, see
         # https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/#schedule
         # schedule: "0 0 1 */4 *"
-        
+
         # [Example]
         # certManagerIssuerRef:
         #   group: cert-manager.io
