@@ -475,7 +475,7 @@ spec:
         resources:
           {{- toYaml . | trim | nindent 10 }}
         {{- end }}
-      {{- if and .Values.waitForKubeProxy (ne $kubeProxyReplacement "strict") }}
+      {{ if and (.Values.cleanupKubeProxy) (not (eq .Values.kubeProxyReplacement "disabled")) }}
       - name: wait-for-kube-proxy
         image: {{ include "cilium.image" .Values.image | quote }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
