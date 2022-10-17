@@ -147,7 +147,7 @@ spec:
         {{- range $key, $value := .Values.operator.extraEnv }}
         - name: {{ $key }}
           value: {{ $value }}
-        {{- end }}        
+        {{- end }}
         {{- if .Values.operator.prometheus.enabled }}
         ports:
         - name: prometheus
@@ -200,11 +200,14 @@ spec:
         resources:
           {{- toYaml . | trim | nindent 10 }}
         {{- end }}
+        terminationMessagePolicy: FallbackToLogsOnError
       hostNetwork: true
       {{- if and .Values.etcd.managed (not .Values.etcd.k8sService) }}
       # In managed etcd mode, Cilium must be able to resolve the DNS name of
       # the etcd service
       dnsPolicy: ClusterFirstWithHostNet
+      {{- else if .Values.dnsPolicy }}
+      dnsPolicy: {{ .Values.operator.dnsPolicy }}
       {{- end }}
       restartPolicy: Always
       priorityClassName: {{ include "cilium.priorityClass" (list $ .Values.operator.priorityClassName "system-cluster-critical") }}
