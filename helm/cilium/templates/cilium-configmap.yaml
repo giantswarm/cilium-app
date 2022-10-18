@@ -109,6 +109,10 @@ data:
   cilium-endpoint-gc-interval: "{{ .Values.operator.endpointGCInterval }}"
 {{- end }}
 
+{{- if hasKey .Values.operator "nodeGCInterval" }}
+  nodes-gc-interval: "{{ .Values.operator.nodeGCInterval | default "0s" }}"
+{{- end }}
+
 {{- if hasKey .Values "disableEndpointCRD" }}
   # Disable the usage of CiliumEndpoint CRD
   disable-endpoint-crd: "{{ .Values.disableEndpointCRD }}"
@@ -135,7 +139,7 @@ data:
   debug-verbose: "{{ .Values.debug.verbose }}"
 {{- end }}
 
-{{- if ne (int .Values.healthPort) 9876 }}
+{{- if ne (int .Values.healthPort) 9879 }}
   # Set the TCP port for the agent health status API. This is not the port used
   # for cilium-health.
   agent-health-port: "{{ .Values.healthPort }}"
@@ -356,8 +360,10 @@ data:
   tunnel: "disabled"
   enable-endpoint-routes: "true"
   enable-local-node-route: "false"
+{{- else if .Values.aksbyocni.enabled }}
+  tunnel: "vxlan"
 {{- else }}
-  tunnel: {{ .Values.tunnel }}
+  tunnel: {{ .Values.tunnel | quote }}
 {{- end }}
 
 {{- if hasKey .Values "tunnelPort" }}
@@ -708,7 +714,11 @@ data:
   # A space separated list of iptables chains to disable when installing feeder rules.
   disable-iptables-feeder-rules: {{ .Values.disableIptablesFeederRules | join " " | quote }}
 {{- end }}
+{{- if .Values.aksbyocni.enabled }}
+  ipam: "cluster-pool"
+{{- else }}
   ipam: {{ $ipam | quote }}
+{{- end }}
 
 {{- if eq $ipam "cluster-pool" }}
 {{- if .Values.ipv4.enabled }}
@@ -792,7 +802,29 @@ data:
   enable-k8s-terminating-endpoint: {{ .Values.enableK8sTerminatingEndpoint | quote }}
 {{- end }}
 
+{{- if .Values.annotateK8sNode }}
+  annotate-k8s-node: "true"
+{{- end }}
+
+{{- if .Values.operator.removeNodeTaints }}
+  remove-cilium-node-taints: "true"
+{{- end }}
+{{- if .Values.operator.setNodeNetworkStatus }}
+  set-cilium-is-up-condition: "true"
+{{- end }}
+
+{{- if .Values.operator.unmanagedPodWatcher.restart }}
+  unmanaged-pod-watcher-interval: {{ .Values.operator.unmanagedPodWatcher.intervalSeconds | quote }}
+{{- else }}
+  unmanaged-pod-watcher-interval: "0"
+{{- end }}
+
 {{- if .Values.extraConfig }}
   {{ toYaml .Values.extraConfig | nindent 2 }}
 {{- end }}
+
+{{- if hasKey .Values "agentNotReadyTaintKey" }}
+  agent-not-ready-taint-key: {{ .Values.agentNotReadyTaintKey | quote }}
+{{- end }}
+
 {{- end }}

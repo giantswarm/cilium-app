@@ -7,6 +7,9 @@
 {{- if semverCompare ">=1.8" (default "1.8" .Values.upgradeCompatibility) -}}
   {{- $defaultKeepDeprecatedProbes = false -}}
 {{- end -}}
+
+{{- $kubeProxyReplacement := (coalesce .Values.kubeProxyReplacement "disabled") -}}
+
 ---
 apiVersion: apps/v1
 kind: DaemonSet
@@ -43,11 +46,6 @@ spec:
         # ensure pods roll when configmap updates
         cilium.io/cilium-configmap-checksum: {{ include (print $.Template.BasePath "/cilium-configmap.yaml") . | sha256sum | quote }}
         {{- end }}
-        # This annotation plus the CriticalAddonsOnly toleration makes
-        # cilium to be a critical pod in the cluster, which ensures cilium
-        # gets priority scheduling.
-        # https://kubernetes.io/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/
-        scheduler.alpha.kubernetes.io/critical-pod: ""
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -221,6 +219,12 @@ spec:
         {{- end }}
         {{- if or .Values.prometheus.enabled .Values.hubble.metrics.enabled }}
         ports:
+        {{- if .Values.hubble.peerService.enabled }}
+        - name: peer-service
+          containerPort: {{ .Values.hubble.peerService.targetPort }}
+          hostPort: {{ .Values.hubble.peerService.targetPort }}
+          protocol: TCP
+        {{- end }}
         {{- if .Values.prometheus.enabled }}
         - name: prometheus
           containerPort: {{ .Values.prometheus.port }}
@@ -242,6 +246,7 @@ spec:
         {{- end }}
         securityContext:
           privileged: true
+        terminationMessagePolicy: FallbackToLogsOnError
         volumeMounts:
         {{- /* CRI-O already mounts the BPF filesystem */ -}}
         {{- if not (eq .Values.containerRuntime.integration "crio") }}
@@ -329,6 +334,7 @@ spec:
         {{- range $type := .Values.monitor.eventTypes }}
         - --type={{ $type }}
         {{- end }}
+        terminationMessagePolicy: FallbackToLogsOnError
         volumeMounts:
         - name: cilium-run
           mountPath: /var/run/cilium
@@ -341,6 +347,8 @@ spec:
       # In managed etcd mode, Cilium must be able to resolve the DNS name of
       # the etcd service
       dnsPolicy: ClusterFirstWithHostNet
+      {{- else if .Values.dnsPolicy }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
       {{- end }}
       hostNetwork: true
       initContainers:
@@ -372,6 +380,33 @@ spec:
           mountPath: /hostproc
         - name: cni-path
           mountPath: /hostbin
+        terminationMessagePolicy: FallbackToLogsOnError
+        securityContext:
+          privileged: true
+      - name: apply-sysctl-overwrites
+        image: {{ include "cilium.image" .Values.image | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: BIN_PATH
+          value: {{ .Values.cni.binPath }}
+        command:
+        - sh
+        - -ec
+        # The statically linked Go program binary is invoked to avoid any
+        # dependency on utilities like sh that can be missing on certain
+        # distros installed on the underlying host. Copy the binary to the
+        # same directory where we install cilium cni plugin so that exec permissions
+        # are available.
+        - |
+          cp /usr/bin/cilium-sysctlfix /hostbin/cilium-sysctlfix;
+          nsenter --mount=/hostproc/1/ns/mnt "${BIN_PATH}/cilium-sysctlfix";
+          rm /hostbin/cilium-sysctlfix
+        volumeMounts:
+        - name: hostproc
+          mountPath: /hostproc
+        - name: cni-path
+          mountPath: /hostbin
+        terminationMessagePolicy: FallbackToLogsOnError
         securityContext:
           privileged: true
       {{- end }}
@@ -383,13 +418,14 @@ spec:
         - sh
         - -c
         - |
-          until test -f {{ .Values.nodeinit.bootstrapFile | quote }}; do
+          until test -s {{ (print "/tmp/cilium-bootstrap.d/" (.Values.nodeinit.bootstrapFile | base)) | quote }}; do
             echo "Waiting on node-init to run...";
             sleep 1;
           done
+        terminationMessagePolicy: FallbackToLogsOnError
         volumeMounts:
-        - name: cilium-bootstrap-file
-          mountPath: {{ .Values.nodeinit.bootstrapFile }}
+        - name: cilium-bootstrap-file-dir
+          mountPath: "/tmp/cilium-bootstrap.d"
       {{- end }}
       - name: clean-cilium-state
         image: {{ include "cilium.image" .Values.image | quote }}
@@ -420,6 +456,7 @@ spec:
         {{- with .Values.extraEnv }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        terminationMessagePolicy: FallbackToLogsOnError
         securityContext:
           privileged: true
         volumeMounts:
@@ -438,6 +475,39 @@ spec:
         resources:
           {{- toYaml . | trim | nindent 10 }}
         {{- end }}
+      {{- if and .Values.waitForKubeProxy (ne $kubeProxyReplacement "strict") }}
+      - name: wait-for-kube-proxy
+        image: {{ include "cilium.image" .Values.image | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        securityContext:
+          privileged: true
+        command:
+          - bash
+          - -c
+          - |
+            while true
+            do
+              if iptables-nft-save -t mangle | grep -E '^:(KUBE-IPTABLES-HINT|KUBE-PROXY-CANARY)'; then
+                echo "Found KUBE-IPTABLES-HINT or KUBE-PROXY-CANARY iptables rule in 'iptables-nft-save -t mangle'"
+                exit 0
+              fi
+              if ip6tables-nft-save -t mangle | grep -E '^:(KUBE-IPTABLES-HINT|KUBE-PROXY-CANARY)'; then
+                echo "Found KUBE-IPTABLES-HINT or KUBE-PROXY-CANARY iptables rule in 'ip6tables-nft-save -t mangle'"
+                exit 0
+              fi
+              if iptables-legacy-save | grep -E '^:KUBE-PROXY-CANARY'; then
+                echo "Found KUBE-PROXY-CANARY iptables rule in 'iptables-legacy-save"
+                exit 0
+              fi
+              if ip6tables-legacy-save | grep -E '^:KUBE-PROXY-CANARY'; then
+                echo "KUBE-PROXY-CANARY iptables rule in 'ip6tables-legacy-save'"
+                exit 0
+              fi
+              echo "Waiting for kube-proxy to create iptables rules...";
+              sleep 1;
+            done
+        terminationMessagePolicy: FallbackToLogsOnError
+      {{- end }} # wait-for-kube-proxy
       {{ if and (.Values.cleanupKubeProxy) (not (eq .Values.kubeProxyReplacement "disabled")) }}
       - name: cleanup-kube-proxy-iptables
         image: {{ include "cilium.image" .Values.image | quote }}
@@ -458,6 +528,15 @@ spec:
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | trim | nindent 8 }}
+      {{- end }}
+      {{- if and .Values.clustermesh.useAPIServer .Values.clustermesh.config.enabled }}
+      hostAliases:
+      {{- range $cluster := .Values.clustermesh.config.clusters }}
+      {{- range $ip := $cluster.ips }}
+      - ip: {{ $ip }}
+        hostnames: [ "{{ $cluster.name }}.{{ $.Values.clustermesh.config.domain }}" ]
+      {{- end }}
+      {{- end }}
       {{- end }}
       volumes:
         # To keep state between restarts / upgrades
@@ -511,10 +590,10 @@ spec:
           type: FileOrCreate
       {{- end }}
       {{- if and .Values.nodeinit.enabled .Values.nodeinit.bootstrapFile }}
-      - name: cilium-bootstrap-file
+      - name: cilium-bootstrap-file-dir
         hostPath:
-          path: {{ .Values.nodeinit.bootstrapFile }}
-          type: FileOrCreate
+          path: {{ .Values.nodeinit.bootstrapFile | dir | quote }}
+          type: DirectoryOrCreate
       {{- end }}
       {{- range .Values.extraHostPathMounts }}
       - name: {{ .name }}

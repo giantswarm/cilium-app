@@ -19,8 +19,16 @@ spec:
   hostNetwork: true
   hostIPC: false
   hostPID: false
-  {{- if .Values.prometheus.enabled }}
   hostPorts:
+  {{- if .Values.hubble.peerService.enabled }}
+    - min: {{ .Values.hubble.peerService.targetPort }}
+      max: {{ .Values.hubble.peerService.targetPort }}
+  {{- end }}
+  {{- if .Values.hubble.metrics.enabled }}
+    - min: {{ .Values.hubble.metrics.port }}
+      max: {{ .Values.hubble.metrics.port }}
+  {{- end }}
+  {{- if .Values.prometheus.enabled }}
     - min: {{ .Values.prometheus.port }}
       max: {{ .Values.prometheus.port }}
     - min: {{ .Values.proxy.prometheus.port }}

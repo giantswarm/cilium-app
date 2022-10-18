@@ -9,6 +9,6 @@ roleRef:
   name: cilium-pre-flight
 subjects:
 - kind: ServiceAccount
-  name: {{ .Values.serviceAccounts.preflight.name | quote }} 
+  name: {{ .Values.serviceAccounts.preflight.name | quote }}
   namespace: {{ .Release.Namespace }}
 {{- end }}

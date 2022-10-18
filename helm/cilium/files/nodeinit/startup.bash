@@ -22,9 +22,11 @@ fi
 {{- end }}
 
 {{- if .Values.nodeinit.reconfigureKubelet }}
-# Check if we're running on a GKE containerd flavor.
+# Check if we're running on a GKE containerd flavor as indicated by the presence
+# of the '--container-runtime-endpoint' flag in '/etc/default/kubelet'.
 GKE_KUBERNETES_BIN_DIR="/home/kubernetes/bin"
-if [[ -f "${GKE_KUBERNETES_BIN_DIR}/gke" ]] && command -v containerd &>/dev/null; then
+KUBELET_DEFAULTS_FILE="/etc/default/kubelet"
+if [[ -f "${GKE_KUBERNETES_BIN_DIR}/gke" ]] && [[ $(grep -cF -- '--container-runtime-endpoint' "${KUBELET_DEFAULTS_FILE}") == "1" ]]; then
   echo "GKE *_containerd flavor detected..."
 
   # (GKE *_containerd) Upon node restarts, GKE's containerd images seem to reset
@@ -98,13 +100,13 @@ else
   # (Generic) Alter the kubelet configuration to run in CNI mode
   echo "Changing kubelet configuration to --network-plugin=cni --cni-bin-dir={{ .Values.cni.binPath }}"
   mkdir -p {{ .Values.cni.binPath }}
-  sed -i "s:--network-plugin=kubenet:--network-plugin=cni\ --cni-bin-dir={{ .Values.cni.binPath }}:g" /etc/default/kubelet
+  sed -i "s:--network-plugin=kubenet:--network-plugin=cni\ --cni-bin-dir={{ .Values.cni.binPath }}:g" "${KUBELET_DEFAULTS_FILE}"
 fi
 echo "Restarting the kubelet..."
 systemctl restart kubelet
 {{- end }}
 
-{{- if (and .Values.gke.enabled (or .Values.masquerade .Values.gke.disableDefaultSnat))}}
+{{- if (and .Values.gke.enabled (or .Values.enableIPv4Masquerade .Values.gke.disableDefaultSnat))}}
 # If Cilium is configured to manage masquerading of traffic leaving the node,
 # we need to disable the IP-MASQ chain because even if ip-masq-agent
 # is not installed, the node init script installs some default rules into
@@ -118,7 +120,8 @@ iptables -w -t nat -D POSTROUTING -m comment --comment "ip-masq: ensure nat POST
 {{- end }}
 
 {{- if not (eq .Values.nodeinit.bootstrapFile "") }}
-date > {{ .Values.nodeinit.bootstrapFile }}
+mkdir -p {{ .Values.nodeinit.bootstrapFile | dir | quote }}
+date > {{ .Values.nodeinit.bootstrapFile | quote }}
 {{- end }}
 
 {{- if .Values.azure.enabled }}

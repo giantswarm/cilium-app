@@ -67,6 +67,7 @@ spec:
         volumeMounts:
         - name: etcd-data-dir
           mountPath: /var/run/etcd
+        terminationMessagePolicy: FallbackToLogsOnError
       containers:
       - name: etcd
         image: {{ include "cilium.image" .Values.clustermesh.apiserver.etcd.image | quote }}
@@ -97,6 +98,7 @@ spec:
           readOnly: true
         - name: etcd-data-dir
           mountPath: /var/run/etcd
+        terminationMessagePolicy: FallbackToLogsOnError
       - name: apiserver
         image: {{ include "cilium.image" .Values.clustermesh.apiserver.image | quote }}
         imagePullPolicy: {{ .Values.clustermesh.apiserver.image.pullPolicy }}
@@ -107,6 +109,7 @@ spec:
         - --debug
         {{- end }}
         - --cluster-name=$(CLUSTER_NAME)
+        - --cluster-id=$(CLUSTER_ID)
         - --kvstore-opt
         - etcd.config=/var/lib/cilium/etcd-config.yaml
         env:
@@ -126,6 +129,12 @@ spec:
             configMapKeyRef:
               name: cilium-config
               key: identity-allocation-mode
+        - name: ENABLE_K8S_ENDPOINT_SLICE
+          valueFrom:
+            configMapKeyRef:
+              name: cilium-config
+              key: enable-k8s-endpoint-slice
+              optional: true
         {{- with .Values.clustermesh.apiserver.resources }}
         resources:
           {{- toYaml . | nindent 10 }}
@@ -134,6 +143,7 @@ spec:
         - name: etcd-admin-client
           mountPath: /var/lib/cilium/etcd-secrets
           readOnly: true
+        terminationMessagePolicy: FallbackToLogsOnError
       volumes:
       - name: etcd-server-secrets
         secret:
