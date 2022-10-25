@@ -76,6 +76,8 @@ rules:
   - endpoints
   # to check apiserver connectivity
   - namespaces
+  # cilium operator also requires access to the nodes
+  - nodes
   verbs:
   - get
   - list

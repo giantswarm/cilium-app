@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.1] - 2022-10-25
+- cilium-operator service account also needs read access to the `nodes` api end point at the cluster scope  
+otherwise it raises the error:  
+```
+failed to list *v1.Node: nodes is forbidden: User "system:serviceaccount:kube-system:cilium-operator" cannot list resource "nodes" in API group "" at the cluster scope"
+```
+
 ## [0.5.0] - 2022-10-18
 
 ### Changed
