@@ -21,3 +21,4 @@ spec:
   - toEntities:
     - kube-apiserver
     - cluster
+    - world
