@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Allow `world` access for pods in `giantswarm` namespace in default policies.
+- Enable CiliumLocalRedirectPolicy
 
 ## [0.5.0] - 2022-10-18
 
