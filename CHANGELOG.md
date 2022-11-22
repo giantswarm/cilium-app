@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Align Helm chart ownership and CODEOWNERS file. 
+
 ## [0.6.0] - 2022-11-07
 
 ### Changed
