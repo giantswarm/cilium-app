@@ -6,6 +6,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     k8s-app: clustermesh-apiserver
+    app.kubernetes.io/part-of: cilium
+    app.kubernetes.io/name: clustermesh-apiserver
 spec:
   replicas: {{ .Values.clustermesh.apiserver.replicas }}
   selector:
@@ -22,6 +24,8 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
+        app.kubernetes.io/part-of: cilium
+        app.kubernetes.io/name: clustermesh-apiserver
         k8s-app: clustermesh-apiserver
         {{- with .Values.clustermesh.apiserver.podLabels }}
         {{- toYaml . | nindent 8 }}
@@ -37,7 +41,7 @@ spec:
         imagePullPolicy: {{ .Values.clustermesh.apiserver.etcd.image.pullPolicy }}
         command: ["/bin/sh", "-c"]
         args:
-        - >
+        - |
           rm -rf /var/run/etcd/*;
           /usr/local/bin/etcd --data-dir=/var/run/etcd --name=clustermesh-apiserver --listen-client-urls=http://127.0.0.1:2379 --advertise-client-urls=http://127.0.0.1:2379 --initial-cluster-token=clustermesh-apiserver --initial-cluster-state=new --auto-compaction-retention=1 &
           export rootpw=`head /dev/urandom | tr -dc A-Za-z0-9 | head -c 16`;
@@ -135,6 +139,9 @@ spec:
               name: cilium-config
               key: enable-k8s-endpoint-slice
               optional: true
+        {{- with .Values.clustermesh.apiserver.extraEnv }}
+        {{- toYaml . | trim | nindent 8 }}
+        {{- end }}
         {{- with .Values.clustermesh.apiserver.resources }}
         resources:
           {{- toYaml . | nindent 10 }}
@@ -161,6 +168,21 @@ spec:
       priorityClassName: {{ include "cilium.priorityClass" (list $ .Values.clustermesh.apiserver.priorityClassName "system-cluster-critical") }}
       serviceAccount: {{ .Values.serviceAccounts.clustermeshApiserver.name | quote }}
       serviceAccountName: {{ .Values.serviceAccounts.clustermeshApiserver.name | quote }}
+      {{- with .Values.clustermesh.apiserver.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.clustermesh.apiserver.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- range $constraint := . }}
+      - {{ toYaml $constraint | nindent 8 | trim }}
+          {{- if not $constraint.labelSelector }}
+        labelSelector:
+          matchLabels:
+            k8s-app: clustermesh-apiserver
+          {{- end }}
+        {{- end }}
+      {{- end }}
       {{- with .Values.clustermesh.apiserver.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
