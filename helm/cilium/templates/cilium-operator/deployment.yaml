@@ -8,6 +8,8 @@ metadata:
   labels:
     io.cilium/app: operator
     name: cilium-operator
+    app.kubernetes.io/part-of: cilium
+    app.kubernetes.io/name: cilium-operator
 spec:
   # See docs on ServerCapabilities.LeasesResourceLock in file pkg/k8s/version/version.go
   # for more details.
@@ -37,23 +39,19 @@ spec:
       labels:
         io.cilium/app: operator
         name: cilium-operator
+        app.kubernetes.io/part-of: cilium
+        app.kubernetes.io/name: cilium-operator
         {{- with .Values.operator.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      # In HA mode, cilium-operator pods must not be scheduled on the same
-      # node as they will clash with each other.
-      {{- with .Values.operator.affinity }}
-      affinity:
-        {{- toYaml . | trim | nindent 8 }}
-      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
       - name: cilium-operator
-        image: {{ include "cilium.operator.image" . }}
+        image: {{ include "cilium.operator.image" . | quote }}
         imagePullPolicy: {{ .Values.operator.image.pullPolicy }}
         command:
         - cilium-operator-{{ include "cilium.operator.cloud" . }}
@@ -135,18 +133,19 @@ spec:
         - name: AZURE_RESOURCE_GROUP
           value: {{ .Values.azure.resourceGroup }}
         {{- end }}
-        {{- if .Values.azure.clientID }}
         - name: AZURE_CLIENT_ID
-          value: {{ .Values.azure.clientID }}
-        {{- end }}
-        {{- if .Values.azure.clientSecret }}
+          valueFrom:
+            secretKeyRef:
+              name: cilium-azure
+              key: AZURE_CLIENT_ID
         - name: AZURE_CLIENT_SECRET
-          value: {{ .Values.azure.clientSecret }}
+          valueFrom:
+            secretKeyRef:
+              name: cilium-azure
+              key: AZURE_CLIENT_SECRET
         {{- end }}
-        {{- end }}
-        {{- range $key, $value := .Values.operator.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value }}
+        {{- with .Values.operator.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- if .Values.operator.prometheus.enabled }}
         ports:
@@ -196,8 +195,15 @@ spec:
           mountPath: /var/lib/cilium/bgp
           readOnly: true
         {{- end }}
+        {{- with .Values.operator.extraVolumeMounts }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         {{- with .Values.operator.resources }}
         resources:
+          {{- toYaml . | trim | nindent 10 }}
+        {{- end }}
+        {{- with .Values.operator.securityContext }}
+        securityContext:
           {{- toYaml . | trim | nindent 10 }}
         {{- end }}
         terminationMessagePolicy: FallbackToLogsOnError
@@ -206,13 +212,31 @@ spec:
       # In managed etcd mode, Cilium must be able to resolve the DNS name of
       # the etcd service
       dnsPolicy: ClusterFirstWithHostNet
-      {{- else if .Values.dnsPolicy }}
+      {{- else if .Values.operator.dnsPolicy }}
       dnsPolicy: {{ .Values.operator.dnsPolicy }}
       {{- end }}
       restartPolicy: Always
       priorityClassName: {{ include "cilium.priorityClass" (list $ .Values.operator.priorityClassName "system-cluster-critical") }}
       serviceAccount: {{ .Values.serviceAccounts.operator.name | quote }}
       serviceAccountName: {{ .Values.serviceAccounts.operator.name | quote }}
+      {{- with .Values.operator.affinity }}
+      # In HA mode, cilium-operator pods must not be scheduled on the same
+      # node as they will clash with each other.
+      affinity:
+        {{- toYaml . | trim | nindent 8 }}
+      {{- end }}
+      {{- with .Values.operator.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- range $constraint := . }}
+      - {{ toYaml $constraint | nindent 8 | trim }}
+          {{- if not $constraint.labelSelector }}
+        labelSelector:
+          matchLabels:
+            io.cilium/app: operator
+            name: cilium-operator
+          {{- end }}
+        {{- end }}
+      {{- end }}
       {{- with .Values.operator.nodeSelector }}
       nodeSelector:
         {{- toYaml . | trim | nindent 8 }}
@@ -264,5 +288,8 @@ spec:
       - name: bgp-config-path
         configMap:
           name: bgp-config
+      {{- end }}
+      {{- with .Values.operator.extraVolumes }}
+      {{- toYaml . | nindent 6 }}
       {{- end }}
 {{- end }}
