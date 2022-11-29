@@ -74,10 +74,10 @@ serviceAccounts:
 # -- Configure termination grace period for cilium-agent DaemonSet.
 terminationGracePeriodSeconds: 1
 
-  defaultPolicies:
-    create: true
-    name: cilium-default-policies
-    annotations: {}
+defaultPolicies:
+  create: true
+  name: cilium-default-policies
+  annotations: {}
 
 # -- Install the cilium agent resources.
 agent: true
