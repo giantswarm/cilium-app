@@ -25,8 +25,9 @@ cluster:
   # -- Name of the cluster. Only required for Cluster Mesh.
   name: default
   # -- (int) Unique ID of the cluster. Must be unique across all connected
-  # clusters and in the range of 1 to 255. Only required for Cluster Mesh.
-  id:
+  # clusters and in the range of 1 to 255. Only required for Cluster Mesh,
+  # may be 0 if Cluster Mesh is not used.
+  id: 0
 
 # -- Define serviceAccount names for components.
 # @default -- Component's fully qualified name.
@@ -69,6 +70,10 @@ serviceAccounts:
     create: true
     name: hubble-generate-certs
     annotations: {}
+
+# -- Configure termination grace period for cilium-agent DaemonSet.
+terminationGracePeriodSeconds: 1
+
   defaultPolicies:
     create: true
     name: cilium-default-policies
@@ -85,79 +90,26 @@ rollOutCiliumPods: false
 
 # -- Agent container image.
 image:
+  override: ~
   repository: quay.io/giantswarm/cilium
-  tag: v1.11.9
+  tag: v1.13.0-rc2
   pullPolicy: IfNotPresent
   # cilium-digest
   digest: ""
   useDigest: false
 
-# -- Pod affinity for cilium-agent.
+# -- Affinity for cilium-agent.
 affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: kubernetes.io/os
-              operator: In
-              values:
-                - linux
-        # Compatible with Kubernetes 1.12.x and 1.13.x
-        - matchExpressions:
-            - key: beta.kubernetes.io/os
-              operator: In
-              values:
-                - linux
   podAntiAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
-    - labelSelector:
-        matchExpressions:
-        - key: k8s-app
-          operator: In
-          values:
-          - cilium
-      topologyKey: kubernetes.io/hostname
+    - topologyKey: kubernetes.io/hostname
+      labelSelector:
+        matchLabels:
+          k8s-app: cilium
 
-# -- The priority class to use for cilium-agent.
-priorityClassName: ""
-
-# -- DNS policy for Cilium agent pods.
-# Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
-dnsPolicy: ""
-
-# -- Additional agent container arguments.
-extraArgs: []
-
-# -- Additional agent container environment variables.
-extraEnv: {}
-
-# -- Additional InitContainers to initialize the pod.
-extraInitContainers: []
-
-# -- Additional agent hostPath mounts.
-extraHostPathMounts: []
-  # - name: host-mnt-data
-  #   mountPath: /host/mnt/data
-  #   hostPath: /mnt/data
-  #   hostPathType: Directory
-  #   readOnly: true
-  #   mountPropagation: HostToContainer
-
-# -- Additional agent ConfigMap mounts.
-extraConfigmapMounts: []
-  # - name: certs-configmap
-  #   mountPath: /certs
-  #   configMap: certs-configmap
-  #   readOnly: true
-
-# -- extraConfig allows you to specify additional configuration parameters to be
-# included in the cilium-config configmap.
-extraConfig: {}
-#  my-config-a: "1234"
-#  my-config-b: |-
-#    test 1
-#    test 2
-#    test 3
+# -- Node selector for cilium-agent.
+nodeSelector:
+  kubernetes.io/os: linux
 
 # -- Node tolerations for agent scheduling to nodes with taints
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -168,17 +120,51 @@ tolerations:
   #   value: "value"
   #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
+# -- The priority class to use for cilium-agent.
+priorityClassName: ""
+
+# -- DNS policy for Cilium agent pods.
+# Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
+dnsPolicy: ""
+
+# -- Additional containers added to the cilium DaemonSet.
+extraContainers: []
+
+# -- Additional agent container arguments.
+extraArgs: []
+
+# -- Additional agent container environment variables.
+extraEnv: []
+
+# -- Additional agent hostPath mounts.
+extraHostPathMounts: []
+  # - name: host-mnt-data
+  #   mountPath: /host/mnt/data
+  #   hostPath: /mnt/data
+  #   hostPathType: Directory
+  #   readOnly: true
+  #   mountPropagation: HostToContainer
+
+# -- Additional agent volumes.
+extraVolumes: []
+
+# -- Additional agent volumeMounts.
+extraVolumeMounts: []
+
+# -- extraConfig allows you to specify additional configuration parameters to be
+# included in the cilium-config configmap.
+extraConfig: {}
+#  my-config-a: "1234"
+#  my-config-b: |-
+#    test 1
+#    test 2
+#    test 3
+
 # -- Annotations to be added to agent pods
 podAnnotations: {}
 
 # -- Labels to be added to agent pods
 podLabels: {}
-
-# -- PodDisruptionBudget settings
-# ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
-podDisruptionBudget:
-  enabled: true
-  maxUnavailable: 2
 
 # -- Agent resource limits & requests
 # ref: https://kubernetes.io/docs/user-guide/compute-resources/
@@ -190,15 +176,86 @@ resources: {}
   #   cpu: 100m
   #   memory: 512Mi
 
-# -- Security context to be added to agent pods
-securityContext: {}
+securityContext:
+  # -- User to run the pod with
   # runAsUser: 0
+  # -- Run the pod with elevated privileges
+  privileged: false
+  capabilities:
+    # -- Capabilities for the `cilium-agent` container
+    ciliumAgent:
+      # Use to set socket permission
+      - CHOWN
+      # Used to terminate envoy child process
+      - KILL
+      # Used since cilium modifies routing tables, etc...
+      - NET_ADMIN
+      # Used since cilium creates raw sockets, etc...
+      - NET_RAW
+      # Used since cilium monitor uses mmap
+      - IPC_LOCK
+      # Used in iptables. Consider removing once we are iptables-free
+      - SYS_MODULE
+      # We need it for now but might not need it for >= 5.11 specially
+      # for the 'SYS_RESOURCE'.
+      # In >= 5.8 there's already BPF and PERMON capabilities
+      - SYS_ADMIN
+      # Could be an alternative for the SYS_ADMIN for the RLIMIT_NPROC
+      - SYS_RESOURCE
+      # Both PERFMON and BPF requires kernel 5.8, container runtime
+      # cri-o >= v1.22.0 or containerd >= v1.5.0.
+      # If available, SYS_ADMIN can be removed.
+      #- PERFMON
+      #- BPF
+      # Allow discretionary access control (e.g. required for package installation)
+      - DAC_OVERRIDE
+      # Allow to set Access Control Lists (ACLs) on arbitrary files (e.g. required for package installation)
+      - FOWNER
+      # Allow to execute program that changes GID (e.g. required for package installation)
+      - SETGID
+      # Allow to execute program that changes UID (e.g. required for package installation)
+      - SETUID
+    # -- Capabilities for the `mount-cgroup` init container
+    mountCgroup:
+      # Only used for 'mount' cgroup
+      - SYS_ADMIN
+      # Used for nsenter
+      - SYS_CHROOT
+      - SYS_PTRACE
+    # -- capabilities for the `apply-sysctl-overwrites` init container
+    applySysctlOverwrites:
+      # Required in order to access host's /etc/sysctl.d dir
+      - SYS_ADMIN
+      # Used for nsenter
+      - SYS_CHROOT
+      - SYS_PTRACE
+    # -- Capabilities for the `clean-cilium-state` init container
+    cleanCiliumState:
+      # Most of the capabilities here are the same ones used in the
+      # cilium-agent's container because this container can be used to
+      # uninstall all Cilium resources, and therefore it is likely that
+      # will need the same capabilities.
+      # Used since cilium modifies routing tables, etc...
+      - NET_ADMIN
+      # Used in iptables. Consider removing once we are iptables-free
+      - SYS_MODULE
+      # We need it for now but might not need it for >= 5.11 specially
+      # for the 'SYS_RESOURCE'.
+      # In >= 5.8 there's already BPF and PERMON capabilities
+      - SYS_ADMIN
+      # Could be an alternative for the SYS_ADMIN for the RLIMIT_NPROC
+      - SYS_RESOURCE
+      # Both PERFMON and BPF requires kernel 5.8, container runtime
+      # cri-o >= v1.22.0 or containerd >= v1.5.0.
+      # If available, SYS_ADMIN can be removed.
+      #- PERFMON
+      #- BPF
 
 # -- Cilium agent update strategy
 updateStrategy:
+  type: RollingUpdate
   rollingUpdate:
     maxUnavailable: 2
-  type: RollingUpdate
 
 # Configuration Values for cilium-agent
 
@@ -213,13 +270,14 @@ aksbyocni:
 autoDirectNodeRoutes: false
 
 # -- Annotate k8s node upon initialization with Cilium's metadata.
-annotateK8sNode: true
+annotateK8sNode: false
 
 azure:
   # -- Enable Azure integration.
   # Note that this is incompatible with AKS clusters created in BYOCNI mode: use
   # AKS BYOCNI integration (`aksbyocni.enabled`) instead.
   enabled: false
+  # usePrimaryAddress: false
   # resourceGroup: group1
   # subscriptionID: 00000000-0000-0000-0000-000000000000
   # tenantID: 00000000-0000-0000-0000-000000000000
@@ -231,10 +289,25 @@ alibabacloud:
   # -- Enable AlibabaCloud ENI integration
   enabled: false
 
-# -- Optimize TCP and UDP workloads and enable rate-limiting traffic from
-# individual Pods with EDT (Earliest Departure Time)
-# through the "kubernetes.io/egress-bandwidth" Pod annotation.
-bandwidthManager: false
+# -- Deprecated in favor of bandwidthManager.enabled. To be removed in 1.13.
+# Optimize TCP and UDP workloads and enable rate-limiting traffic from
+# individual Pods with EDT (Earliest Departure Time) through the
+# "kubernetes.io/egress-bandwidth" Pod annotation.
+#bandwidthManager: false
+
+# -- Enable bandwidth manager to optimize TCP and UDP workloads and allow
+# for rate-limiting traffic from individual Pods with EDT (Earliest Departure
+# Time) through the "kubernetes.io/egress-bandwidth" Pod annotation.
+bandwidthManager:
+  # -- Enable bandwidth manager infrastructure (also prerequirement for BBR)
+  enabled: false
+  # -- Activate BBR TCP congestion control for Pods
+  bbr: false
+
+# -- Configure Stateless NAT46/NAT64 translation
+statelessNat46x64:
+  # -- Enable RFC8215-prefixed translation
+  enabled: false
 
 # -- Configure BGP
 bgp:
@@ -247,31 +320,55 @@ bgp:
     # -- Enable announcement of node pod CIDR
     podCIDR: false
 
+# -- This feature set enables virtual BGP routers to be created via
+# CiliumBGPPeeringPolicy CRDs.
+bgpControlPlane:
+  # -- Enables the BGP control plane.
+  enabled: false
+
+pmtuDiscovery:
+  # -- Enable path MTU discovery to send ICMP fragmentation-needed replies to
+  # the client.
+  enabled: false
+
 bpf:
+  # -- Configure the mount point for the BPF filesystem
+  root: /sys/fs/bpf
+
   # -- Enable BPF clock source probing for more efficient tick retrieval.
   clockProbe: false
+
+  # -- Configure the path to the host boot directory
+  hostBoot: /boot
+
+  # -- Enable host boot directory mount for BPF clock source probing
+  mountHostBoot: true
 
   # -- Enables pre-allocation of eBPF map values. This increases
   # memory usage but can reduce latency.
   preallocateMaps: false
 
-  # -- Configure the maximum number of entries in the TCP connection tracking
+  # -- (int) Configure the maximum number of entries in the TCP connection tracking
   # table.
-  # ctTcpMax: '524288'
+  # @default -- `524288`
+  ctTcpMax: ~
 
-  # -- Configure the maximum number of entries for the non-TCP connection
+  # -- (int) Configure the maximum number of entries for the non-TCP connection
   # tracking table.
-  # ctAnyMax: '262144'
+  # @default -- `262144`
+  ctAnyMax: ~
 
   # -- Configure the maximum number of service entries in the
   # load balancer maps.
   lbMapMax: 65536
 
-  # -- Configure the maximum number of entries for the NAT table.
-  # natMax: 524288
+  # -- (int) Configure the maximum number of entries for the NAT table.
+  # @default -- `524288`
+  natMax: ~
 
-  # -- Configure the maximum number of entries for the neighbor table.
-  # neighMax: 524288
+  # -- (int) Configure the maximum number of entries for the neighbor table.
+  # @default -- `524288`
+  neighMax: ~
 
   # -- Configure the maximum number of entries in endpoint policy map (per endpoint).
   policyMapMax: 16384
@@ -295,26 +392,26 @@ bpf:
   # -- Allow cluster external access to ClusterIP services.
   lbExternalClusterIP: false
 
-  # -- Enable native IP masquerade support in eBPF
-  #masquerade: false
+  # -- (bool) Enable native IP masquerade support in eBPF
+  # @default -- `false`
+  masquerade: ~
 
-  # -- Configure whether direct routing mode should route traffic via
+  # -- (bool) Configure whether direct routing mode should route traffic via
   # host stack (true) or directly and more efficiently out of BPF (false) if
   # the kernel supports it. The latter has the implication that it will also
   # bypass netfilter in the host namespace.
-  #hostRouting: true
+  # @default -- `false`
+  hostLegacyRouting: ~
 
-  # -- Configure the eBPF-based TPROXY to reduce reliance on iptables rules
+  # -- (bool) Configure the eBPF-based TPROXY to reduce reliance on iptables rules
   # for implementing Layer 7 policy.
-  # tproxy: true
+  # @default -- `false`
+  tproxy: ~
 
-  # -- Configure the FIB lookup bypass optimization for nodeport reverse
-  # NAT handling.
-  # lbBypassFIBLookup: true
-
-  # -- Configure explicitly allowed VLAN id's for bpf logic bypass.
+  # -- (list) Configure explicitly allowed VLAN id's for bpf logic bypass.
   # [0] will allow all VLAN id's without any filtering.
-  # vlanBypass: []
+  # @default -- `[]`
+  vlanBypass: ~
 
 # -- Clean all eBPF datapath state from the initContainer of the cilium-agent
 # DaemonSet.
@@ -340,8 +437,9 @@ cni:
 
   # -- Configure chaining on top of other CNI plugins. Possible values:
   #  - none
-  #  - generic-veth
   #  - aws-cni
+  #  - flannel
+  #  - generic-veth
   #  - portmap
   chainingMode: none
 
@@ -350,6 +448,10 @@ cni:
   # This ensures no Pods can be scheduled using other CNI plugins during Cilium
   # agent downtime.
   exclusive: true
+
+  # -- Configure the log file for CNI logging with retention policy of 7 days.
+  # Disable CNI file logging by setting this field to empty explicitly.
+  logFile: /var/run/cilium/cilium-cni.log
 
   # -- Skip writing of the CNI configuration. This can be used if
   # writing of the CNI configuration is performed by external automation.
@@ -365,7 +467,7 @@ cni:
   # This can be useful if you want to manage your CNI
   # configuration outside of a Kubernetes environment. This parameter is
   # mutually exclusive with the 'cni.configMap' parameter.
-  # readCniConf: /host/etc/cni/net.d/05-cilium.conf
+  # readCniConf: /host/etc/cni/net.d/05-cilium.conf.template
 
   # -- When defined, configMap will mount the provided value as ConfigMap and
   # interpret the cniConf variable as CNI configuration file and write it
@@ -407,11 +509,6 @@ customCalls:
   # -- Enable tail call hooks for custom eBPF programs.
   enabled: false
 
-# -- Configure which datapath mode should be used for configuring container
-# connectivity. Valid options are "veth" or "ipvlan". Deprecated, to be removed
-# in v1.12.
-datapathMode: veth
-
 daemon:
   # -- Configure where Cilium runtime state should be stored.
   runPath: "/var/run/cilium"
@@ -421,6 +518,12 @@ daemon:
 # masqueraded (to an output device IPv4 address), if the output device runs the
 # program. When not specified, probing will automatically detect devices.
 # devices: ""
+
+# -- Enables experimental support for the detection of new and removed datapath
+# devices. When devices change the eBPF datapath is reloaded and services updated.
+# If "devices" is set then only those devices, or devices matching a wildcard will
+# be considered.
+enableRuntimeDeviceDetection: false
 
 # -- Chains to ignore when installing feeder rules.
 # disableIptablesFeederRules: ""
@@ -435,13 +538,72 @@ enableCnpStatusUpdates: false
 # mirroring it into the KVstore for reduced overhead in large clusters.
 enableK8sEventHandover: false
 
-# TODO: Add documentation
-# enableIdentityMark: false
+# -- Enable setting identity mark for local traffic.
+# enableIdentityMark: true
 
-# enableK8sEndpointSlice: false
+# -- Enable Kubernetes EndpointSlice feature in Cilium if the cluster supports it.
+# enableK8sEndpointSlice: true
 
 # -- Enable CiliumEndpointSlice feature.
 enableCiliumEndpointSlice: false
+
+ingressController:
+  # -- Enable cilium ingress controller
+  # This will automatically set enable-envoy-config as well.
+  enabled: false
+
+  # -- Default ingress load balancer mode
+  # Supported values: shared, dedicated
+  # For granular control, use the following annotations on the ingress resource
+  # io.cilium.ingress/loadbalancer-mode: shared|dedicated,
+  loadbalancerMode: dedicated
+
+  # -- Enforce https for host having matching TLS host in Ingress.
+  # Incoming traffic to http listener will return 308 http error code with respective location in header.
+  enforceHttps: true
+
+  # -- IngressLBAnnotations are the annotation prefixes, which are used to filter annotations to propagate
+  # from Ingress to the Load Balancer service
+  ingressLBAnnotationPrefixes: ['service.beta.kubernetes.io', 'service.kubernetes.io', 'cloud.google.com']
+
+  # -- SecretsNamespace is the namespace in which envoy SDS will retrieve TLS secrets from.
+  secretsNamespace:
+    # -- Create secrets namespace for Ingress.
+    create: true
+
+    # -- Name of Ingress secret namespace.
+    name: cilium-secrets
+
+    # -- Enable secret sync, which will make sure all TLS secrets used by Ingress are synced to secretsNamespace.name.
+    # If disabled, TLS secrets must be maintained externally.
+    sync: true
+
+  # -- Load-balancer service in shared mode.
+  # This is a single load-balancer service for all Ingress resources.
+  service:
+    # -- Service name
+    name: cilium-ingress
+    # -- Labels to be added for the shared LB service
+    labels: {}
+    # -- Annotations to be added for the shared LB service
+    annotations: {}
+
+gatewayAPI:
+  # -- Enable support for Gateway API in cilium
+  # This will automatically set enable-envoy-config as well.
+  enabled: false
+
+  # -- SecretsNamespace is the namespace in which envoy SDS will retrieve TLS secrets from.
+  secretsNamespace:
+    # -- Create secrets namespace for Gateway API.
+    create: true
+
+    # -- Name of Gateway API secret namespace.
+    name: cilium-secrets
+
+    # -- Enable secret sync, which will make sure all TLS secrets used by Ingress are synced to secretsNamespace.name.
+    # If disabled, TLS secrets must be maintained externally.
+    sync: true
 
 # -- Enables the fallback compatibility solution for when the xt_socket kernel
 # module is missing and it is needed for the datapath L7 redirection to work
@@ -502,7 +664,7 @@ endpointHealthChecking:
   enabled: true
 
 # -- Enable endpoint status.
-# Status can be: policy, health, controllers, logs and / or state. For 2 or more options use a comma.
+# Status can be: policy, health, controllers, log and / or state. For 2 or more options use a space.
 endpointStatus:
   enabled: false
   status: ""
@@ -519,10 +681,19 @@ eni:
   updateEC2AdapterLimitViaAPI: false
   # -- Release IPs not used from the ENI
   awsReleaseExcessIPs: false
+  # -- Enable ENI prefix delegation
+  awsEnablePrefixDelegation: false
   # -- EC2 API endpoint to use
   ec2APIEndpoint: ""
   # -- Tags to apply to the newly created ENIs
   eniTags: {}
+  # -- Interval for garbage collection of unattached ENIs. Set to "0s" to disable.
+  # @default -- `"5m"`
+  gcInterval: ""
+  # -- Additional tags attached to ENIs created by Cilium.
+  # Dangling ENIs with this tag will be garbage collected
+  # @default -- `{"io.cilium/cilium-managed":"true,"io.cilium/cluster-name":"<auto-detected>"}`
+  gcTags: {}
   # -- If using IAM role for Service Accounts will not try to
   # inject identity values from cilium-aws kubernetes secret.
   # Adds annotation to service account if managed by Helm.
@@ -532,12 +703,15 @@ eni:
   # Important note: This requires that each instance has an ENI with a matching subnet attached
   # when Cilium is deployed. If you only want to control subnets for ENIs attached by Cilium,
   # use the CNI configuration file settings (cni.customConf) instead.
-  subnetIDsFilter: ""
+  subnetIDsFilter: []
   # -- Filter via tags (k=v) which will dictate which subnets are going to be used to create new ENIs
   # Important note: This requires that each instance has an ENI with a matching subnet attached
   # when Cilium is deployed. If you only want to control subnets for ENIs attached by Cilium,
   # use the CNI configuration file settings (cni.customConf) instead.
-  subnetTagsFilter: ""
+  subnetTagsFilter: []
+  # -- Filter via AWS EC2 Instance tags (k=v) which will dictate which AWS EC2 Instances
+  # are going to be used to create new ENIs
+  instanceTagsFilter: []
 
 externalIPs:
   # -- Enable ExternalIPs service support.
@@ -565,13 +739,10 @@ hostPort:
   # -- Enable hostPort service support.
   enabled: false
 
-# -- Configure ClusterIP service handling in the host namespace (the node).
-hostServices:
-  # -- Enable host reachable services.
+# -- Configure socket LB
+socketLB:
+  # -- Enable socket LB
   enabled: false
-
-  # -- Supported list of protocols to apply ClusterIP translation to.
-  protocols: tcp,udp
 
   # -- Disable socket lb for non-root ns. This is used to enable Istio routing rules.
   # hostNamespaceOnly: false
@@ -582,13 +753,17 @@ hostServices:
 # (re)generate any certificates not provided manually.
 certgen:
   image:
+    override: ~
     repository: quay.io/giantswarm/cilium-certgen
-    tag: v0.1.5
+    tag: v0.1.8
     pullPolicy: IfNotPresent
   # -- Seconds after which the completed job pod will be deleted
   ttlSecondsAfterFinished: 1800
   # -- Labels to be added to hubble-certgen pods
   podLabels: {}
+  # -- Node tolerations for pod assignment on nodes with taints
+  # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  tolerations: []
 
 hubble:
   # -- Enable Hubble (true by default).
@@ -625,8 +800,10 @@ hubble:
     #   --set metrics.enabled="{dns:query;ignoreAAAA,drop,tcp,flow,icmp,http}"
     #
     enabled: ~
+    # -- Enables exporting hubble metrics in OpenMetrics format.
+    enableOpenMetrics: false
     # -- Configure the port the hubble metric server listens on.
-    port: 9091
+    port: 9965
     # -- Annotations to be added to hubble-metrics service.
     serviceAnnotations: {}
     serviceMonitor:
@@ -638,6 +815,16 @@ hubble:
       labels: {}
       # -- Annotations to add to ServiceMonitor hubble
       annotations: {}
+      # -- Interval for scrape metrics.
+      interval: "10s"
+      # -- Metrics relabeling configs for the ServiceMonitor hubble
+      metricRelabelings: ~
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      namespace: ~
+      labelValue: "1"
+      annotations: {}
 
   # -- Unix domain socket path to listen to when Hubble is enabled.
   socketPath: /var/run/cilium/hubble.sock
@@ -646,6 +833,9 @@ hubble:
   # Set this field ":4244" if you are enabling Hubble Relay, as it assumes that
   # Hubble is listening on port 4244.
   listenAddress: ":4244"
+  # -- Whether Hubble should prefer to announce IPv6 or IPv4 addresses if both are available.
+  preferIpv6: false
+
   peerService:
     # -- Enable a K8s Service for the Peer service, so that it can be accessed
     # by a non-local client
@@ -699,10 +889,14 @@ hubble:
       # -- certmanager issuer used when hubble.tls.auto.method=certmanager.
       # If not specified, a CA issuer will be created.
       certManagerIssuerRef: {}
-    # -- base64 encoded PEM values for the Hubble CA certificate and private key.
+
+    # -- Deprecated in favor of tls.ca. To be removed in 1.13.
+    # base64 encoded PEM values for the Hubble CA certificate and private key.
     ca:
+      # -- Deprecated in favor of tls.ca.cert. To be removed in 1.13.
       cert: ""
-      # -- The CA private key (optional). If it is provided, then it will be
+      # -- Deprecated in favor of tls.ca.key. To be removed in 1.13.
+      # The CA private key (optional). If it is provided, then it will be
       # used by hubble.tls.auto.method=cronJob to generate all other certificates.
       # Otherwise, a ephemeral CA is generated if hubble.tls.auto.enabled=true.
       key: ""
@@ -724,8 +918,9 @@ hubble:
 
     # -- Hubble-relay container image.
     image:
-      repository: quay.io/giantswarm/hubble-relay
-      tag: v1.11.9
+      override: ~
+      repository: "quay.io/giantswarm/hubble-relay"
+      tag: v1.13.0-rc2
        # hubble-relay-digest
       digest: ""
       useDigest: false
@@ -737,9 +932,33 @@ hubble:
     # -- Number of replicas run for the hubble-relay deployment.
     replicas: 1
 
+    # -- Affinity for hubble-replay
+    affinity:
+      podAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchLabels:
+              k8s-app: cilium
+
+    # -- Pod topology spread constraints for hubble-relay
+    topologySpreadConstraints: []
+      # - maxSkew: 1
+      #   topologyKey: topology.kubernetes.io/zone
+      #   whenUnsatisfiable: DoNotSchedule
+
     # -- Node labels for pod assignment
     # ref: https://kubernetes.io/docs/user-guide/node-selection/
-    nodeSelector: {}
+    nodeSelector:
+      kubernetes.io/os: linux
+
+    # -- Node tolerations for pod assignment on nodes with taints
+    # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+    #
+    tolerations: []
+
+    # -- Additional hubble-relay environment variables.
+    extraEnv: []
 
     # -- Annotations to be added to hubble-relay pods
     podAnnotations: {}
@@ -747,18 +966,38 @@ hubble:
     # -- Labels to be added to hubble-relay pods
     podLabels: {}
 
-    # -- Node tolerations for pod assignment on nodes with taints
-    # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-    tolerations: []
+    # PodDisruptionBudget settings
+    podDisruptionBudget:
+      # -- enable PodDisruptionBudget
+      # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+      enabled: false
+      # -- Minimum number/percentage of pods that should remain scheduled.
+      # When it's set, maxUnavailable must be disabled by `maxUnavailable: null`
+      minAvailable: null
+      # -- Maximum number/percentage of pods that may be made unavailable
+      maxUnavailable: 1
 
     # -- The priority class to use for hubble-relay
     priorityClassName: ""
 
+    # -- Configure termination grace period for hubble relay Deployment.
+    terminationGracePeriodSeconds: 1
+
     # -- hubble-relay update strategy
     updateStrategy:
+      type: RollingUpdate
       rollingUpdate:
         maxUnavailable: 1
-      type: RollingUpdate
+
+    # -- hubble-relay security context
+    securityContext: {}
+
+    # -- hubble-relay service configuration.
+    service:
+      # --- The type of service used for Hubble Relay access, either ClusterIP or NodePort.
+      type: ClusterIP
+      # --- The port to use when the service type is set to NodePort.
+      nodePort: 31234
 
     # -- Host to listen to. Specify an empty string to bind to all the interfaces.
     listenHost: ""
@@ -807,6 +1046,27 @@ hubble:
     # port 80 if not.
     # servicePort: 80
 
+    # -- Enable prometheus metrics for hubble-relay on the configured port at
+    # /metrics
+    prometheus:
+      enabled: false
+      port: 9966
+      serviceMonitor:
+        # -- Enable service monitors.
+        # This requires the prometheus CRDs to be available (see https://github.com/prometheus-operator/prometheus-operator/blob/master/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml)
+        enabled: false
+        # -- Labels to add to ServiceMonitor hubble-relay
+        labels: {}
+        # -- Annotations to add to ServiceMonitor hubble-relay
+        annotations: {}
+        # -- Interval for scrape metrics.
+        interval: "10s"
+        # -- Specify the Kubernetes namespace where Prometheus expects to find
+        # service monitors configured.
+        # namespace: ""
+        # -- Metrics relabeling configs for the ServiceMonitor hubble-relay
+        metricRelabelings: ~
+
   ui:
     # -- Whether to enable the Hubble UI.
     enabled: false
@@ -850,36 +1110,42 @@ hubble:
     backend:
       # -- Hubble-ui backend image.
       image:
+        override: ~
         repository: quay.io/giantswarm/hubble-ui-backend
-        tag: v0.8.5
+        tag: v0.9.2
         pullPolicy: IfNotPresent
-      # [Example]
-      # resources:
+
+      # -- Additional hubble-ui backend environment variables.
+      extraEnv: []
+
+      # -- Resource requests and limits for the 'backend' container of the 'hubble-ui' deployment.
+      resources: {}
       #   limits:
       #     cpu: 1000m
       #     memory: 1024M
       #   requests:
       #     cpu: 100m
       #     memory: 64Mi
-      # -- Resource requests and limits for the 'backend' container of the 'hubble-ui' deployment.
-      resources: {}
 
     frontend:
       # -- Hubble-ui frontend image.
       image:
+        override: ~
         repository: quay.io/giantswarm/hubble-ui
-        tag: v0.8.5
+        tag: v0.9.2
         pullPolicy: IfNotPresent
-      # [Example]
-      # resources:
+
+      # -- Additional hubble-ui frontend environment variables.
+      extraEnv: []
+
+      # -- Resource requests and limits for the 'frontend' container of the 'hubble-ui' deployment.
+      resources: {}
       #   limits:
       #     cpu: 1000m
       #     memory: 1024M
       #   requests:
       #     cpu: 100m
       #     memory: 64Mi
-      # -- Resource requests and limits for the 'frontend' container of the 'hubble-ui' deployment.
-      resources: {}
       server:
         # -- Controls server listener for ipv6
         ipv6:
@@ -894,9 +1160,30 @@ hubble:
     # -- Labels to be added to hubble-ui pods
     podLabels: {}
 
+    # PodDisruptionBudget settings
+    podDisruptionBudget:
+      # -- enable PodDisruptionBudget
+      # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+      enabled: false
+      # -- Minimum number/percentage of pods that should remain scheduled.
+      # When it's set, maxUnavailable must be disabled by `maxUnavailable: null`
+      minAvailable: null
+      # -- Maximum number/percentage of pods that may be made unavailable
+      maxUnavailable: 1
+
+    # -- Affinity for hubble-ui
+    affinity: {}
+
+    # -- Pod topology spread constraints for hubble-ui
+    topologySpreadConstraints: []
+      # - maxSkew: 1
+      #   topologyKey: topology.kubernetes.io/zone
+      #   whenUnsatisfiable: DoNotSchedule
+
     # -- Node labels for pod assignment
     # ref: https://kubernetes.io/docs/user-guide/node-selection/
-    nodeSelector: {}
+    nodeSelector:
+      kubernetes.io/os: linux
 
     # -- Node tolerations for pod assignment on nodes with taints
     # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -908,13 +1195,25 @@ hubble:
 
     # -- hubble-ui update strategy.
     updateStrategy:
+      type: RollingUpdate
       rollingUpdate:
         maxUnavailable: 1
-      type: RollingUpdate
 
+    # -- Security context to be added to Hubble UI pods
     securityContext:
-      # -- Whether to set the security context on the Hubble UI pods.
+      # -- Deprecated in favor of hubble.ui.securityContext.
+      # Whether to set the security context on the Hubble UI pods.
       enabled: true
+      runAsUser: 1001
+      runAsGroup: 1001
+      fsGroup: 1001
+
+    # -- hubble-ui service configuration.
+    service:
+      # --- The type of service used for Hubble UI access, either ClusterIP or NodePort.
+      type: ClusterIP
+      # --- The port to use when the service type is set to NodePort.
+      nodePort: 31235
 
     # -- hubble-ui ingress configuration.
     ingress:
@@ -922,6 +1221,7 @@ hubble:
       annotations: {}
         # kubernetes.io/ingress.class: nginx
         # kubernetes.io/tls-acme: "true"
+      className: ""
       hosts:
         - chart-example.local
       tls: []
@@ -933,14 +1233,14 @@ hubble:
 # -- Method to use for identity allocation (`crd` or `kvstore`).
 identityAllocationMode: "crd"
 
-# TODO: Add documentation
+# -- Time to wait before using new identity on endpoint identity change.
 # identityChangeGracePeriod: "5s"
 
-# TODO: Add documentation
-# identityGCInterval:
+# -- GC interval for security identities.
+# identityGCInterval: "15m0s"
 
-# TODO: Add documentation
-# identityHeartbeatTimeout: ""
+# -- Timeout after which identity expires on lack of heartbeat.
+# identityHeartbeatTimeout: "30m0s"
 
 
 # -- Configure whether to install iptables rules to allow for TPROXY
@@ -973,10 +1273,23 @@ ipam:
     clusterPoolIPv6PodCIDRList: []
     # -- IPv6 CIDR mask size to delegate to individual nodes for IPAM.
     clusterPoolIPv6MaskSize: 120
+    # -- The maximum burst size when rate limiting access to external APIs.
+    # Also known as the token bucket capacity.
+    # @default -- `20`
+    externalAPILimitBurstSize: ~
+    # -- The maximum queries per second when rate limiting access to
+    # external APIs. Also known as the bucket refill rate, which is used to
+    # refill the bucket up to the burst size capacity.
+    # @default -- `4.0`
+    externalAPILimitQPS: ~
 
 # -- Configure the eBPF-based ip-masq-agent
 ipMasqAgent:
   enabled: false
+# the config of nonMasqueradeCIDRs
+# config:
+  # nonMasqueradeCIDRs: []
+  # masqLinkLocal: false
 
 # iptablesLockTimeout defines the iptables "--wait" option when invoked from Cilium.
 # iptablesLockTimeout: "5s"
@@ -988,14 +1301,6 @@ ipv4:
 ipv6:
   # -- Enable IPv6 support.
   enabled: false
-
-ipvlan:
-  # -- Enable the IPVLAN datapath (deprecated)
-  enabled: false
-
-  # -- masterDevice is the name of the device to use to attach secondary IPVLAN
-  # devices
-  # masterDevice: eth0
 
 # -- Configure Kubernetes specific configuration
 k8s: {}
@@ -1031,7 +1336,7 @@ readinessProbe:
   periodSeconds: 30
 
 # -- Configure the kube-proxy replacement in Cilium BPF datapath
-# Valid options are "disabled", "probe", "partial", "strict".
+# Valid options are "disabled", "partial", "strict".
 # ref: https://docs.cilium.io/en/stable/gettingstarted/kubeproxy-free/
 #kubeProxyReplacement: "disabled"
 
@@ -1076,23 +1381,59 @@ maglev: {}
 # -- Enables masquerading of IPv4 traffic leaving the node from endpoints.
 enableIPv4Masquerade: true
 
+# -- Enables IPv6 BIG TCP support which increases maximum GSO/GRO limits for nodes and pods
+enableIPv6BIGTCP: false
+
 # -- Enables masquerading of IPv6 traffic leaving the node from endpoints.
 enableIPv6Masquerade: true
 
-# -- Enables egress gateway (beta) to redirect and SNAT the traffic that
-# leaves the cluster.
+# -- Enables egress gateway to redirect and SNAT the traffic that leaves the
+# cluster.
 egressGateway:
   enabled: false
+  # -- Install egress gateway IP rules and routes in order to properly steer
+  # egress gateway traffic to the correct ENI interface
+  installRoutes: false
 
-# -- Specify the IPv4 CIDR for native routing (ie to avoid IP masquerade for).
-# This value corresponds to the configured cluster-cidr.
-# Deprecated in favor of ipv4NativeRoutingCIDR, will be removed in 1.12.
-# nativeRoutingCIDR:
+vtep:
+# -- Enables VXLAN Tunnel Endpoint (VTEP) Integration (beta) to allow
+# Cilium-managed pods to talk to third party VTEP devices over Cilium tunnel.
+  enabled: false
 
-# -- Specify the IPv4 CIDR for native routing (ie to avoid IP masquerade for).
-# This value corresponds to the configured cluster-cidr.
-# ipv4NativeRoutingCIDR:
+# -- A space separated list of VTEP device endpoint IPs, for example "1.1.1.1  1.1.2.1"
+  endpoint: ""
+# -- A space separated list of VTEP device CIDRs, for example "1.1.1.0/24 1.1.2.0/24"
+  cidr: ""
+# -- VTEP CIDRs Mask that applies to all VTEP CIDRs, for example "255.255.255.0"
+  mask: ""
+# -- A space separated list of VTEP device MAC addresses (VTEP MAC), for example "x:x:x:x:x:x  y:y:y:y:y:y:y"
+  mac: ""
 
+# -- (string) Allows to explicitly specify the IPv4 CIDR for native routing.
+# When specified, Cilium assumes networking for this CIDR is preconfigured and
+# hands traffic destined for that range to the Linux network stack without
+# applying any SNAT.
+# Generally speaking, specifying a native routing CIDR implies that Cilium can
+# depend on the underlying networking stack to route packets to their
+# destination. To offer a concrete example, if Cilium is configured to use
+# direct routing and the Kubernetes CIDR is included in the native routing CIDR,
+# the user must configure the routes to reach pods, either manually or by
+# setting the auto-direct-node-routes flag.
+ipv4NativeRoutingCIDR: ""
+
+# -- (string) Allows to explicitly specify the IPv6 CIDR for native routing.
+# When specified, Cilium assumes networking for this CIDR is preconfigured and
+# hands traffic destined for that range to the Linux network stack without
+# applying any SNAT.
+# Generally speaking, specifying a native routing CIDR implies that Cilium can
+# depend on the underlying networking stack to route packets to their
+# destination. To offer a concrete example, if Cilium is configured to use
+# direct routing and the Kubernetes CIDR is included in the native routing CIDR,
+# the user must configure the routes to reach pods, either manually or by
+# setting the auto-direct-node-routes flag.
+ipv6NativeRoutingCIDR: ""
+
+# -- cilium-monitor sidecar.
 monitor:
   # -- Enable the cilium-monitor sidecar.
   enabled: false
@@ -1155,7 +1496,7 @@ pprof:
 # -- Configure prometheus metrics on the configured port at /metrics
 prometheus:
   enabled: true
-  port: 9090
+  port: 9962
   serviceMonitor:
     # -- Enable service monitors.
     # This requires the prometheus CRDs to be available (see https://github.com/prometheus-operator/prometheus-operator/blob/master/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml)
@@ -1164,9 +1505,13 @@ prometheus:
     labels: {}
     # -- Annotations to add to ServiceMonitor cilium-agent
     annotations: {}
+    # -- Interval for scrape metrics.
+    interval: "10s"
     # -- Specify the Kubernetes namespace where Prometheus expects to find
     # service monitors configured.
     # namespace: ""
+    # -- Metrics relabeling configs for the ServiceMonitor cilium-agent
+    metricRelabelings: ~
   # -- Metrics that should be enabled or disabled from the default metric
   # list. (+metric_foo to enable metric_foo , -metric_bar to disable
   # metric_bar).
@@ -1177,7 +1522,7 @@ prometheus:
 proxy:
   prometheus:
     enabled: true
-    port: "9095"
+    port: "9964"
   # -- Regular expression matching compatible Istio sidecar istio-proxy
   # container image names
   sidecarImageRegex: "cilium/istio_proxy"
@@ -1212,15 +1557,34 @@ sockops:
   # enabled enables installation of socket options acceleration.
   enabled: false
 
-# TODO: Add documentation, default value
-# svcSourceRangeCheck:
+# -- Enable check of service source ranges (currently, only for LoadBalancer).
+svcSourceRangeCheck: true
 
-# synchronizeK8sNodes: true
+# -- Synchronize Kubernetes nodes to kvstore and perform CNP GC.
+synchronizeK8sNodes: true
 
 # -- Configure TLS configuration in the agent.
 tls:
-  enabled: true
+  # -- This configures how the Cilium agent loads the secrets used TLS-aware CiliumNetworkPolicies
+  # (namely the secrets referenced by terminatingTLS and originatingTLS).
+  # Possible values:
+  #   - local
+  #   - k8s
   secretsBackend: local
+
+  # -- Base64 encoded PEM values for the CA certificate and private key.
+  # This can be used as common CA to generate certificates used by hubble and clustermesh components
+  ca:
+    # -- Optional CA cert. If it is provided, it will be used by cilium to
+    # generate all other certificates. Otherwise, an ephemeral CA is generated.
+    cert: ""
+
+    # -- Optional CA private key. If it is provided, it will be used by cilium to
+    # generate all other certificates. Otherwise, an ephemeral CA is generated.
+    key: ""
+
+    # -- Generated certificates validity duration in days. This will be used for auto generated CA.
+    certValidityDuration: 1095
 
 # -- Configure the encapsulation configuration for communication between nodes.
 # Possible values:
@@ -1229,6 +1593,13 @@ tls:
 #   - geneve
 tunnel: "vxlan"
 
+# -- Configure VXLAN and Geneve tunnel port.
+# @default -- Port 8472 for VXLAN, Port 6081 for Geneve
+tunnelPort: 0
+
+# -- Configure the underlying network MTU to overwrite auto-detected MTU.
+MTU: 0
+
 # -- Disable the usage of CiliumEndpoint CRD.
 disableEndpointCRD: "false"
 
@@ -1236,13 +1607,13 @@ wellKnownIdentities:
   # -- Enable the use of well-known identities.
   enabled: false
 
-
 etcd:
   # -- Enable etcd mode for the agent.
   enabled: false
 
   # -- cilium-etcd-operator image.
   image:
+    override: ~
     repository: quay.io/giantswarm/cilium-etcd-operator
     tag: v2.0.7
     pullPolicy: IfNotPresent
@@ -1253,24 +1624,6 @@ etcd:
   # -- Additional cilium-etcd-operator container arguments.
   extraArgs: []
 
-  # -- Additional InitContainers to initialize the pod.
-  extraInitContainers: []
-
-  # -- Additional cilium-etcd-operator hostPath mounts.
-  extraHostPathMounts: []
-    # - name: textfile-dir
-    #   mountPath: /srv/txt_collector
-    #   hostPath: /var/lib/cilium-etcd-operator
-    #   readOnly: true
-    #   mountPropagation: HostToContainer
-
-  # -- Additional cilium-etcd-operator ConfigMap mounts.
-  extraConfigmapMounts: []
-    # - name: certs-configmap
-    #   mountPath: /certs
-    #   configMap: certs-configmap
-    #   readOnly: true
-
   # -- Node tolerations for cilium-etcd-operator scheduling to nodes with taints
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   tolerations:
@@ -1280,9 +1633,16 @@ etcd:
     #   value: "value"
     #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
+  # -- Pod topology spread constraints for cilium-etcd-operator
+  topologySpreadConstraints: []
+    # - maxSkew: 1
+    #   topologyKey: topology.kubernetes.io/zone
+    #   whenUnsatisfiable: DoNotSchedule
+
   # -- Node labels for cilium-etcd-operator pod assignment
   # ref: https://kubernetes.io/docs/user-guide/node-selection/
-  nodeSelector: {}
+  nodeSelector:
+    kubernetes.io/os: linux
 
   # -- Annotations to be added to cilium-etcd-operator pods
   podAnnotations: {}
@@ -1290,11 +1650,16 @@ etcd:
   # -- Labels to be added to cilium-etcd-operator pods
   podLabels: {}
 
-  # -- PodDisruptionBudget settings
-  # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+  # PodDisruptionBudget settings
   podDisruptionBudget:
-    enabled: true
-    maxUnavailable: 2
+    # -- enable PodDisruptionBudget
+    # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+    enabled: false
+    # -- Minimum number/percentage of pods that should remain scheduled.
+    # When it's set, maxUnavailable must be disabled by `maxUnavailable: null`
+    minAvailable: null
+    # -- Maximum number/percentage of pods that may be made unavailable
+    maxUnavailable: 1
 
   # -- cilium-etcd-operator resource limits & requests
   # ref: https://kubernetes.io/docs/user-guide/compute-resources/
@@ -1312,10 +1677,10 @@ etcd:
 
   # -- cilium-etcd-operator update strategy
   updateStrategy:
+    type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 1
-    type: RollingUpdate
 
   # -- If etcd is behind a k8s service set this option to true so that Cilium
   # does the service translation automatically without requiring a DNS to be
@@ -1342,8 +1707,9 @@ operator:
 
   # -- cilium-operator image.
   image:
+    override: ~
     repository: quay.io/giantswarm/cilium-operator
-    tag: v1.11.9
+    tag: v1.13.0-rc2
     # operator-generic-digest
     genericDigest: ""
     # operator-azure-digest
@@ -1359,9 +1725,6 @@ operator:
   # -- Number of replicas to run for the cilium-operator deployment
   replicas: 2
 
-  # -- For using with an existing serviceAccount.
-  serviceAccountName: cilium-operator
-
   # -- The priority class to use for cilium-operator
   priorityClassName: ""
 
@@ -1371,48 +1734,31 @@ operator:
 
   # -- cilium-operator update strategy
   updateStrategy:
+    type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 1
-    type: RollingUpdate
 
-  # -- cilium-operator affinity
+  # -- Affinity for cilium-operator
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-          - key: io.cilium/app
-            operator: In
-            values:
-            - operator
-        topologyKey: kubernetes.io/hostname
+      - topologyKey: kubernetes.io/hostname
+        labelSelector:
+          matchLabels:
+            io.cilium/app: operator
 
+  # -- Pod topology spread constraints for cilium-operator
+  topologySpreadConstraints: []
+    # - maxSkew: 1
+    #   topologyKey: topology.kubernetes.io/zone
+    #   whenUnsatisfiable: DoNotSchedule
 
-  # -- Additional cilium-operator container arguments.
-  extraArgs: []
-
-  # -- Additional cilium-operator environment variables.
-  extraEnv: {}
-
-  # -- Additional InitContainers to initialize the pod.
-  extraInitContainers: []
-
-  # -- Additional cilium-operator hostPath mounts.
-  extraHostPathMounts: []
-    # - name: host-mnt-data
-    #   mountPath: /host/mnt/data
-    #   hostPath: /mnt/data
-    #   hostPathType: Directory
-    #   readOnly: true
-    #   mountPropagation: HostToContainer
-
-  # -- Additional cilium-operator ConfigMap mounts.
-  extraConfigmapMounts: []
-    # - name: certs-configmap
-    #   mountPath: /certs
-    #   configMap: certs-configmap
-    #   readOnly: true
+  # -- Node labels for cilium-operator pod assignment
+  # ref: https://kubernetes.io/docs/user-guide/node-selection/
+  #
+  nodeSelector:
+    kubernetes.io/os: linux
 
   # -- Node tolerations for cilium-operator scheduling to nodes with taints
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -1423,9 +1769,26 @@ operator:
     #   value: "value"
     #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
-  # -- Node labels for cilium-operator pod assignment
-  # ref: https://kubernetes.io/docs/user-guide/node-selection/
-  nodeSelector: {}
+  # -- Additional cilium-operator container arguments.
+  extraArgs: []
+
+  # -- Additional cilium-operator environment variables.
+  extraEnv: []
+
+  # -- Additional cilium-operator hostPath mounts.
+  extraHostPathMounts: []
+    # - name: host-mnt-data
+    #   mountPath: /host/mnt/data
+    #   hostPath: /mnt/data
+    #   hostPathType: Directory
+    #   readOnly: true
+    #   mountPropagation: HostToContainer
+
+  # -- Additional cilium-operator volumes.
+  extraVolumes: []
+
+  # -- Additional cilium-operator volumeMounts.
+  extraVolumeMounts: []
 
   # -- Annotations to be added to cilium-operator pods
   podAnnotations: {}
@@ -1433,10 +1796,15 @@ operator:
   # -- Labels to be added to cilium-operator pods
   podLabels: {}
 
-  # -- PodDisruptionBudget settings
-  # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+  # PodDisruptionBudget settings
   podDisruptionBudget:
+    # -- enable PodDisruptionBudget
+    # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
     enabled: false
+    # -- Minimum number/percentage of pods that should remain scheduled.
+    # When it's set, maxUnavailable must be disabled by `maxUnavailable: null`
+    minAvailable: null
+    # -- Maximum number/percentage of pods that may be made unavailable
     maxUnavailable: 1
 
   # -- cilium-operator resource limits & requests
@@ -1469,7 +1837,7 @@ operator:
   # /metrics
   prometheus:
     enabled: true
-    port: 6942
+    port: 9963
     serviceMonitor:
       # -- Enable service monitors.
       # This requires the prometheus CRDs to be available (see https://github.com/prometheus-operator/prometheus-operator/blob/master/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml)
@@ -1478,6 +1846,10 @@ operator:
       labels: {}
       # -- Annotations to add to ServiceMonitor cilium-operator
       annotations: {}
+      # -- Interval for scrape metrics.
+      interval: "10s"
+      # -- Metrics relabeling configs for the ServiceMonitor cilium-operator
+      metricRelabelings: ~
 
   # -- Skip CRDs creation for cilium-operator
   skipCRDCreation: false
@@ -1503,8 +1875,9 @@ nodeinit:
 
   # -- node-init image.
   image:
+    override: ~
     repository: quay.io/giantswarm/cilium-startup-script
-    tag: 62bfbe88c17778aad7bef9fa57ff9e2d4a9ba0d8
+    tag: d69851597ea019af980891a4628fb36b7880ec26
     pullPolicy: IfNotPresent
 
   # -- The priority class to use for the nodeinit pod.
@@ -1515,25 +1888,16 @@ nodeinit:
     type: RollingUpdate
 
   # -- Additional nodeinit environment variables.
-  extraEnv: {}
+  extraEnv: []
 
-  # -- Additional nodeinit init containers.
-  extraInitContainers: []
+  # -- Affinity for cilium-nodeinit
+  affinity: {}
 
-  # -- Additional nodeinit host path mounts.
-  extraHostPathMounts: []
-    # - name: textfile-dir
-    #   mountPath: /srv/txt_collector
-    #   hostPath: /var/lib/nodeinit
-    #   readOnly: true
-    #   mountPropagation: HostToContainer
-
-  # -- Additional nodeinit ConfigMap mounts.
-  extraConfigmapMounts: []
-    # - name: certs-configmap
-    #   mountPath: /certs
-    #   configMap: certs-configmap
-    #   readOnly: true
+  # -- Node labels for nodeinit pod assignment
+  # ref: https://kubernetes.io/docs/user-guide/node-selection/
+  #
+  nodeSelector:
+    kubernetes.io/os: linux
 
   # -- Node tolerations for nodeinit scheduling to nodes with taints
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -1544,21 +1908,11 @@ nodeinit:
     #   value: "value"
     #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
-  # -- Node labels for nodeinit pod assignment
-  # ref: https://kubernetes.io/docs/user-guide/node-selection/
-  nodeSelector: {}
-
   # -- Annotations to be added to node-init pods.
   podAnnotations: {}
 
   # -- Labels to be added to node-init pods.
   podLabels: {}
-
-  # -- PodDisruptionBudget settings
-  # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
-  podDisruptionBudget:
-    enabled: true
-    maxUnavailable: 2
 
   # -- nodeinit resource limits & requests
   # ref: https://kubernetes.io/docs/user-guide/compute-resources/
@@ -1568,8 +1922,23 @@ nodeinit:
       memory: 100Mi
 
   # -- Security context to be added to nodeinit pods.
-  securityContext: {}
-    # runAsUser: 0
+  securityContext:
+    privileged: false
+    seLinuxOptions:
+      level: 's0'
+      # Running with spc_t since we have removed the privileged mode.
+      # Users can change it to a different type as long as they have the
+      # type available on the system.
+      type: 'spc_t'
+    capabilities:
+      add:
+        # Used in iptables. Consider removing once we are iptables-free
+        - SYS_MODULE
+        # Used for nsenter
+        - NET_ADMIN
+        - SYS_ADMIN
+        - SYS_CHROOT
+        - SYS_PTRACE
 
   # -- bootstrapFile is the location of the file where the bootstrap timestamp is
   # written by the node-init DaemonSet
@@ -1581,8 +1950,9 @@ preflight:
 
   # -- Cilium pre-flight image.
   image:
+    override: ~
     repository: quay.io/giantswarm/cilium
-    tag: v1.11.9
+    tag: "v1.13.0-rc2"
     # cilium-digest
     digest: ""
     useDigest: false
@@ -1596,35 +1966,32 @@ preflight:
     type: RollingUpdate
 
   # -- Additional preflight environment variables.
-  extraEnv: {}
+  extraEnv: []
 
-  # -- Additional preflight init containers.
-  extraInitContainers: []
+  # -- Affinity for cilium-preflight
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - topologyKey: kubernetes.io/hostname
+        labelSelector:
+          matchLabels:
+            k8s-app: cilium
 
-  # -- Additional preflight host path mounts.
-  extraHostPathMounts: []
-    # - name: textfile-dir
-    #   mountPath: /srv/txt_collector
-    #   hostPath: /var/lib/preflight
-    #   readOnly: true
-    #   mountPropagation: HostToContainer
-
-  # -- Additional preflight ConfigMap mounts.
-  extraConfigmapMounts: []
-    # - name: certs-configmap
-    #   mountPath: /certs
-    #   configMap: certs-configmap
-    #   readOnly: true
+  # -- Node labels for preflight pod assignment
+  # ref: https://kubernetes.io/docs/user-guide/node-selection/
+  #
+  nodeSelector:
+    kubernetes.io/os: linux
 
   # -- Node tolerations for preflight scheduling to nodes with taints
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   tolerations:
-  - effect: NoSchedule
-    key: node.kubernetes.io/not-ready
-  - effect: NoSchedule
-    key: node-role.kubernetes.io/master
-  - effect: NoSchedule
-    key: node.cloudprovider.kubernetes.io/uninitialized
+  - key: node.kubernetes.io/not-ready
+    effect: NoSchedule
+  - key: node-role.kubernetes.io/master
+    effect: NoSchedule
+  - key: node.cloudprovider.kubernetes.io/uninitialized
+    effect: NoSchedule
     value: "true"
   - key: CriticalAddonsOnly
     operator: "Exists"
@@ -1633,21 +2000,22 @@ preflight:
     #   value: "value"
     #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
-  # -- Node labels for preflight pod assignment
-  # ref: https://kubernetes.io/docs/user-guide/node-selection/
-  nodeSelector: {}
-
   # -- Annotations to be added to preflight pods
   podAnnotations: {}
 
   # -- Labels to be added to the preflight pod.
   podLabels: {}
 
-  # -- PodDisruptionBudget settings
-  # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+  # PodDisruptionBudget settings
   podDisruptionBudget:
-    enabled: true
-    maxUnavailable: 2
+    # -- enable PodDisruptionBudget
+    # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+    enabled: false
+    # -- Minimum number/percentage of pods that should remain scheduled.
+    # When it's set, maxUnavailable must be disabled by `maxUnavailable: null`
+    minAvailable: null
+    # -- Maximum number/percentage of pods that may be made unavailable
+    maxUnavailable: 1
 
   # -- preflight resource limits & requests
   # ref: https://kubernetes.io/docs/user-guide/compute-resources/
@@ -1665,6 +2033,10 @@ preflight:
 
   # -- Path to write the `--tofqdns-pre-cache` file to.
   tofqdnsPreCache: ""
+
+  # -- Configure termination grace period for preflight Deployment and DaemonSet.
+  terminationGracePeriodSeconds: 1
+
   # -- By default we should always validate the installed CNPs before upgrading
   # Cilium. This will make sure the user will have the policies deployed in the
   # cluster with the right schema.
@@ -1715,8 +2087,9 @@ clustermesh:
   apiserver:
     # -- Clustermesh API server image.
     image:
+      override: ~
       repository: quay.io/giantswarm/cilium-clustermesh-apiserver
-      tag: v1.11.9
+      tag: v1.13.0-rc2
       # clustermesh-apiserver-digest
       digest: ""
       useDigest: false
@@ -1725,8 +2098,9 @@ clustermesh:
     etcd:
       # -- Clustermesh API server etcd image.
       image:
+        override: ~
         repository: quay.io/giantswarm/etcd
-        tag: v3.4.13
+        tag: v3.5.4
         pullPolicy: IfNotPresent
 
     service:
@@ -1745,15 +2119,25 @@ clustermesh:
     # -- Number of replicas run for the clustermesh-apiserver deployment.
     replicas: 1
 
-    # -- Node labels for pod assignment
-    # ref: https://kubernetes.io/docs/user-guide/node-selection/
-    nodeSelector: {}
+    # -- Additional clustermesh-apiserver environment variables.
+    extraEnv: []
 
     # -- Annotations to be added to clustermesh-apiserver pods
     podAnnotations: {}
 
     # -- Labels to be added to clustermesh-apiserver pods
     podLabels: {}
+
+    # PodDisruptionBudget settings
+    podDisruptionBudget:
+      # -- enable PodDisruptionBudget
+      # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+      enabled: false
+      # -- Minimum number/percentage of pods that should remain scheduled.
+      # When it's set, maxUnavailable must be disabled by `maxUnavailable: null`
+      minAvailable: null
+      # -- Maximum number/percentage of pods that may be made unavailable
+      maxUnavailable: 1
 
     # -- Resource requests and limits for the clustermesh-apiserver container of the clustermesh-apiserver deployment, such as
     #     resources:
@@ -1763,7 +2147,34 @@ clustermesh:
     #       requests:
     #         cpu: 100m
     #         memory: 64Mi
+    # -- Resource requests and limits for the clustermesh-apiserver
     resources: {}
+      # requests:
+      #   cpu: 100m
+      #   memory: 64Mi
+      # limits:
+      #   cpu: 1000m
+      #   memory: 1024M
+
+    # -- Affinity for clustermesh.apiserver
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchLabels:
+              k8s-app: clustermesh-apiserver
+
+    # -- Pod topology spread constraints for clustermesh-apiserver
+    topologySpreadConstraints: []
+      # - maxSkew: 1
+      #   topologyKey: topology.kubernetes.io/zone
+      #   whenUnsatisfiable: DoNotSchedule
+
+    # -- Node labels for pod assignment
+    # ref: https://kubernetes.io/docs/user-guide/node-selection/
+    nodeSelector:
+      kubernetes.io/os: linux
 
     # -- Node tolerations for pod assignment on nodes with taints
     # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -1771,9 +2182,9 @@ clustermesh:
 
     # -- clustermesh-apiserver update strategy
     updateStrategy:
+      type: RollingUpdate
       rollingUpdate:
         maxUnavailable: 1
-      type: RollingUpdate
 
     # -- The priority class to use for clustermesh-apiserver
     priorityClassName: ""
@@ -1881,13 +2292,27 @@ enableK8sTerminatingEndpoint: true
 # When set to a value starting with `ignore-taint.cluster-autoscaler.kubernetes.io/`, the Cluster Autoscaler will ignore the taint on its decisions, allowing the cluster to scale up.
 agentNotReadyTaintKey: "node.cilium.io/agent-not-ready"
 
-defaultPolicies:
-  enabled: false
-  # -- Node tolerations for default-policies job scheduling to nodes with taints
-  # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-  tolerations:
-  - operator: Exists
+dnsProxy:
+  # -- DNS response code for rejecting DNS requests, available options are '[nameError refused]'.
+  dnsRejectResponseCode: refused
+  # -- Allow the DNS proxy to compress responses to endpoints that are larger than 512 Bytes or the EDNS0 option, if present.
+  enableDnsCompression: true
+  # -- Maximum number of IPs to maintain per FQDN name for each endpoint.
+  endpointMaxIpPerHostname: 50
+  # -- Time during which idle but previously active connections with expired DNS lookups are still considered alive.
+  idleConnectionGracePeriod: 0s
+  # -- Maximum number of IPs to retain for expired DNS lookups with still-active connections.
+  maxDeferredConnectionDeletes: 10000
+  # -- The minimum time, in seconds, to use DNS data for toFQDNs policies.
+  minTtl: 3600
+  # -- DNS cache data at this path is preloaded on agent startup.
+  preCache: ""
+  # -- Global port on which the in-agent DNS proxy should listen. Default 0 is a OS-assigned port.
+  proxyPort: 0
+  # -- The maximum time the DNS proxy holds an allowed DNS response before sending it along. Responses are sent as soon as the datapath is updated with the new IP information.
+  proxyResponseMaxDelay: 100ms
 
-# If true, it adds an initContainer to cilium-agent pods that cleans up any legacy kube-proxy iptables rules from the node before running cilium.
-# Only makes sense when `kubeProxyReplacement` is enabled (i.e. not set to 'disabled').
-cleanupKubeProxy: false
+# -- SCTP Configuration Values
+sctp:
+  # -- Enable SCTP support. NOTE: Currently, SCTP support does not support rewriting ports or multihoming.
+  enabled: false
