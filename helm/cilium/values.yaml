@@ -70,14 +70,13 @@ serviceAccounts:
     create: true
     name: hubble-generate-certs
     annotations: {}
+  defaultPolicies:
+    create: true
+    name: cilium-default-policies
+    annotations: {}
 
 # -- Configure termination grace period for cilium-agent DaemonSet.
 terminationGracePeriodSeconds: 1
-
-defaultPolicies:
-  create: true
-  name: cilium-default-policies
-  annotations: {}
 
 # -- Install the cilium agent resources.
 agent: true
@@ -2316,3 +2315,14 @@ dnsProxy:
 sctp:
   # -- Enable SCTP support. NOTE: Currently, SCTP support does not support rewriting ports or multihoming.
   enabled: false
+
+defaultPolicies:
+  enabled: false
+  # -- Node tolerations for default-policies job scheduling to nodes with taints
+  # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  tolerations:
+  - operator: Exists
+
+# If true, it adds an initContainer to cilium-agent pods that cleans up any legacy kube-proxy iptables rules from the node before running cilium.
+# Only makes sense when `kubeProxyReplacement` is enabled (i.e. not set to 'disabled').
+cleanupKubeProxy: false
