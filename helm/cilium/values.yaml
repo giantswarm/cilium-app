@@ -17,9 +17,13 @@ rbac:
 imagePullSecrets:
 # - name: "image-pull-secret"
 
-# kubeConfigPath: ~/.kube/config
-# k8sServiceHost:
-# k8sServicePort:
+# -- (string) Kubernetes config path
+# @default -- `"~/.kube/config"`
+kubeConfigPath: ""
+# -- (string) Kubernetes service host
+k8sServiceHost: ""
+# -- (string) Kubernetes service port
+k8sServicePort: ""
 
 cluster:
   # -- Name of the cluster. Only required for Cluster Mesh.
@@ -91,7 +95,7 @@ rollOutCiliumPods: false
 image:
   override: ~
   repository: quay.io/giantswarm/cilium
-  tag: v1.13.0-rc2
+  tag: v1.13.0-rc4
   pullPolicy: IfNotPresent
   # cilium-digest
   digest: ""
@@ -180,6 +184,12 @@ securityContext:
   # runAsUser: 0
   # -- Run the pod with elevated privileges
   privileged: false
+  seLinuxOptions:
+    level: 's0'
+    # Running with spc_t since we have removed the privileged mode.
+    # Users can change it to a different type as long as they have the
+    # type available on the system.
+    type: 'spc_t'
   capabilities:
     # -- Capabilities for the `cilium-agent` container
     ciliumAgent:
@@ -288,12 +298,6 @@ alibabacloud:
   # -- Enable AlibabaCloud ENI integration
   enabled: false
 
-# -- Deprecated in favor of bandwidthManager.enabled. To be removed in 1.13.
-# Optimize TCP and UDP workloads and enable rate-limiting traffic from
-# individual Pods with EDT (Earliest Departure Time) through the
-# "kubernetes.io/egress-bandwidth" Pod annotation.
-#bandwidthManager: false
-
 # -- Enable bandwidth manager to optimize TCP and UDP workloads and allow
 # for rate-limiting traffic from individual Pods with EDT (Earliest Departure
 # Time) through the "kubernetes.io/egress-bandwidth" Pod annotation.
@@ -337,12 +341,6 @@ bpf:
   # -- Enable BPF clock source probing for more efficient tick retrieval.
   clockProbe: false
 
-  # -- Configure the path to the host boot directory
-  hostBoot: /boot
-
-  # -- Enable host boot directory mount for BPF clock source probing
-  mountHostBoot: true
-
   # -- Enables pre-allocation of eBPF map values. This increases
   # memory usage but can reduce latency.
   preallocateMaps: false
@@ -372,9 +370,10 @@ bpf:
   # -- Configure the maximum number of entries in endpoint policy map (per endpoint).
   policyMapMax: 16384
 
-  # -- Configure auto-sizing for all BPF maps based on available memory.
+  # -- (float64) Configure auto-sizing for all BPF maps based on available memory.
   # ref: https://docs.cilium.io/en/stable/concepts/ebpf/maps/#ebpf-maps
-  #mapDynamicSizeRatio: 0.0025
+  # @default -- `0.0025`
+  mapDynamicSizeRatio: ~
 
   # -- Configure the level of aggregation for monitor notifications.
   # Valid options are none, low, medium, maximum.
@@ -466,7 +465,7 @@ cni:
   # This can be useful if you want to manage your CNI
   # configuration outside of a Kubernetes environment. This parameter is
   # mutually exclusive with the 'cni.configMap' parameter.
-  # readCniConf: /host/etc/cni/net.d/05-cilium.conf.template
+  # readCniConf: /host/etc/cni/net.d/05-cilium.conf
 
   # -- When defined, configMap will mount the provided value as ConfigMap and
   # interpret the cniConf variable as CNI configuration file and write it
@@ -484,9 +483,10 @@ cni:
   # inside the agent pod.
   hostConfDirMountPath: /host/etc/cni/net.d
 
-# -- Configure how frequently garbage collection should occur for the datapath
+# -- (string) Configure how frequently garbage collection should occur for the datapath
 # connection tracking table.
-# conntrackGCInterval: "0s"
+# @default -- `"0s"`
+conntrackGCInterval: ""
 
 # -- Configure container runtime specific integration.
 containerRuntime:
@@ -501,7 +501,9 @@ containerRuntime:
   # -- Configure the path to the container runtime control socket.
   # socketPath: /path/to/runtime.sock
 
-# crdWaitTimeout: ""
+# -- (string) Configure timeout in which Cilium will exit if CRDs are not available
+# @default -- `"5m"`
+crdWaitTimeout: ""
 
 # -- Tail call hooks for custom eBPF programs.
 customCalls:
@@ -511,6 +513,31 @@ customCalls:
 daemon:
   # -- Configure where Cilium runtime state should be stored.
   runPath: "/var/run/cilium"
+
+  # -- Configure a custom list of possible configuration override sources
+  # The default is "config-map:cilium-config,cilium-node-config". For supported
+  # values, see the help text for the build-config subcommand.
+  # Note that this value should be a comma-separated string.
+  configSources: ~
+
+  # -- allowedConfigOverrides is a list of config-map keys that can be overridden.
+  # That is to say, if this value is set, config sources (excepting the first one) can
+  # only override keys in this list.
+  #
+  # This takes precedence over blockedConfigOverrides.
+  #
+  # By default, all keys may be overridden. To disable overrides, set this to "none" or
+  # change the configSources variable.
+  allowedConfigOverrides: ~
+
+  # -- blockedConfigOverrides is a list of config-map keys that may not be overridden.
+  # In other words, if any of these keys appear in a configuration source excepting the
+  # first one, they will be ignored
+  #
+  # This is ignored if allowedConfigOverrides is set.
+  #
+  # By default, all keys may be overridden.
+  blockedConfigOverrides: ~
 
 # -- Specify which network interfaces can run the eBPF datapath. This means
 # that a packet sent from a pod to a destination outside the cluster will be
@@ -586,6 +613,12 @@ ingressController:
     labels: {}
     # -- Annotations to be added for the shared LB service
     annotations: {}
+    # -- Service type for the shared LB service
+    type: LoadBalancer
+    # -- Configure a specific nodePort for insecure HTTP traffic on the shared LB service
+    insecureNodePort: ~
+    # -- Configure a specific nodePort for secure HTTPS traffic on the shared LB service
+    secureNodePort : ~
 
 gatewayAPI:
   # -- Enable support for Gateway API in cilium
@@ -816,10 +849,16 @@ hubble:
       annotations: {}
       # -- Interval for scrape metrics.
       interval: "10s"
+      # -- Relabeling configs for the ServiceMonitor hubble
+      relabelings:
+        - sourceLabels:
+            - __meta_kubernetes_pod_node_name
+          targetLabel: node
+          replacement: ${1}
       # -- Metrics relabeling configs for the ServiceMonitor hubble
       metricRelabelings: ~
     dashboards:
-      enabled: true
+      enabled: false
       label: grafana_dashboard
       namespace: ~
       labelValue: "1"
@@ -834,6 +873,9 @@ hubble:
   listenAddress: ":4244"
   # -- Whether Hubble should prefer to announce IPv6 or IPv4 addresses if both are available.
   preferIpv6: false
+  # -- (bool) Skip Hubble events with unknown cgroup ids
+  # @default -- `true`
+  skipUnknownCGroupIDs: ~
 
   peerService:
     # -- Enable a K8s Service for the Peer service, so that it can be accessed
@@ -919,7 +961,7 @@ hubble:
     image:
       override: ~
       repository: "quay.io/giantswarm/hubble-relay"
-      tag: v1.13.0-rc2
+      tag: v1.13.0-rc4
        # hubble-relay-digest
       digest: ""
       useDigest: false
@@ -1063,6 +1105,8 @@ hubble:
         # -- Specify the Kubernetes namespace where Prometheus expects to find
         # service monitors configured.
         # namespace: ""
+        # -- Relabeling configs for the ServiceMonitor hubble-relay
+        relabelings: ~
         # -- Metrics relabeling configs for the ServiceMonitor hubble-relay
         metricRelabelings: ~
 
@@ -1232,15 +1276,9 @@ hubble:
 # -- Method to use for identity allocation (`crd` or `kvstore`).
 identityAllocationMode: "crd"
 
-# -- Time to wait before using new identity on endpoint identity change.
-# identityChangeGracePeriod: "5s"
-
-# -- GC interval for security identities.
-# identityGCInterval: "15m0s"
-
-# -- Timeout after which identity expires on lack of heartbeat.
-# identityHeartbeatTimeout: "30m0s"
-
+# -- (string) Time to wait before using new identity on endpoint identity change.
+# @default -- `"5s"`
+identityChangeGracePeriod: ""
 
 # -- Configure whether to install iptables rules to allow for TPROXY
 # (L7 proxy injection), iptables-based masquerading and compatibility
@@ -1438,7 +1476,7 @@ monitor:
   enabled: false
 
 # -- Configure service load balancing
-# loadBalancer:
+loadBalancer:
   # -- standalone enables the standalone L4LB which does not connect to
   # kube-apiserver.
   # standalone: false
@@ -1462,6 +1500,27 @@ monitor:
   # -- serviceTopology enables K8s Topology Aware Hints -based service
   # endpoints filtering
   # serviceTopology: false
+
+  # -- L7 LoadBalancer
+  l7:
+    # -- Enable L7 service load balancing via envoy proxy.
+    # The request to a k8s service, which has specific annotation e.g. io.cilium.service/lb-protocol,
+    # will be forwarded to the local backend proxy to be load balanced to the service endpoints.
+    # Please refer to docs for supported annotations for more configuration.
+    #
+    # Applicable values:
+    #   - envoy: Enable L7 load balancing via envoy proxy. This will automatically set enable-envoy-config as well.
+    #   - disabled: Disable L7 load balancing.
+    backend: disabled
+    # -- List of ports from service to be automatically redirected to above backend.
+    # Any service exposing one of these ports will be automatically redirected.
+    # Fine-grained control can be achieved by using the service annotation.
+    ports: []
+    # -- Default LB algorithm
+    # The default LB algorithm to be used for services, which can be overridden by the
+    # service annotation (e.g. io.cilium.service/lb-algorithm)
+    # Applicable values: round_robin, least_request, random
+    algorithm: round_robin
 
 # -- Configure N-S k8s service loadbalancing
 nodePort:
@@ -1509,6 +1568,12 @@ prometheus:
     # -- Specify the Kubernetes namespace where Prometheus expects to find
     # service monitors configured.
     # namespace: ""
+    # -- Relabeling configs for the ServiceMonitor cilium-agent
+    relabelings:
+      - sourceLabels:
+          - __meta_kubernetes_pod_node_name
+        targetLabel: node
+        replacement: ${1}
     # -- Metrics relabeling configs for the ServiceMonitor cilium-agent
     metricRelabelings: ~
   # -- Metrics that should be enabled or disabled from the default metric
@@ -1708,7 +1773,7 @@ operator:
   image:
     override: ~
     repository: quay.io/giantswarm/cilium-operator
-    tag: v1.13.0-rc2
+    tag: v1.13.0-rc4
     # operator-generic-digest
     genericDigest: ""
     # operator-azure-digest
@@ -1826,6 +1891,9 @@ operator:
   # -- Interval for cilium node garbage collection.
   nodeGCInterval: "5m0s"
 
+  # -- Skip CNP node status clean up at operator startup.
+  skipCNPStatusStartupClean: false
+
   # -- Interval for identity garbage collection.
   identityGCInterval: "15m0s"
 
@@ -1847,6 +1915,8 @@ operator:
       annotations: {}
       # -- Interval for scrape metrics.
       interval: "10s"
+      # -- Relabeling configs for the ServiceMonitor cilium-operator
+      relabelings: ~
       # -- Metrics relabeling configs for the ServiceMonitor cilium-operator
       metricRelabelings: ~
 
@@ -1951,7 +2021,7 @@ preflight:
   image:
     override: ~
     repository: quay.io/giantswarm/cilium
-    tag: "v1.13.0-rc2"
+    tag: "v1.13.0-rc4"
     # cilium-digest
     digest: ""
     useDigest: false
@@ -2088,7 +2158,7 @@ clustermesh:
     image:
       override: ~
       repository: quay.io/giantswarm/cilium-clustermesh-apiserver
-      tag: v1.13.0-rc2
+      tag: v1.13.0-rc4
       # clustermesh-apiserver-digest
       digest: ""
       useDigest: false
@@ -2101,6 +2171,25 @@ clustermesh:
         repository: quay.io/giantswarm/etcd
         tag: v3.5.4
         pullPolicy: IfNotPresent
+
+      # -- Specifies the resources for etcd container in the apiserver
+      resources: {}
+      #   requests:
+      #     cpu: 200m
+      #     memory: 256Mi
+      #   limits:
+      #     cpu: 1000m
+      #     memory: 256Mi
+
+      init:
+        # -- Specifies the resources for etcd init container in the apiserver
+        resources: {}
+        #   requests:
+        #     cpu: 100m
+        #     memory: 100Mi
+        #   limits:
+        #     cpu: 100m
+        #     memory: 100Mi
 
     service:
       # -- The type of service used for apiserver access.
@@ -2277,6 +2366,14 @@ cgroup:
     # cgroup2 filesystem at the specified `cgroup.hostRoot` volume, and then the
     # volume will be mounted inside the cilium agent pod at the same path.
     enabled: true
+    # -- Init Container Cgroup Automount resource limits & requests
+    resources: {}
+      # limits:
+      #   cpu: 100m
+      #   memory: 128Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
   # -- Configure cgroup root where cgroup2 filesystem is mounted on the host (see also: `cgroup.autoMount`)
   hostRoot: /run/cilium/cgroupv2
 

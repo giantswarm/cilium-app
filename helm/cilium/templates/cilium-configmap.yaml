@@ -11,7 +11,6 @@
 {{- $defaultBpfCtAnyMax := 262144 -}}
 {{- $enableIdentityMark := "true" -}}
 {{- $fragmentTracking := "true" -}}
-{{- $crdWaitTimeout := "5m" -}}
 {{- $defaultKubeProxyReplacement := "disabled" -}}
 {{- $azureUsePrimaryAddress := "true" -}}
 
@@ -94,8 +93,8 @@ data:
     {{- end }}
 {{- end }}
 
-{{- if hasKey .Values "conntrackGCInterval" }}
-  conntrack-gc-interval: {{ .Values.conntrackGCInterval | quote }}
+{{- if .Values.conntrackGCInterval }}
+  conntrack-gc-interval: {{ include "validateDuration" .Values.conntrackGCInterval | quote }}
 {{- end }}
 
 {{- if hasKey .Values "disableEnvoyVersionCheck" }}
@@ -118,18 +117,22 @@ data:
   cilium-endpoint-gc-interval: {{ include "validateDuration" .Values.operator.endpointGCInterval | quote }}
   nodes-gc-interval: {{ include "validateDuration" .Values.operator.nodeGCInterval | quote }}
 
+{{- if hasKey .Values.operator "skipCNPStatusStartupClean" }}
+  skip-cnp-status-startup-clean: "{{ .Values.operator.skipCNPStatusStartupClean }}"
+{{- end }}
+
 {{- if hasKey .Values "disableEndpointCRD" }}
   # Disable the usage of CiliumEndpoint CRD
   disable-endpoint-crd: "{{ .Values.disableEndpointCRD }}"
 {{- end }}
 
-{{- if hasKey .Values "identityChangeGracePeriod" }}
+{{- if .Values.identityChangeGracePeriod }}
   # identity-change-grace-period is the grace period that needs to pass
   # before an endpoint that has changed its identity will start using
   # that new identity. During the grace period, the new identity has
   # already been allocated and other nodes in the cluster have a chance
   # to whitelist the new upcoming identity of the endpoint.
-  identity-change-grace-period: {{ default "5s" .Values.identityChangeGracePeriod | quote }}
+  identity-change-grace-period: {{ include "validateDuration" .Values.identityChangeGracePeriod | quote }}
 {{- end }}
 
 {{- if hasKey .Values "labels" }}
@@ -158,7 +161,7 @@ data:
 {{- if hasKey .Values "policyEnforcementMode" }}
   # The agent can be put into the following three policy enforcement modes
   # default, always and never.
-  # https://docs.cilium.io/en/latest/policy/intro/#policy-enforcement-modes
+  # https://docs.cilium.io/en/latest/security/policy/intro/#policy-enforcement-modes
   enable-policy: "{{ lower .Values.policyEnforcementMode }}"
 {{- end }}
 
@@ -216,6 +219,15 @@ data:
   gateway-api-secrets-namespace: {{ .Values.gatewayAPI.secretsNamespace.name | quote }}
 {{- end }}
 
+{{- if hasKey .Values "loadBalancer" }}
+{{- if eq .Values.loadBalancer.l7.backend "envoy" }}
+  loadbalancer-l7: "envoy"
+  enable-envoy-config: "true"
+  loadbalancer-l7-ports: {{ .Values.loadBalancer.l7.ports | join " " | quote }}
+  loadbalancer-l7-algorithm: {{ .Values.loadBalancer.l7.algorithm | quote }}
+{{- end }}
+{{- end }}
+
   # Enable IPv4 addressing. If enabled, all endpoints are allocated an IPv4
   # address.
   enable-ipv4: {{ .Values.ipv4.enabled | quote }}
@@ -242,6 +254,12 @@ data:
   # connections via a service may be loadbalanced to a different
   # backend after restart.
   clean-cilium-bpf-state: "true"
+{{- end }}
+
+{{- if hasKey .Values.cni "customConf" }}
+  # Users who wish to specify their own custom CNI configuration file must set
+  # custom-cni-conf to "true", otherwise Cilium may overwrite the configuration.
+  custom-cni-conf: "{{ .Values.cni.customConf }}"
 {{- end }}
 
 {{- if hasKey .Values "bpfClockProbe" }}
@@ -275,18 +293,22 @@ data:
 
 
 
-{{- if hasKey .Values.bpf "mapDynamicSizeRatio" }}
-  # Specifies the ratio (0.0-1.0) of total system memory to use for dynamic
+{{- if .Values.bpf.mapDynamicSizeRatio }}
+  # Specifies the ratio (0.0-1.0] of total system memory to use for dynamic
   # sizing of the TCP CT, non-TCP CT, NAT and policy BPF maps.
   bpf-map-dynamic-size-ratio: {{ .Values.bpf.mapDynamicSizeRatio | quote }}
 {{- else if ne $defaultBpfMapDynamicSizeRatio 0.0 }}
-  # Specifies the ratio (0.0-1.0) of total system memory to use for dynamic
+  # Specifies the ratio (0.0-1.0] of total system memory to use for dynamic
   # sizing of the TCP CT, non-TCP CT, NAT and policy BPF maps.
   bpf-map-dynamic-size-ratio: {{ $defaultBpfMapDynamicSizeRatio | quote }}
 {{- end }}
 
 {{- if (not (kindIs "invalid" .Values.bpf.hostLegacyRouting)) }}
   enable-host-legacy-routing: {{ .Values.bpf.hostLegacyRouting | quote }}
+{{- else if ne .Values.cni.chainingMode "none" }}
+  # In cni chaining mode, the other chained plugin is responsible for underlying connectivity,
+  # so cilium eBPF host routing shoud not work, and let it fall back to the legacy routing mode
+  enable-host-legacy-routing: "true"
 {{- end }}
 
 {{- if or $bpfCtTcpMax $bpfCtAnyMax }}
@@ -438,6 +460,16 @@ data:
 {{- end }}
 
 {{- if ne .Values.cni.chainingMode "none" }}
+  # Enable chaining with another CNI plugin
+  #
+  # Supported modes:
+  #  - none
+  #  - aws-cni
+  #  - flannel
+  #  - generic-veth
+  #  - portmap (Enables HostPort support for Cilium)
+  cni-chaining-mode: {{ .Values.cni.chainingMode }}
+
 {{- if hasKey .Values "enableIdentityMark" }}
   enable-identity-mark: {{ .Values.enableIdentityMark | quote }}
 {{- else if (ne $enableIdentityMark "true") }}
@@ -511,15 +543,10 @@ data:
 
   auto-direct-node-routes: {{ .Values.autoDirectNodeRoutes | quote }}
 
-{{- if .Values.bandwidthManager }}
-{{- if typeIs "bool" .Values.bandwidthManager }}
-  # DEPRECATED: this block should be removed in 1.13
-  enable-bandwidth-manager: {{ .Values.bandwidthManager | quote }}
-{{- else }}
+{{- if hasKey .Values "bandwidthManager" }}
 {{- if .Values.bandwidthManager.enabled }}
   enable-bandwidth-manager: {{ .Values.bandwidthManager.enabled | quote }}
   enable-bbr: {{ .Values.bandwidthManager.bbr | quote }}
-{{- end }}
 {{- end }}
 {{- end }}
 
@@ -574,11 +601,6 @@ data:
 {{- end }}
 {{- end }}
 
-{{- if hasKey .Values "hostServices" }}
-{{- if ne .Values.hostServices.protocols "tcp,udp" }}
-  host-reachable-services-protos: {{ .Values.hostServices.protocols }}
-{{- end }}
-{{- end }}
 {{- if hasKey .Values "hostPort" }}
 {{- if eq $kubeProxyReplacement "partial" }}
   enable-host-port: {{ .Values.hostPort.enabled | quote }}
@@ -670,36 +692,12 @@ data:
 {{- if and .Values.endpointRoutes .Values.endpointRoutes.enabled }}
   enable-endpoint-routes: {{ .Values.endpointRoutes.enabled | quote }}
 {{- end }}
-
-  ## CNI configuration
-{{- if and .Values.cni.install  (not .Values.cni.customConf)  }}
-  # direct Cilium agent to write a CNI configuration to disk on startup
-  write-cni-conf-when-ready: {{ print .Values.cni.hostConfDirMountPath "/05-cilium.conflist" | quote }}
-
-{{- if hasKey .Values.cni "configMap" }}
-  # user-supplied CNI configuration via a ConfigMap
+{{- if .Values.cni.configMap }}
   read-cni-conf: {{ .Values.cni.confFileMountPath }}/{{ .Values.cni.configMapKey }}
-{{- else if hasKey .Values.cni "readCniConf" }}
-  # user-supplied CNI configuration from disk
+  write-cni-conf-when-ready: {{ .Values.cni.hostConfDirMountPath }}/05-cilium.conflist
+{{- else if .Values.cni.readCniConf }}
   read-cni-conf: {{ .Values.cni.readCniConf }}
 {{- end }}
-
-  # Enable chaining with another CNI plugin
-  #
-  # Supported modes:
-  #  - none
-  #  - aws-cni
-  #  - flannel
-  #  - generic-veth
-  #  - portmap (Enables HostPort support for Cilium)
-  cni-chaining-mode: {{ .Values.cni.chainingMode | quote }}
-{{- if .Values.cni.logFile }}
-  cni-log-file: {{ .Values.cni.logFile}}
-{{- end }}
-  # if cni-exclusive is set to true, Cilium will remove any pre-existing CNI configurations
-  cni-exclusive: {{ .Values.cni.exclusive | quote}}
-{{- end }}
-
 {{- if .Values.kubeConfigPath }}
   k8s-kubeconfig-path: {{ .Values.kubeConfigPath | quote }}
 {{- end }}
@@ -741,10 +739,6 @@ data:
   # the buffer size is set to the default monitor queue size.
   hubble-event-queue-size: {{ .Values.hubble.eventQueueSize | quote }}
 {{- end }}
-{{- if hasKey .Values.hubble "flowBufferSize" }}
-  # DEPRECATED: this block should be removed in 1.11
-  hubble-flow-buffer-size: {{ .Values.hubble.flowBufferSize | quote }}
-{{- end }}
 {{- if hasKey .Values.hubble "eventBufferCapacity" }}
   # Capacity of the buffer to store recent events.
   hubble-event-buffer-capacity: {{ .Values.hubble.eventBufferCapacity | quote }}
@@ -775,6 +769,9 @@ data:
 {{- end }}
 {{- if .Values.hubble.preferIpv6 }}
   hubble-prefer-ipv6: "true"
+{{- end }}
+{{- if (not (kindIs "invalid" .Values.hubble.skipUnknownCGroupIDs)) }}
+  hubble-skip-unknown-cgroup-ids: {{ .Values.hubble.skipUnknownCGroupIDs | quote }}
 {{- end }}
 {{- end }}
 {{- if hasKey .Values "disableIptablesFeederRules" }}
@@ -846,10 +843,8 @@ data:
   enable-k8s-event-handover: "true"
 {{- end }}
 
-{{- if hasKey .Values "crdWaitTimeout" }}
-  crd-wait-timeout: {{ .Values.crdWaitTimeout | quote }}
-{{- else if ( ne $crdWaitTimeout "5m" ) }}
-  crd-wait-timeout: {{ $crdWaitTimeout | quote }}
+{{- if .Values.crdWaitTimeout }}
+  crd-wait-timeout: {{ include "validateDuration" .Values.crdWaitTimeout | quote }}
 {{- end }}
 
 {{- if .Values.enableK8sEndpointSlice }}
