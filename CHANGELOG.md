@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.7.0] - 2023-02-10
 
+### Changed
+
+- Enable LocalRedirectPolicy for node-local-cache and kiam. 
+
 ## [0.6.1] - 2022-11-22
 
 ### Changed
