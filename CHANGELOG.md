@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Enable Hubble for monitoring
+
 ## [0.6.1] - 2022-11-22
 
 ### Changed
