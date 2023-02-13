@@ -717,7 +717,7 @@ hubble:
 
   relay:
     # -- Enable Hubble Relay (requires hubble.enabled=true)
-    enabled: false
+    enabled: true
 
     # -- Roll out Hubble Relay pods automatically when configmap is updated.
     rollOutPods: false
@@ -809,7 +809,7 @@ hubble:
 
   ui:
     # -- Whether to enable the Hubble UI.
-    enabled: false
+    enabled: true
 
     standalone:
       # -- When true, it will allow installing the Hubble UI only, without checking dependencies.
@@ -851,7 +851,7 @@ hubble:
       # -- Hubble-ui backend image.
       image:
         repository: quay.io/giantswarm/hubble-ui-backend
-        tag: v0.8.5
+        tag: v0.10.0
         pullPolicy: IfNotPresent
       # [Example]
       # resources:
@@ -868,7 +868,7 @@ hubble:
       # -- Hubble-ui frontend image.
       image:
         repository: quay.io/giantswarm/hubble-ui
-        tag: v0.8.5
+        tag: v0.10.0
         pullPolicy: IfNotPresent
       # [Example]
       # resources:
