@@ -640,10 +640,9 @@ hubble:
       # -- Create ServiceMonitor resources for Prometheus Operator.
       # This requires the prometheus CRDs to be available.
       # ref: https://github.com/prometheus-operator/prometheus-operator/blob/master/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml)
-      enabled: true
+      enabled: false
       # -- Labels to add to ServiceMonitor hubble
-      labels:
-        application.giantswarm.io/team: phoenix
+      labels: {}
       # -- Annotations to add to ServiceMonitor hubble
       annotations: {}
 
@@ -1167,10 +1166,9 @@ prometheus:
   serviceMonitor:
     # -- Enable service monitors.
     # This requires the prometheus CRDs to be available (see https://github.com/prometheus-operator/prometheus-operator/blob/master/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml)
-    enabled: true
+    enabled: false
     # -- Labels to add to ServiceMonitor cilium-agent
-    labels:
-      application.giantswarm.io/team: phoenix
+    labels: {}
     # -- Annotations to add to ServiceMonitor cilium-agent
     annotations: {}
     # -- Specify the Kubernetes namespace where Prometheus expects to find
@@ -1482,10 +1480,9 @@ operator:
     serviceMonitor:
       # -- Enable service monitors.
       # This requires the prometheus CRDs to be available (see https://github.com/prometheus-operator/prometheus-operator/blob/master/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml)
-      enabled: true
+      enabled: false
       # -- Labels to add to ServiceMonitor cilium-operator
-      labels:
-        application.giantswarm.io/team: phoenix
+      labels: {}
       # -- Annotations to add to ServiceMonitor cilium-operator
       annotations: {}
 
