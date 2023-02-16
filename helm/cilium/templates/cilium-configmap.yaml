@@ -568,8 +568,8 @@ data:
   enable-ipv4-fragment-tracking: "false"
 {{- end }}
 
-{{- if .Values.statelessNat46x64.enabled }}
-  enable-stateless-nat46x64: {{ .Values.statelessNat46x64.enabled | quote }}
+{{- if .Values.nat46x64Gateway.enabled }}
+  enable-nat46x64-gateway: {{ .Values.nat46x64Gateway.enabled | quote }}
 {{- end }}
 
 {{- if and .Values.hostFirewall .Values.hostFirewall.enabled }}
@@ -668,9 +668,18 @@ data:
   arping-refresh-period: {{ include "validateDuration" .Values.l2NeighDiscovery.refreshPeriod | quote }}
 {{- end }}
 
-{{- if and .Values.pprof .Values.pprof.enabled }}
+{{- if .Values.pprof.enabled }}
   pprof: {{ .Values.pprof.enabled | quote }}
+  pprof-address: {{ .Values.pprof.address | quote }}
+  pprof-port: {{ .Values.pprof.port | quote }}
 {{- end }}
+
+{{- if .Values.operator.pprof.enabled }}
+  operator-pprof: {{ .Values.operator.pprof.enabled | quote }}
+  operator-pprof-address: {{ .Values.operator.pprof.address | quote }}
+  operator-pprof-port: {{ .Values.operator.pprof.port | quote }}
+{{- end }}
+
 {{- if .Values.logSystemLoad }}
   log-system-load: {{ .Values.logSystemLoad | quote }}
 {{- end }}

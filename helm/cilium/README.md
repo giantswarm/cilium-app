@@ -1,6 +1,6 @@
 # cilium
 
-![Version: 1.13.0-rc4](https://img.shields.io/badge/Version-1.13.0--rc4-informational?style=flat-square) ![AppVersion: 1.13.0-rc4](https://img.shields.io/badge/AppVersion-1.13.0--rc4-informational?style=flat-square)
+![Version: 1.13.0](https://img.shields.io/badge/Version-1.13.0-informational?style=flat-square) ![AppVersion: 1.13.0](https://img.shields.io/badge/AppVersion-1.13.0-informational?style=flat-square)
 
 Cilium is open source software for providing and transparently securing
 network connectivity and loadbalancing between application workloads such as
@@ -106,7 +106,7 @@ contributors across the globe, there is almost always someone available to help.
 | clustermesh.apiserver.etcd.init.resources | object | `{}` | Specifies the resources for etcd init container in the apiserver |
 | clustermesh.apiserver.etcd.resources | object | `{}` | Specifies the resources for etcd container in the apiserver |
 | clustermesh.apiserver.extraEnv | list | `[]` | Additional clustermesh-apiserver environment variables. |
-| clustermesh.apiserver.image | object | `{"digest":"sha256:226d311b4daabbb68a97643c3fc6a82c49e09d25a82cb9cb3c326da8b9fd7073","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/clustermesh-apiserver","tag":"v1.13.0-rc4","useDigest":true}` | Clustermesh API server image. |
+| clustermesh.apiserver.image | object | `{"digest":"","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/clustermesh-apiserver","tag":"v1.13.0","useDigest":false}` | Clustermesh API server image. |
 | clustermesh.apiserver.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for pod assignment ref: https://kubernetes.io/docs/user-guide/node-selection/ |
 | clustermesh.apiserver.podAnnotations | object | `{}` | Annotations to be added to clustermesh-apiserver pods |
 | clustermesh.apiserver.podDisruptionBudget.enabled | bool | `false` | enable PodDisruptionBudget ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/ |
@@ -161,6 +161,7 @@ contributors across the globe, there is almost always someone available to help.
 | daemon.configSources | string | `nil` | Configure a custom list of possible configuration override sources The default is "config-map:cilium-config,cilium-node-config". For supported values, see the help text for the build-config subcommand. Note that this value should be a comma-separated string. |
 | daemon.runPath | string | `"/var/run/cilium"` | Configure where Cilium runtime state should be stored. |
 | debug.enabled | bool | `false` | Enable debug logging |
+| debug.verbose | string | `nil` | Configure verbosity levels for debug logging This option is used to enable debug messages for operations related to such sub-system such as (e.g. kvstore, envoy, datapath or policy), and flow is for enabling debug messages emitted per request, message and connection.  Applicable values: - flow - kvstore - envoy - datapath - policy |
 | disableEndpointCRD | string | `"false"` | Disable the usage of CiliumEndpoint CRD. |
 | dnsPolicy | string | `""` | DNS policy for Cilium agent pods. Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy |
 | dnsProxy.dnsRejectResponseCode | string | `"refused"` | DNS response code for rejecting DNS requests, available options are '[nameError refused]'. |
@@ -265,14 +266,14 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.metrics.serviceMonitor.metricRelabelings | string | `nil` | Metrics relabeling configs for the ServiceMonitor hubble |
 | hubble.metrics.serviceMonitor.relabelings | list | `[{"replacement":"${1}","sourceLabels":["__meta_kubernetes_pod_node_name"],"targetLabel":"node"}]` | Relabeling configs for the ServiceMonitor hubble |
 | hubble.peerService.clusterDomain | string | `"cluster.local"` | The cluster domain to use to query the Hubble Peer service. It should be the local cluster. |
-| hubble.peerService.enabled | bool | `true` | Enable a K8s Service for the Peer service, so that it can be accessed by a non-local client |
-| hubble.peerService.targetPort | int | `4244` | Target Port for the Peer service. |
+| hubble.peerService.enabled | bool | `true` | Enable a K8s Service for the Peer service, so that it can be accessed by a non-local client. This configuration option is deprecated, the peer service will be non-optional starting Cilium v1.14. |
+| hubble.peerService.targetPort | int | `4244` | Target Port for the Peer service, must match the hubble.listenAddress' port. |
 | hubble.preferIpv6 | bool | `false` | Whether Hubble should prefer to announce IPv6 or IPv4 addresses if both are available. |
 | hubble.relay.affinity | object | `{"podAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"k8s-app":"cilium"}},"topologyKey":"kubernetes.io/hostname"}]}}` | Affinity for hubble-replay |
 | hubble.relay.dialTimeout | string | `nil` | Dial timeout to connect to the local hubble instance to receive peer information (e.g. "30s"). |
 | hubble.relay.enabled | bool | `false` | Enable Hubble Relay (requires hubble.enabled=true) |
 | hubble.relay.extraEnv | list | `[]` | Additional hubble-relay environment variables. |
-| hubble.relay.image | object | `{"digest":"sha256:bbd8c5bec8cd41c7907cf7caed059b944985f2ba5c89def3f60c584b5a7f5c5c","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/hubble-relay","tag":"v1.13.0-rc4","useDigest":true}` | Hubble-relay container image. |
+| hubble.relay.image | object | `{"digest":"","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/hubble-relay","tag":"v1.13.0","useDigest":false}` | Hubble-relay container image. |
 | hubble.relay.listenHost | string | `""` | Host to listen to. Specify an empty string to bind to all the interfaces. |
 | hubble.relay.listenPort | string | `"4245"` | Port to listen to. |
 | hubble.relay.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for pod assignment ref: https://kubernetes.io/docs/user-guide/node-selection/ |
@@ -281,6 +282,9 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.relay.podDisruptionBudget.maxUnavailable | int | `1` | Maximum number/percentage of pods that may be made unavailable |
 | hubble.relay.podDisruptionBudget.minAvailable | string | `nil` | Minimum number/percentage of pods that should remain scheduled. When it's set, maxUnavailable must be disabled by `maxUnavailable: null` |
 | hubble.relay.podLabels | object | `{}` | Labels to be added to hubble-relay pods |
+| hubble.relay.pprof.address | string | `"localhost"` | Configure pprof listen address for hubble-relay |
+| hubble.relay.pprof.enabled | bool | `false` | Enable pprof for hubble-relay |
+| hubble.relay.pprof.port | int | `6062` | Configure pprof listen port for hubble-relay |
 | hubble.relay.priorityClassName | string | `""` | The priority class to use for hubble-relay |
 | hubble.relay.prometheus | object | `{"enabled":false,"port":9966,"serviceMonitor":{"annotations":{},"enabled":false,"interval":"10s","labels":{},"metricRelabelings":null,"relabelings":null}}` | Enable prometheus metrics for hubble-relay on the configured port at /metrics |
 | hubble.relay.prometheus.serviceMonitor.annotations | object | `{}` | Annotations to add to ServiceMonitor hubble-relay |
@@ -326,11 +330,11 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.tls.server.extraIpAddresses | list | `[]` | Extra IP addresses added to certificate when it's auto generated |
 | hubble.ui.affinity | object | `{}` | Affinity for hubble-ui |
 | hubble.ui.backend.extraEnv | list | `[]` | Additional hubble-ui backend environment variables. |
-| hubble.ui.backend.image | object | `{"override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/hubble-ui-backend","tag":"v0.9.2@sha256:a3ac4d5b87889c9f7cc6323e86d3126b0d382933bd64f44382a92778b0cde5d7"}` | Hubble-ui backend image. |
+| hubble.ui.backend.image | object | `{"override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/hubble-ui-backend","tag":"v0.10.0@sha256:cc5e2730b3be6f117b22176e25875f2308834ced7c3aa34fb598aa87a2c0a6a4"}` | Hubble-ui backend image. |
 | hubble.ui.backend.resources | object | `{}` | Resource requests and limits for the 'backend' container of the 'hubble-ui' deployment. |
 | hubble.ui.enabled | bool | `false` | Whether to enable the Hubble UI. |
 | hubble.ui.frontend.extraEnv | list | `[]` | Additional hubble-ui frontend environment variables. |
-| hubble.ui.frontend.image | object | `{"override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/hubble-ui","tag":"v0.9.2@sha256:d3596efc94a41c6b772b9afe6fe47c17417658956e04c3e2a28d293f2670663e"}` | Hubble-ui frontend image. |
+| hubble.ui.frontend.image | object | `{"override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/hubble-ui","tag":"v0.10.0@sha256:118ad2fcfd07fabcae4dde35ec88d33564c9ca7abe520aa45b1eb13ba36c6e0a"}` | Hubble-ui frontend image. |
 | hubble.ui.frontend.resources | object | `{}` | Resource requests and limits for the 'frontend' container of the 'hubble-ui' deployment. |
 | hubble.ui.frontend.server.ipv6 | object | `{"enabled":true}` | Controls server listener for ipv6 |
 | hubble.ui.ingress | object | `{"annotations":{},"className":"","enabled":false,"hosts":["chart-example.local"],"tls":[]}` | hubble-ui ingress configuration. |
@@ -356,12 +360,12 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.ui.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":1},"type":"RollingUpdate"}` | hubble-ui update strategy. |
 | identityAllocationMode | string | `"crd"` | Method to use for identity allocation (`crd` or `kvstore`). |
 | identityChangeGracePeriod | string | `"5s"` | Time to wait before using new identity on endpoint identity change. |
-| image | object | `{"digest":"sha256:32acd47fd9bea9c0045222ba5d27f5fe9ad06dabd572a80b870b1f0e68c0e928","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/cilium","tag":"v1.13.0-rc4","useDigest":true}` | Agent container image. |
+| image | object | `{"digest":"","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/cilium","tag":"v1.13.0","useDigest":false}` | Agent container image. |
 | imagePullSecrets | string | `nil` | Configure image pull secrets for pulling container images |
 | ingressController.enabled | bool | `false` | Enable cilium ingress controller This will automatically set enable-envoy-config as well. |
 | ingressController.enforceHttps | bool | `true` | Enforce https for host having matching TLS host in Ingress. Incoming traffic to http listener will return 308 http error code with respective location in header. |
 | ingressController.ingressLBAnnotationPrefixes | list | `["service.beta.kubernetes.io","service.kubernetes.io","cloud.google.com"]` | IngressLBAnnotations are the annotation prefixes, which are used to filter annotations to propagate from Ingress to the Load Balancer service |
-| ingressController.loadbalancerMode | string | `"dedicated"` | Default ingress load balancer mode Supported values: shared, dedicated For granular control, use the following annotations on the ingress resource io.cilium.ingress/loadbalancer-mode: shared|dedicated, |
+| ingressController.loadbalancerMode | string | `"dedicated"` | Default ingress load balancer mode Supported values: shared, dedicated For granular control, use the following annotations on the ingress resource ingress.cilium.io/loadbalancer-mode: shared|dedicated, |
 | ingressController.secretsNamespace | object | `{"create":true,"name":"cilium-secrets","sync":true}` | SecretsNamespace is the namespace in which envoy SDS will retrieve TLS secrets from. |
 | ingressController.secretsNamespace.create | bool | `true` | Create secrets namespace for Ingress. |
 | ingressController.secretsNamespace.name | string | `"cilium-secrets"` | Name of Ingress secret namespace. |
@@ -403,8 +407,8 @@ contributors across the globe, there is almost always someone available to help.
 | livenessProbe.periodSeconds | int | `30` | interval between checks of the liveness probe |
 | loadBalancer | object | `{"l7":{"algorithm":"round_robin","backend":"disabled","ports":[]}}` | Configure service load balancing |
 | loadBalancer.l7 | object | `{"algorithm":"round_robin","backend":"disabled","ports":[]}` | L7 LoadBalancer |
-| loadBalancer.l7.algorithm | string | `"round_robin"` | Default LB algorithm The default LB algorithm to be used for services, which can be overridden by the service annotation (e.g. io.cilium.service/lb-algorithm) Applicable values: round_robin, least_request, random |
-| loadBalancer.l7.backend | string | `"disabled"` | Enable L7 service load balancing via envoy proxy. The request to a k8s service, which has specific annotation e.g. io.cilium.service/lb-protocol, will be forwarded to the local backend proxy to be load balanced to the service endpoints. Please refer to docs for supported annotations for more configuration.  Applicable values:   - envoy: Enable L7 load balancing via envoy proxy. This will automatically set enable-envoy-config as well.   - disabled: Disable L7 load balancing. |
+| loadBalancer.l7.algorithm | string | `"round_robin"` | Default LB algorithm The default LB algorithm to be used for services, which can be overridden by the service annotation (e.g. service.cilium.io/lb-l7-algorithm) Applicable values: round_robin, least_request, random |
+| loadBalancer.l7.backend | string | `"disabled"` | Enable L7 service load balancing via envoy proxy. The request to a k8s service, which has specific annotation e.g. service.cilium.io/lb-l7, will be forwarded to the local backend proxy to be load balanced to the service endpoints. Please refer to docs for supported annotations for more configuration.  Applicable values:   - envoy: Enable L7 load balancing via envoy proxy. This will automatically set enable-envoy-config as well.   - disabled: Disable L7 load balancing. |
 | loadBalancer.l7.ports | list | `[]` | List of ports from service to be automatically redirected to above backend. Any service exposing one of these ports will be automatically redirected. Fine-grained control can be achieved by using the service annotation. |
 | localRedirectPolicy | bool | `false` | Enable Local Redirect Policy. |
 | logSystemLoad | bool | `false` | Enables periodic logging of system load |
@@ -412,6 +416,8 @@ contributors across the globe, there is almost always someone available to help.
 | monitor | object | `{"enabled":false}` | cilium-monitor sidecar. |
 | monitor.enabled | bool | `false` | Enable the cilium-monitor sidecar. |
 | name | string | `"cilium"` | Agent container name. |
+| nat46x64Gateway | object | `{"enabled":false}` | Configure standalone NAT46/NAT64 gateway |
+| nat46x64Gateway.enabled | bool | `false` | Enable RFC8215-prefixed translation |
 | nodePort | object | `{"autoProtectPortRange":true,"bindProtection":true,"enableHealthCheck":true,"enabled":false}` | Configure N-S k8s service loadbalancing |
 | nodePort.autoProtectPortRange | bool | `true` | Append NodePort range to ip_local_reserved_ports if clash with ephemeral ports is detected. |
 | nodePort.bindProtection | bool | `true` | Set to true to prevent applications binding to service ports. |
@@ -442,7 +448,7 @@ contributors across the globe, there is almost always someone available to help.
 | operator.extraVolumes | list | `[]` | Additional cilium-operator volumes. |
 | operator.identityGCInterval | string | `"15m0s"` | Interval for identity garbage collection. |
 | operator.identityHeartbeatTimeout | string | `"30m0s"` | Timeout for identity heartbeats. |
-| operator.image | object | `{"alibabacloudDigest":"sha256:c5b5cb1e5200b75d7b30cb9830365e92dbab8e05d1b00e0c46ccc07e21b4036c","awsDigest":"sha256:d6a31dc00e9f15e6012670190c82ee6ed9732dcdd74682c2d4cd763fe7367eba","azureDigest":"sha256:105bccc4b486fd242f05c06e21e9928255906e2c6c5ace63c833c4d2a1371e0c","genericDigest":"sha256:19f612d4f1052e26edf33e26f60d64d8fb6caed9f03692b85b429a4ef5d175b2","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/operator","suffix":"","tag":"v1.13.0-rc4","useDigest":true}` | cilium-operator image. |
+| operator.image | object | `{"alibabacloudDigest":"","awsDigest":"","azureDigest":"","genericDigest":"","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/operator","suffix":"","tag":"v1.13.0","useDigest":false}` | cilium-operator image. |
 | operator.nodeGCInterval | string | `"5m0s"` | Interval for cilium node garbage collection. |
 | operator.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for cilium-operator pod assignment ref: https://kubernetes.io/docs/user-guide/node-selection/  |
 | operator.podAnnotations | object | `{}` | Annotations to be added to cilium-operator pods |
@@ -450,6 +456,9 @@ contributors across the globe, there is almost always someone available to help.
 | operator.podDisruptionBudget.maxUnavailable | int | `1` | Maximum number/percentage of pods that may be made unavailable |
 | operator.podDisruptionBudget.minAvailable | string | `nil` | Minimum number/percentage of pods that should remain scheduled. When it's set, maxUnavailable must be disabled by `maxUnavailable: null` |
 | operator.podLabels | object | `{}` | Labels to be added to cilium-operator pods |
+| operator.pprof.address | string | `"localhost"` | Configure pprof listen address for cilium-operator |
+| operator.pprof.enabled | bool | `false` | Enable pprof for cilium-operator |
+| operator.pprof.port | int | `6061` | Configure pprof listen port for cilium-operator |
 | operator.priorityClassName | string | `""` | The priority class to use for cilium-operator |
 | operator.prometheus | object | `{"enabled":false,"port":9963,"serviceMonitor":{"annotations":{},"enabled":false,"interval":"10s","labels":{},"metricRelabelings":null,"relabelings":null}}` | Enable prometheus metrics for cilium-operator on the configured port at /metrics |
 | operator.prometheus.serviceMonitor.annotations | object | `{}` | Annotations to add to ServiceMonitor cilium-operator |
@@ -475,11 +484,13 @@ contributors across the globe, there is almost always someone available to help.
 | podAnnotations | object | `{}` | Annotations to be added to agent pods |
 | podLabels | object | `{}` | Labels to be added to agent pods |
 | policyEnforcementMode | string | `"default"` | The agent can be put into one of the three policy enforcement modes: default, always and never. ref: https://docs.cilium.io/en/stable/policy/intro/#policy-enforcement-modes |
-| pprof.enabled | bool | `false` | Enable Go pprof debugging |
+| pprof.address | string | `"localhost"` | Configure pprof listen address for cilium-agent |
+| pprof.enabled | bool | `false` | Enable pprof for cilium-agent |
+| pprof.port | int | `6060` | Configure pprof listen port for cilium-agent |
 | preflight.affinity | object | `{"podAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"k8s-app":"cilium"}},"topologyKey":"kubernetes.io/hostname"}]}}` | Affinity for cilium-preflight |
 | preflight.enabled | bool | `false` | Enable Cilium pre-flight resources (required for upgrade) |
 | preflight.extraEnv | list | `[]` | Additional preflight environment variables. |
-| preflight.image | object | `{"digest":"sha256:32acd47fd9bea9c0045222ba5d27f5fe9ad06dabd572a80b870b1f0e68c0e928","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/cilium","tag":"v1.13.0-rc4","useDigest":true}` | Cilium pre-flight image. |
+| preflight.image | object | `{"digest":"","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/cilium","tag":"v1.13.0","useDigest":false}` | Cilium pre-flight image. |
 | preflight.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for preflight pod assignment ref: https://kubernetes.io/docs/user-guide/node-selection/  |
 | preflight.podAnnotations | object | `{}` | Annotations to be added to preflight pods |
 | preflight.podDisruptionBudget.enabled | bool | `false` | enable PodDisruptionBudget ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/ |
@@ -491,7 +502,7 @@ contributors across the globe, there is almost always someone available to help.
 | preflight.securityContext | object | `{}` | Security context to be added to preflight pods |
 | preflight.terminationGracePeriodSeconds | int | `1` | Configure termination grace period for preflight Deployment and DaemonSet. |
 | preflight.tofqdnsPreCache | string | `""` | Path to write the `--tofqdns-pre-cache` file to. |
-| preflight.tolerations | list | `[{"effect":"NoSchedule","key":"node.kubernetes.io/not-ready"},{"effect":"NoSchedule","key":"node-role.kubernetes.io/master"},{"effect":"NoSchedule","key":"node.cloudprovider.kubernetes.io/uninitialized","value":"true"},{"key":"CriticalAddonsOnly","operator":"Exists"}]` | Node tolerations for preflight scheduling to nodes with taints ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ |
+| preflight.tolerations | list | `[{"effect":"NoSchedule","key":"node.kubernetes.io/not-ready"},{"effect":"NoSchedule","key":"node-role.kubernetes.io/master"},{"effect":"NoSchedule","key":"node-role.kubernetes.io/control-plane"},{"effect":"NoSchedule","key":"node.cloudprovider.kubernetes.io/uninitialized","value":"true"},{"key":"CriticalAddonsOnly","operator":"Exists"}]` | Node tolerations for preflight scheduling to nodes with taints ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ |
 | preflight.updateStrategy | object | `{"type":"RollingUpdate"}` | preflight update strategy |
 | preflight.validateCNPs | bool | `true` | By default we should always validate the installed CNPs before upgrading Cilium. This will make sure the user will have the policies deployed in the cluster with the right schema. |
 | priorityClassName | string | `""` | The priority class to use for cilium-agent. |
@@ -529,8 +540,6 @@ contributors across the globe, there is almost always someone available to help.
 | sockops | object | `{"enabled":false}` | Configure BPF socket operations configuration |
 | startupProbe.failureThreshold | int | `105` | failure threshold of startup probe. 105 x 2s translates to the old behaviour of the readiness probe (120s delay + 30 x 3s) |
 | startupProbe.periodSeconds | int | `2` | interval between checks of the startup probe |
-| statelessNat46x64 | object | `{"enabled":false}` | Configure Stateless NAT46/NAT64 translation |
-| statelessNat46x64.enabled | bool | `false` | Enable RFC8215-prefixed translation |
 | svcSourceRangeCheck | bool | `true` | Enable check of service source ranges (currently, only for LoadBalancer). |
 | synchronizeK8sNodes | bool | `true` | Synchronize Kubernetes nodes to kvstore and perform CNP GC. |
 | terminationGracePeriodSeconds | int | `1` | Configure termination grace period for cilium-agent DaemonSet. |
