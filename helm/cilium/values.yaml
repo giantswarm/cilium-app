@@ -1798,7 +1798,7 @@ operator:
   # -- cilium-operator image.
   image:
     override: ~
-    repository: "quay.io/giantswarm/operator"
+    repository: "quay.io/giantswarm/cilium-operator"
     tag: "v1.13.0"
     # operator-generic-digest
     genericDigest: ""
