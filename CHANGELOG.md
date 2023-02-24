@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bump all manifests to upstream version 1.13-rc4
+- Bump all manifests to upstream version 1.13
+- Enable Hubble
+- Enable Monitoring for Agent, Operator and Hubble
 
 ## [0.7.0] - 2023-02-10
 
