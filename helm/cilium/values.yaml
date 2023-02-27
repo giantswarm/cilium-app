@@ -798,7 +798,7 @@ socketLB:
 certgen:
   image:
     override: ~
-    repository: "quay.io/giantswarm/certgen"
+    repository: "quay.io/giantswarm/cilium-certgen"
     tag: "v0.1.8"
     pullPolicy: "IfNotPresent"
   # -- Seconds after which the completed job pod will be deleted
