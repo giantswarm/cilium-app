@@ -4,6 +4,8 @@ kind: Role
 metadata:
   name: clustermesh-apiserver-generate-certs
   namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/part-of: cilium
 rules:
   - apiGroups:
       - ""
@@ -16,6 +18,7 @@ rules:
     resources:
       - secrets
     resourceNames:
+      - cilium-ca
       - clustermesh-apiserver-ca-cert
     verbs:
       - get

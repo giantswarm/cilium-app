@@ -6,6 +6,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     k8s-app: hubble-ui
+    app.kubernetes.io/name: hubble-ui
+    app.kubernetes.io/part-of: cilium
 spec:
   replicas: {{ .Values.hubble.ui.replicas }}
   selector:
@@ -23,27 +25,21 @@ spec:
         {{- end }}
       labels:
         k8s-app: hubble-ui
+        app.kubernetes.io/name: hubble-ui
+        app.kubernetes.io/part-of: cilium
         {{- with .Values.hubble.ui.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      {{- if .Values.hubble.ui.securityContext.enabled }}
+      {{- with .Values.hubble.ui.securityContext }}
+        {{- if .enabled }}
       securityContext:
-        runAsUser: 1001
-        runAsGroup: 1001
-        fsGroup: 1001
+        {{- omit . "enabled" | toYaml | nindent 8 }}
+        {{- end}}
       {{- end }}
       priorityClassName: {{ .Values.hubble.ui.priorityClassName }}
       serviceAccount: {{ .Values.serviceAccounts.ui.name | quote }}
       serviceAccountName: {{ .Values.serviceAccounts.ui.name | quote }}
-      {{- with .Values.hubble.ui.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | trim | nindent 8 }}
-      {{- end }}
-      {{- with .Values.hubble.ui.tolerations }}
-      tolerations:
-        {{- toYaml . | trim | nindent 8 }}
-      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -55,6 +51,10 @@ spec:
         ports:
         - name: http
           containerPort: 8081
+        {{- with .Values.hubble.ui.frontend.extraEnv }}
+        env:
+          {{- toYaml . | trim | nindent 12 }}
+        {{- end }}
         {{- with .Values.hubble.ui.frontend.resources }}
         resources:
           {{- toYaml . | trim | nindent 10 }}
@@ -63,6 +63,8 @@ spec:
           - name: hubble-ui-nginx-conf
             mountPath: /etc/nginx/conf.d/default.conf
             subPath: nginx.conf
+          - name: tmp-dir
+            mountPath: /tmp
         terminationMessagePolicy: FallbackToLogsOnError
       - name: backend
         image: {{ include "cilium.image" .Values.hubble.ui.backend.image | quote }}
@@ -87,6 +89,9 @@ spec:
         - name: FLOWS_API_ADDR
           value: "hubble-relay:80"
         {{- end }}
+        {{- with .Values.hubble.ui.backend.extraEnv }}
+        {{- toYaml . | trim | nindent 10 }}
+        {{- end }}
         ports:
         - name: grpc
           containerPort: 8090
@@ -101,11 +106,36 @@ spec:
           readOnly: true
         {{- end }}
         terminationMessagePolicy: FallbackToLogsOnError
+      {{- with .Values.hubble.ui.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hubble.ui.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- range $constraint := . }}
+      - {{ toYaml $constraint | nindent 8 | trim }}
+          {{- if not $constraint.labelSelector }}
+        labelSelector:
+          matchLabels:
+            k8s-app: hubble-ui
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.hubble.ui.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | trim | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hubble.ui.tolerations }}
+      tolerations:
+        {{- toYaml . | trim | nindent 8 }}
+      {{- end }}
       volumes:
       - configMap:
           defaultMode: 420
           name: hubble-ui-nginx
         name: hubble-ui-nginx-conf
+      - emptyDir: {}
+        name: tmp-dir
       {{- if .Values.hubble.relay.tls.server.enabled }}
       - name: hubble-ui-client-certs
       {{- if .Values.hubble.ui.standalone.enabled }}

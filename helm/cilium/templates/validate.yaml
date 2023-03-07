@@ -22,24 +22,24 @@
   {{- end }}
 {{- end }}
 
-{{- if and .Values.hubble.enabled .Values.hubble.tls.enabled .Values.hubble.tls.auto.enabled (eq .Values.hubble.tls.auto.method "certmanager") }}
-  {{- if not .Values.hubble.tls.auto.certManagerIssuerRef }}
-    {{ fail "Hubble TLS certgen method=certmanager requires user specify .Values.hubble.tls.auto.certManagerIssuerRef" }}
-  {{- end }}
-{{- end }}
-
-{{- if and (or .Values.externalWorkloads.enabled .Values.clustermesh.useAPIServer) .Values.clustermesh.apiserver.tls.auto.enabled (eq .Values.clustermesh.apiserver.tls.auto.method "certmanager") }}
-  {{- if not .Values.clustermesh.apiserver.tls.auto.certManagerIssuerRef }}
-    {{ fail "ClusterMesh TLS certgen method=certmanager requires user specify .Values.clustermesh.apiserver.tls.auto.certManagerIssuerRef" }}
-  {{- end }}
-{{- end }}
-
 {{/* validate hubble-ui specific config */}}
-{{- if .Values.hubble.ui.enabled }}
+{{- if and .Values.hubble.ui.enabled
+  (ne .Values.hubble.ui.backend.image.tag "latest")
+  (ne .Values.hubble.ui.frontend.image.tag "latest") }}
   {{- if regexReplaceAll "@.*$" .Values.hubble.ui.backend.image.tag "" | trimPrefix "v" | semverCompare "<0.9.0" }}
     {{ fail "Hubble UI requires hubble.ui.backend.image.tag to be '>=v0.9.0'" }}
   {{- end }}
   {{- if regexReplaceAll "@.*$" .Values.hubble.ui.frontend.image.tag "" | trimPrefix "v" | semverCompare "<0.9.0" }}
     {{ fail "Hubble UI requires hubble.ui.frontend.image.tag to be '>=v0.9.0'" }}
+  {{- end }}
+{{- end }}
+
+{{- if or .Values.ingressController.enabled .Values.gatewayAPI.enabled }}
+  {{- if hasKey .Values "kubeProxyReplacement" }}
+    {{- if and (ne .Values.kubeProxyReplacement "partial") (ne .Values.kubeProxyReplacement "strict") }}
+      {{ fail "Ingress/Gateway API controller requires .Values.kubeProxyReplacement to be set to either 'partial' or 'strict'" }}
+    {{- end }}
+  {{- else }}
+    {{ fail "Ingress/Gateway API controller requires .Values.kubeProxyReplacement to be set to either 'partial' or 'strict'" }}
   {{- end }}
 {{- end }}

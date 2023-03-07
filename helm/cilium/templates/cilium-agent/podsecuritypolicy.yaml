@@ -7,8 +7,20 @@ spec:
   privileged: true
   allowPrivilegeEscalation: true
   allowedCapabilities:
+    - CHOWN
+    - DAC_OVERRIDE
+    - FOWNER
+    - IPC_LOCK
+    - KILL
     - NET_ADMIN
+    - NET_RAW
+    - SETGID
+    - SETUID
+    - SYS_ADMIN
+    - SYS_CHROOT
     - SYS_MODULE
+    - SYS_PTRACE
+    - SYS_RESOURCE
   volumes:
     - 'configMap'
     - 'emptyDir'

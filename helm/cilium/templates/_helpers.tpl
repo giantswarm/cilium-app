@@ -90,3 +90,67 @@ Return the appropriate apiVersion for cronjob.
 {{- print "batch/v1beta1" -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the appropriate apiVersion for podDisruptionBudget.
+*/}}
+{{- define "podDisruptionBudget.apiVersion" -}}
+{{- if semverCompare ">=1.21-0" .Capabilities.KubeVersion.Version -}}
+{{- print "policy/v1" -}}
+{{- else -}}
+{{- print "policy/v1beta1" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Generate TLS CA for Cilium
+Note: Always use this template as follows:
+    {{- $_ := include "cilium.ca.setup" . -}}
+
+The assignment to `$_` is required because we store the generated CI in a global `commonCA`
+and `commonCASecretName` variables.
+
+*/}}
+{{- define "cilium.ca.setup" }}
+  {{- if not .commonCA -}}
+    {{- $ca := "" -}}
+    {{- $secretName := "cilium-ca" -}}
+    {{- $crt := .Values.tls.ca.cert -}}
+    {{- $key := .Values.tls.ca.key -}}
+    {{- if and $crt $key }}
+      {{- $ca = buildCustomCert $crt $key -}}
+    {{- else }}
+      {{- with lookup "v1" "Secret" .Release.Namespace $secretName }}
+        {{- $crt := index .data "ca.crt" }}
+        {{- $key := index .data "ca.key" }}
+        {{- $ca = buildCustomCert $crt $key -}}
+      {{- else }}
+        {{- $validity := ( .Values.tls.ca.certValidityDuration | int) -}}
+        {{- $ca = genCA "Cilium CA" $validity -}}
+      {{- end }}
+    {{- end -}}
+    {{- $_ := set (set . "commonCA" $ca) "commonCASecretName" $secretName -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Check if duration is non zero value, return duration, empty when zero.
+*/}}
+{{- define "hasDuration" }}
+{{- $now := now }}
+{{- if ne $now ($now | dateModify (toString .)) }}
+{{- . }}
+{{- end }}
+{{- end }}
+
+{{/*
+Validate duration field, return validated duration, 0s when provided duration is empty.
+*/}}
+{{- define "validateDuration" }}
+{{- if . }}
+{{- $_ := now | mustDateModify (toString .) }}
+{{- . }}
+{{- else -}}
+0s
+{{- end }}
+{{- end }}

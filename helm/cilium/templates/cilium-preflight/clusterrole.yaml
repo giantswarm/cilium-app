@@ -6,6 +6,8 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: cilium-pre-flight
+  labels:
+    app.kubernetes.io/part-of: cilium
 rules:
 - apiGroups:
   - networking.k8s.io
@@ -49,12 +51,8 @@ rules:
   resources:
   - customresourcedefinitions
   verbs:
-  # Deprecated for removal in v1.10
-  - create
   - list
   - watch
-  - update
-
   # This is used when validating policies in preflight. This will need to stay
   # until we figure out how to avoid "get" inside the preflight, and then
   # should be removed ideally.
@@ -70,19 +68,59 @@ rules:
 - apiGroups:
   - cilium.io
   resources:
-  - ciliumnetworkpolicies
-  - ciliumnetworkpolicies/status
+  - ciliumloadbalancerippools
+  - ciliumbgppeeringpolicies
+  - ciliumclusterwideenvoyconfigs
   - ciliumclusterwidenetworkpolicies
-  - ciliumclusterwidenetworkpolicies/status
+  - ciliumegressgatewaypolicies
   - ciliumendpoints
-  - ciliumendpoints/status
-  - ciliumnodes
-  - ciliumnodes/status
+  - ciliumendpointslices
+  - ciliumenvoyconfigs
   - ciliumidentities
   - ciliumlocalredirectpolicies
-  - ciliumlocalredirectpolicies/status
-  - ciliumegressnatpolicies
-  - ciliumendpointslices
+  - ciliumnetworkpolicies
+  - ciliumnodes
+  - ciliumnodeconfigs
   verbs:
-  - '*'
+  - list
+  - watch
+- apiGroups:
+  - cilium.io
+  resources:
+  - ciliumidentities
+  - ciliumendpoints
+  - ciliumnodes
+  verbs:
+  - create
+- apiGroups:
+  - cilium.io
+  # To synchronize garbage collection of such resources
+  resources:
+  - ciliumidentities
+  verbs:
+  - update
+- apiGroups:
+  - cilium.io
+  resources:
+  - ciliumendpoints
+  verbs:
+  - delete
+  - get
+- apiGroups:
+  - cilium.io
+  resources:
+  - ciliumnodes
+  - ciliumnodes/status
+  verbs:
+  - get
+  - update
+- apiGroups:
+  - cilium.io
+  resources:
+  - ciliumnetworkpolicies/status
+  - ciliumclusterwidenetworkpolicies/status
+  - ciliumendpoints/status
+  - ciliumendpoints
+  verbs:
+  - patch
 {{- end }}
