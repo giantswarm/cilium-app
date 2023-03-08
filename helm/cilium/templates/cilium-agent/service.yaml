@@ -42,6 +42,10 @@ spec:
   selector:
     k8s-app: cilium
   ports:
+  - name: metrics
+    port: {{ .Values.prometheus.port }}
+    protocol: TCP
+    targetPort: prometheus
   - name: envoy-metrics
     port: {{ .Values.proxy.prometheus.port }}
     protocol: TCP
