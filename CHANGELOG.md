@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Use `image.registry` value as image registry for all containers in the chart.
+
 ## [0.8.0] - 2023-03-08
 
 ### Changed
