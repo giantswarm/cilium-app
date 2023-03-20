@@ -46,7 +46,7 @@ spec:
       {{- end }}
       containers:
         - name: hubble-relay
-          image: {{ include "cilium.image" .Values.hubble.relay.image | quote }}
+          image: "{{ .Values.image.registry }}/{{ include "cilium.image" .Values.hubble.relay.image }}"
           imagePullPolicy: {{ .Values.hubble.relay.image.pullPolicy }}
           command:
             - hubble-relay
