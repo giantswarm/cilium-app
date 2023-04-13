@@ -1,20 +1,24 @@
 {{- if and .Values.hubble.enabled .Values.hubble.relay.enabled }}
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
 metadata:
-  name: hubble-relay
-  namespace: {{ .Release.Namespace }}
   labels:
     k8s-app: hubble-relay
+  name: hubble-relay
+  namespace: {{ .Release.Namespace }}
 spec:
-  ingress:
-    - ports:
-        - port: {{ .Values.hubble.relay.listenPort }}
-        - port: {{ .Values.hubble.relay.prometheus.port }}
-  podSelector:
+  endpointSelector:
     matchLabels:
       k8s-app: hubble-relay
-  policyTypes:
-    - Ingress
+  egress:
+    - toEntities:
+        - cluster
+        - kube-apiserver
+  ingress:
+    - fromEntities:
+        - cluster
+      toPorts:
+        - ports:
+            - port: "{{ .Values.hubble.relay.listenPort }}"
+            - port: "{{ .Values.hubble.relay.prometheus.port }}"
 {{- end }}
