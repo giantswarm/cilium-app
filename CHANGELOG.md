@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Revert to NetworkPolicy to allow hubble and hubble-relay egress.
+
 ## [0.9.2] - 2023-04-13
 
 ### Changed
