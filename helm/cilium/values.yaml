@@ -589,13 +589,13 @@ enableCiliumEndpointSlice: false
 ingressController:
   # -- Enable cilium ingress controller
   # This will automatically set enable-envoy-config as well.
-  enabled: false
+  enabled: true
 
   # -- Default ingress load balancer mode
   # Supported values: shared, dedicated
   # For granular control, use the following annotations on the ingress resource
   # ingress.cilium.io/loadbalancer-mode: shared|dedicated,
-  loadbalancerMode: dedicated
+  loadbalancerMode: shared
 
   # -- Enforce https for host having matching TLS host in Ingress.
   # Incoming traffic to http listener will return 308 http error code with respective location in header.
