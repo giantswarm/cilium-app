@@ -381,7 +381,7 @@ bpf:
   neighMax: ~
 
   # -- Configure the maximum number of entries in endpoint policy map (per endpoint).
-  policyMapMax: 16384
+  policyMapMax: 65536
 
   # -- (float64) Configure auto-sizing for all BPF maps based on available memory.
   # ref: https://docs.cilium.io/en/stable/concepts/ebpf/maps/#ebpf-maps
@@ -1419,7 +1419,7 @@ l7Proxy: true
 localRedirectPolicy: true
 
 # To include or exclude matched resources from cilium identity evaluation
-# labels: ""
+labels: "k8s:!.*/enforce k8s:!.*fluxcd.io/.* k8s:!.*kubernetes.io/managed-by.*  k8s:!controller-uid k8s:!job-name"
 
 # logOptions allows you to define logging options. eg:
 # logOptions:
@@ -1607,7 +1607,7 @@ prometheus:
   # list. (+metric_foo to enable metric_foo , -metric_bar to disable
   # metric_bar).
   # ref: https://docs.cilium.io/en/stable/operations/metrics/#exported-metrics
-  metrics: ~
+  metrics: +cilium_bpf_map_pressure
 
 # -- Configure Istio proxy options.
 proxy:
