@@ -2493,7 +2493,10 @@
                     "type": "boolean"
                 },
                 "metrics": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "port": {
                     "type": "integer"

@@ -1607,7 +1607,8 @@ prometheus:
   # list. (+metric_foo to enable metric_foo , -metric_bar to disable
   # metric_bar).
   # ref: https://docs.cilium.io/en/stable/operations/metrics/#exported-metrics
-  metrics: +cilium_bpf_map_pressure
+  metrics: 
+   - +cilium_bpf_map_pressure
 
 # -- Configure Istio proxy options.
 proxy:
