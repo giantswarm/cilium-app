@@ -1860,6 +1860,9 @@
         "l7Proxy": {
             "type": "boolean"
         },
+        "labels": {
+            "type": "string"
+        },
         "livenessProbe": {
             "type": "object",
             "properties": {
@@ -2490,7 +2493,10 @@
                     "type": "boolean"
                 },
                 "metrics": {
-                    "type": "null"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "port": {
                     "type": "integer"
