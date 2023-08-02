@@ -964,6 +964,65 @@
         "extraHostPathMounts": {
             "type": "array"
         },
+        "extraPolicies": {
+            "type": "object",
+            "description": "Which extra network policies to install alongside Cilium.",
+            "properties": {
+                "allowEgressToCoreDNS": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean",
+                            "description": "Allow all DNS egress to CoreDNS."
+                        },
+                        "namespaces": {
+                            "type": "array",
+                            "default": ["giantswarm", "kube-system"],
+                            "description": "For which namespaces to install this policy.",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "allowEgressToProxy": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean",
+                            "description": "Allow all egress to the HTTP/HTTPS proxy via L7 CiliumNetworkPolicy rule. For now this only supports an FQDN, not an IP address, inside the `httpProxy`/`httpsProxy` URLs."
+                        },
+                        "httpProxy": {
+                            "type": "string",
+                            "title": "HTTP proxy"
+                        },
+                        "httpsProxy": {
+                            "type": "string",
+                            "title": "HTTPS proxy"
+                        },
+                        "namespaces": {
+                            "type": "array",
+                            "default": ["giantswarm", "kube-system"],
+                            "description": "For which namespaces to install this policy.",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "tolerations": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "operator": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "extraVolumeMounts": {
             "type": "array"
         },
@@ -2740,6 +2799,20 @@
                     }
                 },
                 "etcd": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object"
+                        },
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "extraPolicies": {
                     "type": "object",
                     "properties": {
                         "annotations": {

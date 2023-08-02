@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Support creating `CiliumNetworkPolicy` manifests that allow egress requests to DNS and proxy hosts
+
 ## [0.11.0] - 2023-07-10
 
 ### Changed
@@ -60,14 +64,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Enable LocalRedirectPolicy for node-local-cache and kiam. 
+- Enable LocalRedirectPolicy for node-local-cache and kiam.
 
 
 ## [0.6.1] - 2022-11-22
 
 ### Changed
 
-- Align Helm chart ownership and CODEOWNERS file. 
+- Align Helm chart ownership and CODEOWNERS file.
 
 ## [0.6.0] - 2022-11-07
 
