@@ -14,6 +14,7 @@ data:
             "cniVersion":"0.3.1",
             "type":"cilium-cni",
             "eni": {
+              {{- if (eq .Values.provider "aws")}}
               "first-interface-index": 1,
               "exclude-interface-tags": {
                 "aws:cloudformation:logical-id": "MasterEni"
@@ -26,6 +27,7 @@ data:
                 "giantswarm.io/cluster": "{{ .Values.cluster.name }}",
                 "giantswarm.io/subnet-type": "aws-cni"
               }
+              {{- end}}
             }
           }
         ]
