@@ -17,7 +17,7 @@ data:
               {{- if (eq .Values.provider "aws")}}
               "first-interface-index": 1,
               "exclude-interface-tags": {
-                "aws:cloudformation:logical-id": "MasterEni"
+                "giantswarm.io/stack": "tccpn"
               },
               "security-group-tags": {
                 "giantswarm.io/cluster": "{{ .Values.cluster.name }}",
