@@ -212,7 +212,6 @@ spec:
         {{- toYaml . | trim | nindent 8 }}
         {{- end }}
         {{- if .Values.cni.install }}
-        {{- if .Values.cni.install }}
         lifecycle:
           postStart:
             exec:
