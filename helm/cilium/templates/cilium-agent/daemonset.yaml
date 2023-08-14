@@ -213,13 +213,15 @@ spec:
         {{- end }}
         {{- if .Values.cni.install }}
         lifecycle:
+          {{- if .Values.eni.enabled }}
           postStart:
             exec:
               command:
-              - "/cni-install.sh"
-              - "--enable-debug={{ .Values.debug.enabled }}"
-              - "--cni-exclusive={{ .Values.cni.exclusive }}"
-              - "--log-file={{ .Values.cni.logFile }}"
+              - "bash"
+              - "-c"
+              - |
+                {{- tpl (.Files.Get "files/agent/poststart-eni.bash") . | nindent 20 }}
+          {{- end }}
           preStop:
             exec:
               command:
@@ -664,6 +666,34 @@ spec:
             done
         terminationMessagePolicy: FallbackToLogsOnError
       {{- end }} # wait-for-kube-proxy
+      {{- if .Values.cni.install }}
+      # Install the CNI binaries in an InitContainer so we don't have a writable host mount in the agent
+      - name: install-cni-binaries
+        image: {{ include "cilium.image" .Values.image | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - "/install-plugin.sh"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 10Mi
+        securityContext:
+          {{- if .Values.securityContext.privileged }}
+          privileged: true
+          {{- else }}
+          seLinuxOptions:
+            {{- with .Values.securityContext.seLinuxOptions }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- end }}
+          capabilities:
+            drop:
+              - ALL
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+          - name: cni-path
+            mountPath: /host/opt/cni/bin
+      {{- end }} # .Values.cni.install
       {{ if and (.Values.cleanupKubeProxy) (not (eq .Values.kubeProxyReplacement "disabled")) }}
       - name: cleanup-kube-proxy-iptables
         image: "{{ .Values.image.registry }}/{{ include "cilium.image" .Values.image }}"
