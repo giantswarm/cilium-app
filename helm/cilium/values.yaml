@@ -107,7 +107,7 @@ image:
   registry: docker.io
   override: ~
   repository: "giantswarm/cilium"
-  tag: "v1.13.0"
+  tag: "v1.13.6"
   pullPolicy: "IfNotPresent"
   # cilium-digest
   digest: ""
@@ -976,7 +976,7 @@ hubble:
     image:
       override: ~
       repository: "giantswarm/hubble-relay"
-      tag: "v1.13.0"
+      tag: "v1.13.6"
        # hubble-relay-digest
       digest: ""
       useDigest: false
@@ -1801,7 +1801,7 @@ operator:
   image:
     override: ~
     repository: "giantswarm/cilium-operator"
-    tag: "v1.13.0"
+    tag: "v1.13.6"
     # operator-generic-digest
     genericDigest: ""
     # operator-azure-digest
@@ -2057,7 +2057,7 @@ preflight:
   image:
     override: ~
     repository: "giantswarm/cilium"
-    tag: "v1.13.0"
+    tag: "v1.13.6"
     # cilium-digest
     digest: ""
     useDigest: false
@@ -2196,7 +2196,7 @@ clustermesh:
     image:
       override: ~
       repository: "giantswarm/cilium-clustermesh-apiserver"
-      tag: "v1.13.0"
+      tag: "v1.13.6"
       # clustermesh-apiserver-digest
       digest: ""
       useDigest: false
