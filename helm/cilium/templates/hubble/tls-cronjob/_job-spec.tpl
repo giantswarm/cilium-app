@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: certgen
-          image: "{{ .Values.image.registry }}/{{ include "cilium.image" .Values.certgen.image }}"
+          image: {{ include "cilium.image" .Values.certgen.image | quote }}
           imagePullPolicy: {{ .Values.certgen.image.pullPolicy }}
           command:
             - "/usr/bin/cilium-certgen"
@@ -43,6 +43,10 @@ spec:
             - "--hubble-relay-server-cert-generate"
             - "--hubble-relay-server-cert-validity-duration={{ $certValiditySecondsStr }}"
             {{- end }}
+          {{- with .Values.certgen.extraVolumeMounts }}
+          volumeMounts:
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
       hostNetwork: true
       {{- with .Values.certgen.tolerations }}
       tolerations:
@@ -50,10 +54,15 @@ spec:
       {{- end }}
       serviceAccount: {{ .Values.serviceAccounts.hubblecertgen.name | quote }}
       serviceAccountName: {{ .Values.serviceAccounts.hubblecertgen.name | quote }}
+      automountServiceAccountToken: {{ .Values.serviceAccounts.hubblecertgen.automount }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       restartPolicy: OnFailure
+      {{- with .Values.certgen.extraVolumes }}
+      volumes:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
   ttlSecondsAfterFinished: {{ .Values.certgen.ttlSecondsAfterFinished }}
 {{- end }}

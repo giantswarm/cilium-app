@@ -46,7 +46,7 @@ spec:
       {{- end }}
       containers:
         - name: hubble-relay
-          image: "{{ .Values.image.registry }}/{{ include "cilium.image" .Values.hubble.relay.image }}"
+          image: {{ include "cilium.image" .Values.hubble.relay.image | quote }}
           imagePullPolicy: {{ .Values.hubble.relay.image.pullPolicy }}
           command:
             - hubble-relay
@@ -96,7 +96,7 @@ spec:
       priorityClassName: {{ .Values.hubble.relay.priorityClassName }}
       serviceAccount: {{ .Values.serviceAccounts.relay.name | quote }}
       serviceAccountName: {{ .Values.serviceAccounts.relay.name | quote }}
-      automountServiceAccountToken: false
+      automountServiceAccountToken: {{ .Values.serviceAccounts.relay.automount }}
       terminationGracePeriodSeconds: {{ .Values.hubble.relay.terminationGracePeriodSeconds }}
       {{- with .Values.hubble.relay.affinity }}
       affinity:
