@@ -234,6 +234,9 @@
         "cleanState": {
             "type": "boolean"
         },
+        "cleanupKubeProxy": {
+            "type": "boolean"
+        },
         "cluster": {
             "type": "object",
             "properties": {
@@ -621,6 +624,25 @@
                 },
                 "verbose": {
                     "type": "null"
+                }
+            }
+        },
+        "defaultPolicies": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "tolerations": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "operator": {
+                                "type": "string"
+                            }
+                        }
+                    }
                 }
             }
         },
