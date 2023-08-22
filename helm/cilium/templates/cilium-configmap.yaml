@@ -712,7 +712,7 @@ data:
 {{- end }}
 {{- if .Values.cni.configMap }}
   read-cni-conf: {{ .Values.cni.confFileMountPath }}/{{ .Values.cni.configMapKey }}
-  write-cni-conf-when-ready: {{ .Values.cni.hostConfDirMountPath }}/21-cilium.conf
+  write-cni-conf-when-ready: {{ .Values.cni.hostConfDirMountPath }}/21-cilium.conflist
 {{- else if .Values.cni.readCniConf }}
   read-cni-conf: {{ .Values.cni.readCniConf }}
 {{- end }}
