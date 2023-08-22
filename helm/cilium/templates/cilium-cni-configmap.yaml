@@ -8,28 +8,22 @@ data:
   cni-config: |-
       {
         "cniVersion":"0.3.1",
-        "name":"cilium",
-        "plugins": [
-          {
-            "cniVersion":"0.3.1",
-            "type":"cilium-cni",
-            "eni": {
-              {{- if (eq .Values.provider "aws")}}
-              "first-interface-index": 1,
-              "exclude-interface-tags": {
-                "giantswarm.io/stack": "tccpn"
-              },
-              "security-group-tags": {
-                "giantswarm.io/cluster": "{{ .Values.cluster.name }}",
-                "Name": "{{ .Values.cluster.name }}-aws-cni"
-              },
-              "subnet-tags": {
-                "giantswarm.io/cluster": "{{ .Values.cluster.name }}",
-                "giantswarm.io/subnet-type": "aws-cni"
-              }
-              {{- end}}
-            }
+        "type":"cilium-cni",
+        "eni": {
+          {{- if (eq .Values.provider "aws")}}
+          "first-interface-index": 1,
+          "exclude-interface-tags": {
+            "giantswarm.io/stack": "tccpn"
+          },
+          "security-group-tags": {
+            "giantswarm.io/cluster": "{{ .Values.cluster.name }}",
+            "Name": "{{ .Values.cluster.name }}-aws-cni"
+          },
+          "subnet-tags": {
+            "giantswarm.io/cluster": "{{ .Values.cluster.name }}",
+            "giantswarm.io/subnet-type": "aws-cni"
           }
-        ]
+          {{- end}}
+        }
       }
 {{- end}}
