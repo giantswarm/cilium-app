@@ -15,15 +15,26 @@ metadata:
   {{- end }}
 spec:
   ports:
-  - name: http
-    port: 80
-    protocol: TCP
-    nodePort: {{ .Values.ingressController.service.insecureNodePort }}
-  - name: https
-    port: 443
-    protocol: TCP
-    nodePort: {{ .Values.ingressController.service.secureNodePort }}
+    - name: http
+      port: 80
+      protocol: TCP
+      nodePort: {{ .Values.ingressController.service.insecureNodePort }}
+    - name: https
+      port: 443
+      protocol: TCP
+      nodePort: {{ .Values.ingressController.service.secureNodePort }}
   type: {{ .Values.ingressController.service.type }}
+  {{- if semverCompare ">=1.24-0" .Capabilities.KubeVersion.Version -}}
+  {{- if .Values.ingressController.service.loadBalancerClass }}
+  loadBalancerClass: {{ .Values.ingressController.service.loadBalancerClass }}
+  {{- end }}
+  {{- if (not (kindIs "invalid" .Values.ingressController.service.allocateLoadBalancerNodePorts)) }}
+  allocateLoadBalancerNodePorts: {{ .Values.ingressController.service.allocateLoadBalancerNodePorts }}
+  {{- end }}
+  {{- end -}}
+  {{- if .Values.ingressController.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.ingressController.service.loadBalancerIP }}
+  {{- end }}
 ---
 apiVersion: v1
 kind: Endpoints
@@ -39,8 +50,8 @@ metadata:
     {{- toYaml .Values.ingressController.service.annotations | nindent 4 }}
   {{- end }}
 subsets:
-- addresses:
-  - ip: "192.192.192.192"
-  ports:
-  - port: 9999
+  - addresses:
+      - ip: "192.192.192.192"
+    ports:
+      - port: 9999
 {{- end }}
