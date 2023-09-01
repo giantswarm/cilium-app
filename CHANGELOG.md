@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Create custom CNI config depending on provider to allow bigger customization.
 - Bump all manifests to upstream version 1.13.6.
 
-
 ## [0.11.0] - 2023-07-10
 
 ### Changed
