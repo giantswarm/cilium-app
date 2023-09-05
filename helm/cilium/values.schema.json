@@ -116,9 +116,6 @@
         "bpf": {
             "type": "object",
             "properties": {
-                "clockProbe": {
-                    "type": "boolean"
-                },
                 "ctAnyMax": {
                     "type": "null"
                 },
@@ -172,9 +169,18 @@
                 }
             }
         },
+        "bpfClockProbe": {
+            "type": "boolean"
+        },
         "certgen": {
             "type": "object",
             "properties": {
+                "extraVolumeMounts": {
+                    "type": "array"
+                },
+                "extraVolumes": {
+                    "type": "array"
+                },
                 "image": {
                     "type": "object",
                     "properties": {
@@ -312,10 +318,19 @@
                                 },
                                 "resources": {
                                     "type": "object"
+                                },
+                                "securityContext": {
+                                    "type": "object"
                                 }
                             }
                         },
                         "extraEnv": {
+                            "type": "array"
+                        },
+                        "extraVolumeMounts": {
+                            "type": "array"
+                        },
+                        "extraVolumes": {
                             "type": "array"
                         },
                         "image": {
@@ -369,6 +384,9 @@
                         "podLabels": {
                             "type": "object"
                         },
+                        "podSecurityContext": {
+                            "type": "object"
+                        },
                         "priorityClassName": {
                             "type": "string"
                         },
@@ -376,6 +394,9 @@
                             "type": "integer"
                         },
                         "resources": {
+                            "type": "object"
+                        },
+                        "securityContext": {
                             "type": "object"
                         },
                         "service": {
@@ -550,6 +571,9 @@
                 },
                 "logFile": {
                     "type": "string"
+                },
+                "uninstall": {
+                    "type": "boolean"
                 }
             }
         },
@@ -719,6 +743,9 @@
                         "keyFile": {
                             "type": "string"
                         },
+                        "keyWatcher": {
+                            "type": "boolean"
+                        },
                         "mountPath": {
                             "type": "string"
                         },
@@ -820,6 +847,25 @@
                 }
             }
         },
+        "envoyConfig": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "secretsNamespace": {
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "etcd": {
             "type": "object",
             "properties": {
@@ -836,6 +882,12 @@
                     }
                 },
                 "extraArgs": {
+                    "type": "array"
+                },
+                "extraVolumeMounts": {
+                    "type": "array"
+                },
+                "extraVolumes": {
                     "type": "array"
                 },
                 "image": {
@@ -884,6 +936,9 @@
                     }
                 },
                 "podLabels": {
+                    "type": "object"
+                },
+                "podSecurityContext": {
                     "type": "object"
                 },
                 "priorityClassName": {
@@ -963,6 +1018,65 @@
         },
         "extraHostPathMounts": {
             "type": "array"
+        },
+        "extraPolicies": {
+            "type": "object",
+            "description": "Which extra network policies to install alongside Cilium.",
+            "properties": {
+                "allowEgressToCoreDNS": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean",
+                            "description": "Allow all DNS egress to CoreDNS."
+                        },
+                        "namespaces": {
+                            "type": "array",
+                            "default": ["giantswarm", "kube-system"],
+                            "description": "For which namespaces to install this policy.",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "allowEgressToProxy": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean",
+                            "description": "Allow all egress to the HTTP/HTTPS proxy via L7 CiliumNetworkPolicy rule. For now this only supports an FQDN, not an IP address, inside the `httpProxy`/`httpsProxy` URLs."
+                        },
+                        "httpProxy": {
+                            "type": "string",
+                            "title": "HTTP proxy"
+                        },
+                        "httpsProxy": {
+                            "type": "string",
+                            "title": "HTTPS proxy"
+                        },
+                        "namespaces": {
+                            "type": "array",
+                            "default": ["giantswarm", "kube-system"],
+                            "description": "For which namespaces to install this policy.",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "tolerations": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "operator": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         },
         "extraVolumeMounts": {
             "type": "array"
@@ -1448,35 +1562,10 @@
                                 "extraEnv": {
                                     "type": "array"
                                 },
-                                "image": {
-                                    "type": "object",
-                                    "properties": {
-                                        "override": {
-                                            "type": "null"
-                                        },
-                                        "pullPolicy": {
-                                            "type": "string"
-                                        },
-                                        "repository": {
-                                            "type": "string"
-                                        },
-                                        "tag": {
-                                            "type": "string"
-                                        }
-                                    }
+                                "extraVolumeMounts": {
+                                    "type": "array"
                                 },
-                                "resources": {
-                                    "type": "object"
-                                }
-                            }
-                        },
-                        "enabled": {
-                            "type": "boolean"
-                        },
-                        "frontend": {
-                            "type": "object",
-                            "properties": {
-                                "extraEnv": {
+                                "extraVolumes": {
                                     "type": "array"
                                 },
                                 "image": {
@@ -1497,6 +1586,52 @@
                                     }
                                 },
                                 "resources": {
+                                    "type": "object"
+                                },
+                                "securityContext": {
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "baseUrl": {
+                            "type": "string"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "frontend": {
+                            "type": "object",
+                            "properties": {
+                                "extraEnv": {
+                                    "type": "array"
+                                },
+                                "extraVolumeMounts": {
+                                    "type": "array"
+                                },
+                                "extraVolumes": {
+                                    "type": "array"
+                                },
+                                "image": {
+                                    "type": "object",
+                                    "properties": {
+                                        "override": {
+                                            "type": "null"
+                                        },
+                                        "pullPolicy": {
+                                            "type": "string"
+                                        },
+                                        "repository": {
+                                            "type": "string"
+                                        },
+                                        "tag": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "resources": {
+                                    "type": "object"
+                                },
+                                "securityContext": {
                                     "type": "object"
                                 },
                                 "server": {
@@ -1594,6 +1729,9 @@
                         "service": {
                             "type": "object",
                             "properties": {
+                                "annotations": {
+                                    "type": "object"
+                                },
                                 "nodePort": {
                                     "type": "integer"
                                 },
@@ -1730,6 +1868,9 @@
                 "service": {
                     "type": "object",
                     "properties": {
+                        "allocateLoadBalancerNodePorts": {
+                            "type": "null"
+                        },
                         "annotations": {
                             "type": "object"
                         },
@@ -1738,6 +1879,12 @@
                         },
                         "labels": {
                             "type": "object"
+                        },
+                        "loadBalancerClass": {
+                            "type": "null"
+                        },
+                        "loadBalancerIP": {
+                            "type": "null"
                         },
                         "name": {
                             "type": "string"
@@ -1751,9 +1898,6 @@
                     }
                 }
             }
-        },
-        "installIptablesRules": {
-            "type": "boolean"
         },
         "installNoConntrackIptablesRules": {
             "type": "boolean"
@@ -1859,6 +2003,9 @@
         },
         "l7Proxy": {
             "type": "boolean"
+        },
+        "labels": {
+            "type": "string"
         },
         "livenessProbe": {
             "type": "object",
@@ -2192,6 +2339,9 @@
                 "podLabels": {
                     "type": "object"
                 },
+                "podSecurityContext": {
+                    "type": "object"
+                },
                 "pprof": {
                     "type": "object",
                     "properties": {
@@ -2327,6 +2477,9 @@
         "podLabels": {
             "type": "object"
         },
+        "podSecurityContext": {
+            "type": "object"
+        },
         "policyEnforcementMode": {
             "type": "string"
         },
@@ -2387,6 +2540,12 @@
                 "extraEnv": {
                     "type": "array"
                 },
+                "extraVolumeMounts": {
+                    "type": "array"
+                },
+                "extraVolumes": {
+                    "type": "array"
+                },
                 "image": {
                     "type": "object",
                     "properties": {
@@ -2436,6 +2595,9 @@
                     }
                 },
                 "podLabels": {
+                    "type": "object"
+                },
+                "podSecurityContext": {
                     "type": "object"
                 },
                 "priorityClassName": {
@@ -2490,7 +2652,10 @@
                     "type": "boolean"
                 },
                 "metrics": {
-                    "type": "null"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "port": {
                     "type": "integer"
@@ -2532,6 +2697,9 @@
                                     }
                                 }
                             }
+                        },
+                        "trustCRDsExist": {
+                            "type": "boolean"
                         }
                     }
                 }
@@ -2683,6 +2851,9 @@
                         "annotations": {
                             "type": "object"
                         },
+                        "automount": {
+                            "type": "boolean"
+                        },
                         "create": {
                             "type": "boolean"
                         },
@@ -2696,6 +2867,9 @@
                     "properties": {
                         "annotations": {
                             "type": "object"
+                        },
+                        "automount": {
+                            "type": "boolean"
                         },
                         "create": {
                             "type": "boolean"
@@ -2711,6 +2885,9 @@
                         "annotations": {
                             "type": "object"
                         },
+                        "automount": {
+                            "type": "boolean"
+                        },
                         "create": {
                             "type": "boolean"
                         },
@@ -2725,6 +2902,9 @@
                         "annotations": {
                             "type": "object"
                         },
+                        "automount": {
+                            "type": "boolean"
+                        },
                         "create": {
                             "type": "boolean"
                         },
@@ -2734,6 +2914,23 @@
                     }
                 },
                 "etcd": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object"
+                        },
+                        "automount": {
+                            "type": "boolean"
+                        },
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "extraPolicies": {
                     "type": "object",
                     "properties": {
                         "annotations": {
@@ -2753,6 +2950,9 @@
                         "annotations": {
                             "type": "object"
                         },
+                        "automount": {
+                            "type": "boolean"
+                        },
                         "create": {
                             "type": "boolean"
                         },
@@ -2766,6 +2966,9 @@
                     "properties": {
                         "annotations": {
                             "type": "object"
+                        },
+                        "automount": {
+                            "type": "boolean"
                         },
                         "create": {
                             "type": "boolean"
@@ -2781,6 +2984,9 @@
                         "annotations": {
                             "type": "object"
                         },
+                        "automount": {
+                            "type": "boolean"
+                        },
                         "create": {
                             "type": "boolean"
                         },
@@ -2795,6 +3001,9 @@
                         "annotations": {
                             "type": "object"
                         },
+                        "automount": {
+                            "type": "boolean"
+                        },
                         "create": {
                             "type": "boolean"
                         },
@@ -2808,6 +3017,9 @@
                     "properties": {
                         "annotations": {
                             "type": "object"
+                        },
+                        "automount": {
+                            "type": "boolean"
                         },
                         "create": {
                             "type": "boolean"

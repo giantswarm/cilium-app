@@ -35,6 +35,10 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.clustermesh.apiserver.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       initContainers:
       - name: etcd-init
         image: "{{ .Values.image.registry }}/{{ include "cilium.image" .Values.clustermesh.apiserver.etcd.image }}"
@@ -113,6 +117,10 @@ spec:
         resources:
           {{- toYaml . | nindent 10 }}
         {{- end }}
+        {{- with .Values.clustermesh.apiserver.etcd.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
       - name: apiserver
         image: "{{ .Values.image.registry }}/{{ include "cilium.image" .Values.clustermesh.apiserver.image }}"
         imagePullPolicy: {{ .Values.clustermesh.apiserver.image.pullPolicy }}
@@ -126,6 +134,7 @@ spec:
         - --cluster-id=$(CLUSTER_ID)
         - --kvstore-opt
         - etcd.config=/var/lib/cilium/etcd-config.yaml
+        - --enable-external-workloads={{ .Values.externalWorkloads.enabled }}
         env:
         - name: CLUSTER_NAME
           valueFrom:
@@ -160,7 +169,14 @@ spec:
         - name: etcd-admin-client
           mountPath: /var/lib/cilium/etcd-secrets
           readOnly: true
+        {{- with .Values.clustermesh.apiserver.extraVolumeMounts }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         terminationMessagePolicy: FallbackToLogsOnError
+        {{- with .Values.clustermesh.apiserver.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
       volumes:
       - name: etcd-server-secrets
         secret:
@@ -174,10 +190,14 @@ spec:
           defaultMode: 0400
       - name: etcd-data-dir
         emptyDir: {}
+      {{- with .Values.clustermesh.apiserver.extraVolumes }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
       restartPolicy: Always
       priorityClassName: {{ include "cilium.priorityClass" (list $ .Values.clustermesh.apiserver.priorityClassName "system-cluster-critical") }}
       serviceAccount: {{ .Values.serviceAccounts.clustermeshApiserver.name | quote }}
       serviceAccountName: {{ .Values.serviceAccounts.clustermeshApiserver.name | quote }}
+      automountServiceAccountToken: {{ .Values.serviceAccounts.clustermeshApiserver.automount }}
       {{- with .Values.clustermesh.apiserver.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}

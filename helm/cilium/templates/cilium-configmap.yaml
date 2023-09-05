@@ -54,6 +54,9 @@
 {{- $bpfCtTcpMax := (coalesce .Values.bpf.ctTcpMax $defaultBpfCtTcpMax) -}}
 {{- $bpfCtAnyMax := (coalesce .Values.bpf.ctAnyMax $defaultBpfCtAnyMax) -}}
 {{- $kubeProxyReplacement := (coalesce .Values.kubeProxyReplacement $defaultKubeProxyReplacement) -}}
+{{- if and (ne $kubeProxyReplacement "disabled") (ne $kubeProxyReplacement "partial") (ne $kubeProxyReplacement "strict") }}
+  {{ fail "kubeproxyReplacement must be explicitly set to a valid value (disabled, partial, or strict) to continue." }}
+{{- end }}
 {{- $azureUsePrimaryAddress = (coalesce .Values.azure.usePrimaryAddress $azureUsePrimaryAddress) -}}
 {{- $socketLB := (coalesce .Values.socketLB .Values.hostServices) -}}
 ---
@@ -201,9 +204,15 @@ data:
   skip-crd-creation: "true"
 {{- end }}
 
+{{- if or .Values.envoyConfig.enabled .Values.ingressController.enabled .Values.gatewayAPI.enabled (and (hasKey .Values "loadBalancer") (eq .Values.loadBalancer.l7.backend "envoy")) }}
+  enable-envoy-config: "true"
+  {{- if .Values.envoyConfig.enabled }}
+  envoy-secrets-namespace: {{ .Values.envoyConfig.secretsNamespace.name | quote }}
+  {{- end }}
+{{- end }}
+
 {{- if .Values.ingressController.enabled }}
   enable-ingress-controller: "true"
-  enable-envoy-config: "true"
   enforce-ingress-https: {{ .Values.ingressController.enforceHttps | quote }}
   enable-ingress-secrets-sync: {{ .Values.ingressController.secretsNamespace.sync | quote }}
   ingress-secrets-namespace: {{ .Values.ingressController.secretsNamespace.name | quote }}
@@ -214,7 +223,6 @@ data:
 
 {{- if .Values.gatewayAPI.enabled }}
   enable-gateway-api: "true"
-  enable-envoy-config: "true"
   enable-gateway-api-secrets-sync: {{ .Values.gatewayAPI.secretsNamespace.sync | quote }}
   gateway-api-secrets-namespace: {{ .Values.gatewayAPI.secretsNamespace.name | quote }}
 {{- end }}
@@ -222,7 +230,6 @@ data:
 {{- if hasKey .Values "loadBalancer" }}
 {{- if eq .Values.loadBalancer.l7.backend "envoy" }}
   loadbalancer-l7: "envoy"
-  enable-envoy-config: "true"
   loadbalancer-l7-ports: {{ .Values.loadBalancer.l7.ports | join " " | quote }}
   loadbalancer-l7-algorithm: {{ .Values.loadBalancer.l7.algorithm | quote }}
 {{- end }}
@@ -517,6 +524,9 @@ data:
     {{- if .Values.encryption.nodeEncryption }}
   encrypt-node: {{ .Values.encryption.nodeEncryption | quote }}
     {{- end }}
+    {{- if hasKey .Values.encryption.ipsec "keyWatcher" }}
+  enable-ipsec-key-watcher: {{ .Values.encryption.ipsec.keyWatcher | quote }}
+    {{- end }}
   {{- else if eq .Values.encryption.type "wireguard" }}
   enable-wireguard: {{ .Values.encryption.enabled | quote }}
     {{- if .Values.encryption.wireguard.userspaceFallback }}
@@ -526,7 +536,6 @@ data:
 {{- end }}
 
   enable-xt-socket-fallback: {{ .Values.enableXTSocketFallback | quote }}
-  install-iptables-rules: {{ .Values.installIptablesRules | quote }}
 {{- if or (.Values.azure.enabled) (.Values.eni.enabled) (.Values.gke.enabled) (ne .Values.cni.chainingMode "none") }}
   install-no-conntrack-iptables-rules: "false"
 {{- else }}
@@ -703,9 +712,12 @@ data:
 {{- end }}
 {{- if .Values.cni.configMap }}
   read-cni-conf: {{ .Values.cni.confFileMountPath }}/{{ .Values.cni.configMapKey }}
-  write-cni-conf-when-ready: {{ .Values.cni.hostConfDirMountPath }}/05-cilium.conflist
+  write-cni-conf-when-ready: {{ .Values.cni.hostConfDirMountPath }}/21-cilium.conflist
 {{- else if .Values.cni.readCniConf }}
   read-cni-conf: {{ .Values.cni.readCniConf }}
+{{- end }}
+{{- if .Values.cni.uninstall }}
+  cni-uninstall: {{ .Values.cni.uninstall | quote }}
 {{- end }}
 {{- if .Values.kubeConfigPath }}
   k8s-kubeconfig-path: {{ .Values.kubeConfigPath | quote }}
