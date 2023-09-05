@@ -99,6 +99,10 @@ serviceAccounts:
     name: cilium-default-policies
     automount: true
     annotations: {}
+  extraPolicies:
+    create: true
+    name: cilium-extra-policies
+    annotations: {}
 
 # -- Configure termination grace period for cilium-agent DaemonSet.
 terminationGracePeriodSeconds: 1
@@ -1675,7 +1679,7 @@ prometheus:
   # list. (+metric_foo to enable metric_foo , -metric_bar to disable
   # metric_bar).
   # ref: https://docs.cilium.io/en/stable/observability/metrics/
-  metrics: 
+  metrics:
     - +cilium_bpf_map_pressure
 
 # -- Configure Istio proxy options.
@@ -2563,6 +2567,24 @@ defaultPolicies:
   enabled: false
   # -- Node tolerations for default-policies job scheduling to nodes with taints
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  tolerations:
+  - operator: Exists
+
+extraPolicies:
+  allowEgressToCoreDNS:
+    enabled: false
+    namespaces:
+      - giantswarm
+      - kube-system
+
+  allowEgressToProxy:
+    enabled: false
+    httpProxy: ""
+    httpsProxy: ""
+    namespaces:
+      - giantswarm
+      - kube-system
+
   tolerations:
   - operator: Exists
 
