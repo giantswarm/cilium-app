@@ -2652,7 +2652,10 @@
                     "type": "boolean"
                 },
                 "metrics": {
-                    "type": "null"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "port": {
                     "type": "integer"
