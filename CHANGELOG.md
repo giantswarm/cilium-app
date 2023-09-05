@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Support creating `CiliumNetworkPolicy` manifests that allow egress requests to DNS and proxy hosts
 
+### Changed
+
+- Add missing conditional for PSP rendering of default-policies installer job
+
 ## [0.11.2] - 2023-09-04
 
 ### Fixed
