@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0] - 2023-09-05
+
 ### Added
 
 - Support creating `CiliumNetworkPolicy` manifests that allow egress requests to DNS and proxy hosts
@@ -190,7 +192,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2022-03-25
 
-[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v0.11.2...HEAD
+[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/giantswarm/cilium-app/compare/v0.11.2...v0.12.0
 [0.11.2]: https://github.com/giantswarm/cilium-app/compare/v0.11.1...v0.11.2
 [0.11.1]: https://github.com/giantswarm/cilium-app/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/giantswarm/cilium-app/compare/v0.10.0...v0.11.0
