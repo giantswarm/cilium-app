@@ -2565,6 +2565,7 @@ sctp:
 
 defaultPolicies:
   enabled: false
+  remove: false
   # -- Node tolerations for default-policies job scheduling to nodes with taints
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   tolerations:

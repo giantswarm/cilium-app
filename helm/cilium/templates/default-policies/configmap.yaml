@@ -1,4 +1,7 @@
-{{- if .Values.defaultPolicies.enabled -}}
+{{- if and .Values.defaultPolicies.enabled .Values.defaultPolicies.remove -}}
+{{- fail "defaultPolicies.enabled and defaultPolicies.remove cannot both be true" -}}
+{{- end -}}
+{{- if or .Values.defaultPolicies.enabled .Values.defaultPolicies.remove -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:

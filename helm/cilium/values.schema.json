@@ -633,6 +633,10 @@
                 "enabled": {
                     "type": "boolean"
                 },
+                "remove": {
+                    "type": "boolean",
+                    "description": "Only usable together with `defaultPolicies.enabled=false`. This removes any existing policies if they were installed previously via `defaultPolicies.enabled=true`."
+                },
                 "tolerations": {
                     "type": "array",
                     "items": {
