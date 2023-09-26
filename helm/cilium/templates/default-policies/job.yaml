@@ -1,11 +1,11 @@
-{{- if .Values.defaultPolicies.enabled -}}
+{{- if or .Values.defaultPolicies.enabled .Values.defaultPolicies.remove -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: cilium-create-default-policies
+  name: cilium-{{ ternary "remove" "create" .Values.defaultPolicies.remove }}-default-policies
   namespace: {{ .Release.Namespace }}
   labels:
-    app: cilium-create-default-policies
+    app: cilium-{{ ternary "remove" "create" .Values.defaultPolicies.remove }}-default-policies
   annotations:
     helm.sh/hook: post-install,post-upgrade
     helm.sh/hook-weight: "1"
@@ -15,7 +15,7 @@ spec:
   template:
     metadata:
       labels:
-        app: cilium-create-default-policies
+        app: cilium-{{ ternary "remove" "create" .Values.defaultPolicies.remove }}-default-policies
     spec:
       hostNetwork: true
       restartPolicy: OnFailure
@@ -47,7 +47,7 @@ spec:
             done
           done
       containers:
-      - name: cilium-create-default-policies
+      - name: cilium-{{ ternary "remove" "create" .Values.defaultPolicies.remove }}-default-policies
         image: "quay.io/giantswarm/docker-kubectl:latest"
         imagePullPolicy: IfNotPresent
         volumeMounts:
@@ -60,5 +60,13 @@ spec:
         - |
           set -o errexit ; set -o xtrace ; set -o nounset
 
-          kubectl apply --server-side=true --field-manager='kubectl-client-side-apply' --force-conflicts -f /policies/ 2>&1
+          kubectl \
+{{- if .Values.defaultPolicies.remove }}
+            delete \
+            --ignore-not-found \
+{{- else }}
+            apply \
+            --server-side=true --field-manager='kubectl-client-side-apply' --force-conflicts \
+{{- end }}
+            -f /policies/ 2>&1
 {{- end -}}
