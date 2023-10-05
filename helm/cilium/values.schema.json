@@ -634,7 +634,8 @@
                     "type": "boolean"
                 },
                 "remove": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Only usable together with `defaultPolicies.enabled=false`. This removes any existing policies if they were installed previously via `defaultPolicies.enabled=true`."
                 },
                 "tolerations": {
                     "type": "array",
@@ -1024,15 +1025,19 @@
         },
         "extraPolicies": {
             "type": "object",
+            "description": "Which extra network policies to install alongside Cilium.",
             "properties": {
                 "allowEgressToCoreDNS": {
                     "type": "object",
                     "properties": {
                         "enabled": {
-                            "type": "boolean"
+                            "type": "boolean",
+                            "description": "Allow all DNS egress to CoreDNS."
                         },
                         "namespaces": {
                             "type": "array",
+                            "default": ["giantswarm", "kube-system"],
+                            "description": "For which namespaces to install this policy.",
                             "items": {
                                 "type": "string"
                             }
@@ -1043,16 +1048,21 @@
                     "type": "object",
                     "properties": {
                         "enabled": {
-                            "type": "boolean"
+                            "type": "boolean",
+                            "description": "Allow all egress to the HTTP/HTTPS proxy via L7 CiliumNetworkPolicy rule. For now this only supports an FQDN, not an IP address, inside the `httpProxy`/`httpsProxy` URLs."
                         },
                         "httpProxy": {
-                            "type": "string"
+                            "type": "string",
+                            "title": "HTTP proxy"
                         },
                         "httpsProxy": {
-                            "type": "string"
+                            "type": "string",
+                            "title": "HTTPS proxy"
                         },
                         "namespaces": {
                             "type": "array",
+                            "default": ["giantswarm", "kube-system"],
+                            "description": "For which namespaces to install this policy.",
                             "items": {
                                 "type": "string"
                             }
