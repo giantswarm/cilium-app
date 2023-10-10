@@ -1,4 +1,4 @@
-{{- if or .Values.extraPolicies.allowEgressToCoreDNS.enabled .Values.extraPolicies.allowEgressToProxy.enabled -}}
+{{- if and (or .Values.extraPolicies.allowEgressToCoreDNS.enabled .Values.extraPolicies.allowEgressToProxy.enabled) (not .Values.global.podSecurityStandards.enforced) -}}
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
