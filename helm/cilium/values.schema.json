@@ -699,7 +699,7 @@
                 }
             }
         },
-	"eksMode": {
+        "eksMode": {
             "type": "boolean"
         },
         "enableCiliumEndpointSlice": {
@@ -1192,7 +1192,10 @@
                             "type": "boolean"
                         },
                         "enabled": {
-                            "type": "null"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
                         "port": {
                             "type": "integer"
