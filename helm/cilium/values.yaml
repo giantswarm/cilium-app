@@ -805,6 +805,8 @@ eni:
   # are going to be used to create new ENIs
   instanceTagsFilter: []
 
+eksMode: false
+
 externalIPs:
   # -- Enable ExternalIPs service support.
   enabled: false
