@@ -699,6 +699,9 @@
                 }
             }
         },
+	"eksMode": {
+            "type": "boolean"
+        },
         "enableCiliumEndpointSlice": {
             "type": "boolean"
         },
