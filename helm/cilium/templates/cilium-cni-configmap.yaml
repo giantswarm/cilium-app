@@ -20,12 +20,23 @@ data:
                 "giantswarm.io/stack": "tccpn"
               },
               "security-group-tags": {
+                {{- if .Values.eksMode }}
+                "kubernetes.io/cluster/{{ .Values.cluster.name }}": "owned",
+                "aws:eks:cluster-name": "{{ .Values.cluster.name }}"
+                {{- else }}
                 "giantswarm.io/cluster": "{{ .Values.cluster.name }}",
                 "Name": "{{ .Values.cluster.name }}-aws-cni"
+                {{- end }}
               },
               "subnet-tags": {
+                {{- if .Values.eksMode }}
+                "sigs.k8s.io/cluster-api-provider-aws/cluster/{{ .Values.cluster.name }}": "owned",
+                "sigs.k8s.io/cluster-api-provider-aws/association": "secondary",
+                "sigs.k8s.io/cluster-api-provider-aws/role": "private"
+                {{- else }}
                 "giantswarm.io/cluster": "{{ .Values.cluster.name }}",
                 "giantswarm.io/subnet-type": "aws-cni"
+                {{- end }}
               }
               {{- end}}
             }
