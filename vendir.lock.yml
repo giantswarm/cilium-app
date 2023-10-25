@@ -1,0 +1,15 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: Prepare for release v1.13.6...
+      sha: 792ad58f5a0776cad5688506a758f9bdb2475096
+      tags:
+      - 1.13.6
+    path: cilium
+  path: vendor
+- contents:
+  - directory: {}
+    path: .
+  path: helm/cilium2/templates
+kind: LockConfig
