@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Disable uninstalling the CNI config files and binary when restarting the agent.
+
 ## [0.15.0] - 2023-10-24
 
 ### Added
