@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Add schema for helm values
-      sha: 2e41281b1388f3e5702a58710f0b1ca0eadbc439
+      commitTitle: Excluding resources from cilium identity evaluation
+      sha: 9981ea8a9be91d1181d5443a221360d003adb306
       tags:
-      - 1.13.6-13-g2e41281b13
+      - 1.13.6-16-g9981ea8a9b
     path: cilium
   path: vendor
 - contents:
