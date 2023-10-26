@@ -2,14 +2,14 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Prepare for release v1.13.6...
-      sha: 792ad58f5a0776cad5688506a758f9bdb2475096
+      commitTitle: Add schema for helm values
+      sha: 2e41281b1388f3e5702a58710f0b1ca0eadbc439
       tags:
-      - 1.13.6
+      - 1.13.6-13-g2e41281b13
     path: cilium
   path: vendor
 - contents:
   - directory: {}
     path: .
-  path: helm/cilium2/templates
+  path: helm/cilium
 kind: LockConfig

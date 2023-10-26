@@ -5,12 +5,12 @@ directories:
     contents:
       - path: cilium
         git:
-          url: https://github.com/cilium/cilium
-          ref: v1.13.6
+          url: https://github.com/giantswarm/cilium
+          ref: apply-gs-customizations
         includePaths:
           - install/kubernetes/cilium/**/*
-  - path: helm/cilium2/templates
+  - path: helm/cilium
     contents:
       - path: .
         directory:
-          path: vendor/cilium/install/kubernetes/cilium/templates
+          path: vendor/cilium/install/kubernetes/cilium
