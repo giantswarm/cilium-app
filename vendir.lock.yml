@@ -3,9 +3,9 @@ directories:
 - contents:
   - git:
       commitTitle: Enable PDB for cilium-operator
-      sha: 25c449534cc325a5798fc7c839b8ac33591b3516
+      sha: 0813b765038a8a993cfeb11cc4ecc07078f4c22e
       tags:
-      - 1.13.6-21-g25c449534c
+      - v1.14.3-120-g0813b76503
     path: cilium
   path: vendor
 - contents:
