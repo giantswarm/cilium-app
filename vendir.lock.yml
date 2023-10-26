@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Enable PDB for cilium-operator
-      sha: 25c449534cc325a5798fc7c839b8ac33591b3516
+      commitTitle: Add schema for helm values
+      sha: 2e41281b1388f3e5702a58710f0b1ca0eadbc439
       tags:
-      - 1.13.6-21-g25c449534c
+      - 1.13.6-13-g2e41281b13
     path: cilium
   path: vendor
 - contents:

@@ -398,7 +398,7 @@ bpf:
   neighMax: ~
 
   # -- Configure the maximum number of entries in endpoint policy map (per endpoint).
-  policyMapMax: 65536
+  policyMapMax: 16384
 
   # -- (float64) Configure auto-sizing for all BPF maps based on available memory.
   # ref: https://docs.cilium.io/en/stable/network/ebpf/maps/
@@ -470,7 +470,7 @@ cni:
   # if you're removing Cilium from the cluster. Disable this to prevent the CNI
   # configuration file from being removed during agent upgrade, which can cause
   # nodes to go unmanageable.
-  uninstall: false
+  uninstall: true
 
   # -- Configure chaining on top of other CNI plugins. Possible values:
   #  - none
@@ -850,7 +850,7 @@ certgen:
   image:
     override: ~
     repository: "giantswarm/cilium-certgen"
-    tag: "v0.1.8"
+    tag: "v0.1.8@sha256:4a456552a5f192992a6edcec2febb1c54870d665173a33dc7d876129b199ddbd"
     pullPolicy: "IfNotPresent"
   # -- Seconds after which the completed job pod will be deleted
   ttlSecondsAfterFinished: 1800
@@ -1232,7 +1232,7 @@ hubble:
       image:
         override: ~
         repository: "giantswarm/hubble-ui-backend"
-        tag: "v0.11.0"
+        tag: "v0.11.0@sha256:14c04d11f78da5c363f88592abae8d2ecee3cbe009f443ef11df6ac5f692d839"
         pullPolicy: "IfNotPresent"
 
       # -- Hubble-ui backend security context.
@@ -1261,7 +1261,7 @@ hubble:
       image:
         override: ~
         repository: "giantswarm/hubble-ui"
-        tag: "v0.11.0"
+        tag: "v0.11.0@sha256:bcb369c47cada2d4257d63d3749f7f87c91dde32e010b223597306de95d1ecc8"
         pullPolicy: "IfNotPresent"
 
       # -- Hubble-ui frontend security context.
@@ -1489,7 +1489,7 @@ l2NeighDiscovery:
 l7Proxy: true
 
 # -- Enable Local Redirect Policy.
-localRedirectPolicy: true
+localRedirectPolicy: false
 
 # To include or exclude matched resources from cilium identity evaluation
 labels: "k8s:!.*/enforce k8s:!.*fluxcd.io/.* k8s:!.*kubernetes.io/managed-by.* k8s:!controller-uid k8s:!job-name"
@@ -1653,7 +1653,7 @@ pprof:
 
 # -- Configure prometheus metrics on the configured port at /metrics
 prometheus:
-  enabled: true
+  enabled: false
   port: 9962
   serviceMonitor:
     # -- Enable service monitors.
@@ -1682,8 +1682,7 @@ prometheus:
   # list. (+metric_foo to enable metric_foo , -metric_bar to disable
   # metric_bar).
   # ref: https://docs.cilium.io/en/stable/observability/metrics/
-  metrics:
-    - +cilium_bpf_map_pressure
+  metrics: ~
 
 # -- Configure Istio proxy options.
 proxy:
@@ -1782,7 +1781,7 @@ etcd:
   image:
     override: ~
     repository: "giantswarm/cilium-etcd-operator"
-    tag: "v2.0.7"
+    tag: "v2.0.7@sha256:04b8327f7f992693c2cb483b999041ed8f92efc8e14f2a5f3ab95574a65ea2dc"
     pullPolicy: "IfNotPresent"
 
   # -- The priority class to use for cilium-etcd-operator
@@ -1978,7 +1977,7 @@ operator:
   podDisruptionBudget:
     # -- enable PodDisruptionBudget
     # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
-    enabled: true
+    enabled: false
     # -- Minimum number/percentage of pods that should remain scheduled.
     # When it's set, maxUnavailable must be disabled by `maxUnavailable: null`
     minAvailable: null
@@ -2025,7 +2024,7 @@ operator:
   # -- Enable prometheus metrics for cilium-operator on the configured port at
   # /metrics
   prometheus:
-    enabled: true
+    enabled: false
     port: 9963
     serviceMonitor:
       # -- Enable service monitors.
@@ -2300,7 +2299,7 @@ clustermesh:
       image:
         override: ~
         repository: "giantswarm/etcd"
-        tag: "v3.5.4"
+        tag: "v3.5.4@sha256:795d8660c48c439a7c3764c2330ed9222ab5db5bb524d8d0607cac76f7ba82a3"
         pullPolicy: "IfNotPresent"
 
       # -- Specifies the resources for etcd container in the apiserver
