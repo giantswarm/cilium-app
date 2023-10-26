@@ -470,7 +470,7 @@ cni:
   # if you're removing Cilium from the cluster. Disable this to prevent the CNI
   # configuration file from being removed during agent upgrade, which can cause
   # nodes to go unmanageable.
-  uninstall: true
+  uninstall: false
 
   # -- Configure chaining on top of other CNI plugins. Possible values:
   #  - none
@@ -1489,7 +1489,7 @@ l2NeighDiscovery:
 l7Proxy: true
 
 # -- Enable Local Redirect Policy.
-localRedirectPolicy: false
+localRedirectPolicy: true
 
 # To include or exclude matched resources from cilium identity evaluation
 labels: "k8s:!.*/enforce k8s:!.*fluxcd.io/.* k8s:!.*kubernetes.io/managed-by.* k8s:!controller-uid k8s:!job-name"
@@ -1653,7 +1653,7 @@ pprof:
 
 # -- Configure prometheus metrics on the configured port at /metrics
 prometheus:
-  enabled: false
+  enabled: true
   port: 9962
   serviceMonitor:
     # -- Enable service monitors.
@@ -1978,7 +1978,7 @@ operator:
   podDisruptionBudget:
     # -- enable PodDisruptionBudget
     # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
-    enabled: false
+    enabled: true
     # -- Minimum number/percentage of pods that should remain scheduled.
     # When it's set, maxUnavailable must be disabled by `maxUnavailable: null`
     minAvailable: null
@@ -2025,7 +2025,7 @@ operator:
   # -- Enable prometheus metrics for cilium-operator on the configured port at
   # /metrics
   prometheus:
-    enabled: false
+    enabled: true
     port: 9963
     serviceMonitor:
       # -- Enable service monitors.
@@ -2565,6 +2565,8 @@ dnsProxy:
 sctp:
   # -- Enable SCTP support. NOTE: Currently, SCTP support does not support rewriting ports or multihoming.
   enabled: false
+
+eksMode: false
 
 defaultPolicies:
   enabled: false

@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Excluding resources from cilium identity evaluation
-      sha: 9981ea8a9be91d1181d5443a221360d003adb306
+      commitTitle: Enable PDB for cilium-operator
+      sha: 25c449534cc325a5798fc7c839b8ac33591b3516
       tags:
-      - 1.13.6-16-g9981ea8a9b
+      - 1.13.6-21-g25c449534c
     path: cilium
   path: vendor
 - contents:
