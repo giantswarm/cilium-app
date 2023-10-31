@@ -28,6 +28,7 @@ update-chart: check-env ## Sync chart with upstream repo.
 	@echo "====> $@"
 	rm -rf ./helm/$(APPLICATION)
 	vendir sync
+	sed -i 's/@sha256:[a-f0-9]\+//g' ./helm/$(APPLICATION)/values.yaml
 
 helm-docs: check-env ## Update $(APPLICATION) README.
 	$(HELM_DOCS) -c $(APPLICATION) -g $(APPLICATION)

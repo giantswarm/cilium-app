@@ -850,7 +850,7 @@ certgen:
   image:
     override: ~
     repository: "giantswarm/cilium-certgen"
-    tag: "v0.1.8@sha256:4a456552a5f192992a6edcec2febb1c54870d665173a33dc7d876129b199ddbd"
+    tag: "v0.1.8"
     pullPolicy: "IfNotPresent"
   # -- Seconds after which the completed job pod will be deleted
   ttlSecondsAfterFinished: 1800
@@ -1232,7 +1232,7 @@ hubble:
       image:
         override: ~
         repository: "giantswarm/hubble-ui-backend"
-        tag: "v0.11.0@sha256:14c04d11f78da5c363f88592abae8d2ecee3cbe009f443ef11df6ac5f692d839"
+        tag: "v0.11.0"
         pullPolicy: "IfNotPresent"
 
       # -- Hubble-ui backend security context.
@@ -1261,7 +1261,7 @@ hubble:
       image:
         override: ~
         repository: "giantswarm/hubble-ui"
-        tag: "v0.11.0@sha256:bcb369c47cada2d4257d63d3749f7f87c91dde32e010b223597306de95d1ecc8"
+        tag: "v0.11.0"
         pullPolicy: "IfNotPresent"
 
       # -- Hubble-ui frontend security context.
@@ -1782,7 +1782,7 @@ etcd:
   image:
     override: ~
     repository: "giantswarm/cilium-etcd-operator"
-    tag: "v2.0.7@sha256:04b8327f7f992693c2cb483b999041ed8f92efc8e14f2a5f3ab95574a65ea2dc"
+    tag: "v2.0.7"
     pullPolicy: "IfNotPresent"
 
   # -- The priority class to use for cilium-etcd-operator
@@ -2300,7 +2300,7 @@ clustermesh:
       image:
         override: ~
         repository: "giantswarm/etcd"
-        tag: "v3.5.4@sha256:795d8660c48c439a7c3764c2330ed9222ab5db5bb524d8d0607cac76f7ba82a3"
+        tag: "v3.5.4"
         pullPolicy: "IfNotPresent"
 
       # -- Specifies the resources for etcd container in the apiserver
