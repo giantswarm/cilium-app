@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Generate cilium chart using our fork and `vendir`.
+
 ## [0.16.0] - 2023-10-25
 
 ### Changed
