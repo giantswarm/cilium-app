@@ -2255,7 +2255,7 @@ operator:
   # -- cilium-operator image.
   image:
     override: ~
-    repository: "giantswarm/operator"
+    repository: "giantswarm/cilium-operator"
     tag: "v1.14.4"
     # operator-generic-digest
     genericDigest: ""

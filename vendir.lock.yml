@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Migrate proxy.prometheus.port to envoy.prometheus.port
-      sha: acd4f7f507a9c9db5d8200cd5d1644ac52cc6005
+      commitTitle: Fix typo in cilium operator image name
+      sha: e2ee5324a5610ebeaebb8ba953e08a29f3791487
       tags:
-      - v1.14.3-121-gacd4f7f507
+      - v1.14.3-122-ge2ee5324a5
     path: cilium
   path: vendor
 - contents:
