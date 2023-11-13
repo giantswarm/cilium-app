@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Migrate proxy.prometheus.port to envoy.prometheus.port
-      sha: 7d82c9c436b9343a6a95f7dc48a4e0e7bf7b6cbd
+      commitTitle: Remove hubble.peerService.enabled as it's been removed from upstream
+      sha: b7de5734fbefde8926daeae400b76454f7fb4a7c
       tags:
-      - v1.14.3-21-g7d82c9c436
+      - v1.14.3-22-gb7de5734fb
     path: cilium
   path: vendor
 - contents:
