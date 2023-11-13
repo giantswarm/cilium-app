@@ -2,10 +2,11 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Remove hubble.peerService.enabled as it's been removed from upstream
-      sha: b7de5734fbefde8926daeae400b76454f7fb4a7c
+      commitTitle: Don't use digest for hubble-ui image because it doesn't match in
+        our registry
+      sha: 903de70101c8fc68521ef18627ce5c4e98e13f3e
       tags:
-      - v1.14.3-22-gb7de5734fb
+      - v1.14.3-24-g903de70101
     path: cilium
   path: vendor
 - contents:
