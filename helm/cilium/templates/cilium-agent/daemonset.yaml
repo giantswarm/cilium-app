@@ -217,7 +217,7 @@ spec:
         {{- end }}
         {{- if .Values.cni.install }}
         lifecycle:
-          {{- if ne .Values.cni.chainingMode "aws-cni" }}
+          {{- if .Values.eni.enabled }}
           postStart:
             exec:
               command:

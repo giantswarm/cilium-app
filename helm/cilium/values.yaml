@@ -153,7 +153,7 @@ image:
   registry: docker.io
   override: ~
   repository: "giantswarm/cilium"
-  tag: "v1.14.4"
+  tag: "v1.14.3"
   pullPolicy: "IfNotPresent"
   # cilium-digest
   digest: ""
@@ -1120,7 +1120,7 @@ hubble:
     image:
       override: ~
       repository: "giantswarm/hubble-relay"
-      tag: "v1.14.4"
+      tag: "v1.14.3"
        # hubble-relay-digest
       digest: ""
       useDigest: false
@@ -1859,9 +1859,9 @@ envoy:
   image:
     override: ~
     repository: "quay.io/cilium/cilium-envoy"
-    tag: "v1.26.6-ff0d5d3f77d610040e93c7c7a430d61a0c0b90c1"
+    tag: "v1.25.10-f71a313bd0daee41470af31ce6ea20c750fe35dd"
     pullPolicy: "IfNotPresent"
-    digest: "sha256:6b0f2591fef922bf17a46517d5152ea7d6270524bb0e307c77986986677dbcea"
+    digest: "sha256:bfa1e919ed02afc66e9ff36c1fd9148237fc8b8560a0b44d89acf144b0ffb08c"
     useDigest: true
 
   # -- Additional containers added to the cilium Envoy DaemonSet.
@@ -2256,7 +2256,7 @@ operator:
   image:
     override: ~
     repository: "giantswarm/cilium-operator"
-    tag: "v1.14.4"
+    tag: "v1.14.3"
     # operator-generic-digest
     genericDigest: ""
     # operator-azure-digest
@@ -2543,7 +2543,7 @@ preflight:
   image:
     override: ~
     repository: "giantswarm/cilium"
-    tag: "v1.14.4"
+    tag: "v1.14.3"
     # cilium-digest
     digest: ""
     useDigest: false
@@ -2693,7 +2693,7 @@ clustermesh:
     image:
       override: ~
       repository: "giantswarm/clustermesh-apiserver"
-      tag: "v1.14.4"
+      tag: "v1.14.3"
       # clustermesh-apiserver-digest
       digest: ""
       useDigest: false
@@ -2740,7 +2740,7 @@ clustermesh:
       image:
         override: ~
         repository: "quay.io/cilium/kvstoremesh"
-        tag: "v1.14.4"
+        tag: "v1.14.3"
         # kvstoremesh-digest
         digest: ""
         useDigest: false
@@ -3138,14 +3138,11 @@ authentication:
             create: true
             name: spire-agent
           # -- SPIRE agent annotations
-          annotations: {}
+          annotations: { }
           # -- SPIRE agent labels
-          labels: {}
+          labels: { }
           # -- SPIRE Workload Attestor kubelet verification.
           skipKubeletVerification: true
-          # -- SPIRE agent tolerations configuration
-          # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
-          tolerations: []
         server:
           # -- SPIRE server image
           image: ghcr.io/spiffe/spire-server:1.6.3
@@ -3167,14 +3164,6 @@ authentication:
             annotations: {}
             # -- Labels to be added to the SPIRE server service
             labels: {}
-          # -- SPIRE server affinity configuration
-          affinity: {}
-          # -- SPIRE server nodeSelector configuration
-          # ref: ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
-          nodeSelector: {}
-          # -- SPIRE server tolerations configuration
-          # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
-          tolerations: []
           # SPIRE server datastorage configuration
           dataStorage:
             # -- Enable SPIRE server data storage
