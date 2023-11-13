@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Enable PDB for cilium-operator
-      sha: 0813b765038a8a993cfeb11cc4ecc07078f4c22e
+      commitTitle: Migrate proxy.prometheus.port to envoy.prometheus.port
+      sha: acd4f7f507a9c9db5d8200cd5d1644ac52cc6005
       tags:
-      - v1.14.3-120-g0813b76503
+      - v1.14.3-121-gacd4f7f507
     path: cilium
   path: vendor
 - contents:
