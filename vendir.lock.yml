@@ -2,11 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Don't use digest for hubble-ui image because it doesn't match in
-        our registry
-      sha: 903de70101c8fc68521ef18627ce5c4e98e13f3e
+      commitTitle: Update values.schema.json file
+      sha: f2654dde84e4c45666dfc04ab3667a307f53691b
       tags:
-      - v1.14.3-24-g903de70101
+      - v1.14.3-25-gf2654dde84
     path: cilium
   path: vendor
 - contents:
