@@ -1,6 +1,6 @@
 # DO NOT EDIT. Generated with:
 #
-#    devctl@6.14.0
+#    devctl@6.17.0
 #
 
 ##@ App
@@ -26,9 +26,16 @@ lint-chart: check-env ## Runs ct against the default chart.
 
 update-chart: check-env ## Sync chart with upstream repo.
 	@echo "====> $@"
-	rm -rf ./helm/$(APPLICATION)
 	vendir sync
-	sed -i 's/@sha256:[a-f0-9]\+//g' ./helm/$(APPLICATION)/values.yaml
+	$(MAKE) update-deps
+
+update-deps: check-env $(DEPS) ## Update Helm dependencies.
+	cd $(APPLICATION) && helm dependency update
+
+$(DEPS): check-env ## Update main Chart.yaml with new local dep versions.
+	dep_name=$(shell basename $@) && \
+	new_version=`$(YQ) .version $(APPLICATION)/charts/$$dep_name/Chart.yaml` && \
+	$(YQ) -i e "with(.dependencies[]; select(.name == \"$$dep_name\") | .version = \"$$new_version\")" $(APPLICATION)/Chart.yaml
 
 helm-docs: check-env ## Update $(APPLICATION) README.
 	$(HELM_DOCS) -c $(APPLICATION) -g $(APPLICATION)
