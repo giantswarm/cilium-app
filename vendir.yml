@@ -6,7 +6,7 @@ directories:
       - path: cilium
         git:
           url: https://github.com/giantswarm/cilium
-          ref: "upgrade-1-14-3"
+          ref: "main"
         includePaths:
           - install/kubernetes/cilium/**/*
   - path: helm/cilium
