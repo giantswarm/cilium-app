@@ -35,7 +35,9 @@ git checkout -b update-to-1-14-3
 ```
 
 Then we need to apply our custom changes on top of that new branch.
-Since those changes are already on the repository (although a different branch), we can use `cherry-pick` for apply those same commits to our newly created branch, for example
+Since those changes are already on the repository (although a different branch), we can use `cherry-pick` for apply those same commits to our newly created branch.
+Before applying them, please make sure they all make sense in the new release. The less custom changes we have, the better.
+We can apply our commits with
 ```
 git cherry-pick a4b22dee87ba3663f967f6dd6d8e666c849c742d^..25c449534cc325a5798fc7c839b8ac33591b3516
 ```
@@ -53,9 +55,9 @@ Then, in this repository, we need to update the `vendir` configuration in `vendi
 With the generated changes, let's create a new pull request so that everyone can review the changes that will be applied to the cilium chart.
 If we need further customizations, we can keep adding commits on the new branch on the fork, and re-run `APPLICATION=cilium make update-chart` here to update the generated files in the app.
 
-Once we are happy with the changes, we need to make the `main` branch in our fork to point to our latest commit
+Once we are happy with the changes, we need to make the `main` branch in our fork to point to our latest commit with `git branch -f main <new-release-branch>`
 ```
-git branch -f main
+git branch -f main update-to-1-14-3
 git checkout main
 git push origin main -f
 ```
