@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Enable PDB for cilium-operator
-      sha: 25c449534cc325a5798fc7c839b8ac33591b3516
+      commitTitle: Update values.schema.json file
+      sha: f2654dde84e4c45666dfc04ab3667a307f53691b
       tags:
-      - 1.13.6-21-g25c449534c
+      - v1.14.3-25-gf2654dde84
     path: cilium
   path: vendor
 - contents:
