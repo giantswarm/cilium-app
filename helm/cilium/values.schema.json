@@ -122,6 +122,9 @@
                                                 },
                                                 "skipKubeletVerification": {
                                                     "type": "boolean"
+                                                },
+                                                "tolerations": {
+                                                    "type": "array"
                                                 }
                                             }
                                         },
@@ -134,6 +137,9 @@
                                         "server": {
                                             "type": "object",
                                             "properties": {
+                                                "affinity": {
+                                                    "type": "object"
+                                                },
                                                 "annotations": {
                                                     "type": "object"
                                                 },
@@ -185,6 +191,9 @@
                                                 "labels": {
                                                     "type": "object"
                                                 },
+                                                "nodeSelector": {
+                                                    "type": "object"
+                                                },
                                                 "service": {
                                                     "type": "object",
                                                     "properties": {
@@ -209,6 +218,9 @@
                                                             "type": "string"
                                                         }
                                                     }
+                                                },
+                                                "tolerations": {
+                                                    "type": "array"
                                                 }
                                             }
                                         }
