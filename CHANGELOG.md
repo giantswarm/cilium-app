@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.19.0] - 2024-01-17
+
 ### Changed
 
-- Upgrade cilium to `1.14.4`.
+- Upgrade cilium to `1.14.5`.
 - Set default image registry to `gsoci.azurecr.io` in values.yaml.
 
 ## [0.18.0] - 2023-11-20
@@ -232,7 +234,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2022-03-25
 
-[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v0.18.0...HEAD
+[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v0.19.0...HEAD
+[0.19.0]: https://github.com/giantswarm/cilium-app/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/giantswarm/cilium-app/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/giantswarm/cilium-app/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/giantswarm/cilium-app/compare/v0.15.0...v0.16.0
