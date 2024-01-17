@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgrade cilium to `1.14.4`.
+- Upgrade cilium to `1.14.5`.
 - Set default image registry to `gsoci.azurecr.io` in values.yaml.
 
 ## [0.18.0] - 2023-11-20
