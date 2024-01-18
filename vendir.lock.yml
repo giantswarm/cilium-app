@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: schema json
-      sha: 74761789a61432fce4bceafe92ad4e63164d266b
+      commitTitle: run schema gen
+      sha: 4c978e0ab57789c3fc253e9a37573dbdbddd733d
       tags:
-      - v1.14.3-126-g74761789a6
+      - v1.14.3-255-g4c978e0ab5
     path: cilium
   path: vendor
 - contents:
