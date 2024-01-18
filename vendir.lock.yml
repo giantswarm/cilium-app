@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: run schema gen
-      sha: 4c978e0ab57789c3fc253e9a37573dbdbddd733d
+      commitTitle: Use gsoci.azurecr.io container registry
+      sha: 82f50123b03c35c3d964a036679c4d9a17d661c8
       tags:
-      - v1.14.3-255-g4c978e0ab5
+      - v1.14.3-256-g82f50123b0
     path: cilium
   path: vendor
 - contents:
