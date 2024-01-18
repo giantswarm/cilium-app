@@ -100,6 +100,9 @@
                                         "agent": {
                                             "type": "object",
                                             "properties": {
+                                                "affinity": {
+                                                    "type": "object"
+                                                },
                                                 "annotations": {
                                                     "type": "object"
                                                 },
@@ -107,6 +110,15 @@
                                                     "type": "string"
                                                 },
                                                 "labels": {
+                                                    "type": "object"
+                                                },
+                                                "nodeSelector": {
+                                                    "type": "object"
+                                                },
+                                                "podSecurityContext": {
+                                                    "type": "object"
+                                                },
+                                                "securityContext": {
                                                     "type": "object"
                                                 },
                                                 "serviceAccount": {
@@ -386,9 +398,6 @@
                 "image": {
                     "type": "object",
                     "properties": {
-                        "digest": {
-                            "type": "string"
-                        },
                         "override": {
                             "type": "null"
                         },
@@ -400,9 +409,6 @@
                         },
                         "tag": {
                             "type": "string"
-                        },
-                        "useDigest": {
-                            "type": "boolean"
                         }
                     }
                 },
@@ -502,9 +508,6 @@
                                 "image": {
                                     "type": "object",
                                     "properties": {
-                                        "digest": {
-                                            "type": "string"
-                                        },
                                         "override": {
                                             "type": "null"
                                         },
@@ -516,9 +519,6 @@
                                         },
                                         "tag": {
                                             "type": "string"
-                                        },
-                                        "useDigest": {
-                                            "type": "boolean"
                                         }
                                     }
                                 },
@@ -1591,9 +1591,6 @@
                 "image": {
                     "type": "object",
                     "properties": {
-                        "digest": {
-                            "type": "string"
-                        },
                         "override": {
                             "type": "null"
                         },
@@ -1605,9 +1602,6 @@
                         },
                         "tag": {
                             "type": "string"
-                        },
-                        "useDigest": {
-                            "type": "boolean"
                         }
                     }
                 },
@@ -1996,6 +1990,12 @@
                             "type": "boolean"
                         },
                         "extraEnv": {
+                            "type": "array"
+                        },
+                        "extraVolumeMounts": {
+                            "type": "array"
+                        },
+                        "extraVolumes": {
                             "type": "array"
                         },
                         "gops": {
@@ -2665,6 +2665,9 @@
                     }
                 }
             }
+        },
+        "initResources": {
+            "type": "object"
         },
         "installNoConntrackIptablesRules": {
             "type": "boolean"
