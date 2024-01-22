@@ -18,12 +18,10 @@ data:
       endpointSelector: {} # any
 
       egress:
-        - toServices:
-            - k8sServiceSelector:
-                namespace: kube-system
-                selector:
-                  matchLabels:
-                    k8s-app: coredns
+        - toEndpoints:
+            - matchLabels:
+                k8s-app: coredns
+                k8s:io.kubernetes.pod.namespace: kube-system
 
           toPorts:
             - ports:
