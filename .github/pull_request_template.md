@@ -1,43 +1,13 @@
 <!--
-Not all PRs will require all tests to be carried out. Delete where appropriate.
--->
-
-<!--
-MODIFY THIS AFTER your new app repo is in https://github.com/giantswarm/github
-@team-halo-engineers will be automatically requested for review once
-this PR has been submitted. (But not for drafts)
+This app is generated from the contents on [our cilium fork](https://github.com/giantswarm/cilium-upstream).
+Manual changes to this repo will be lost the next time the app is generated from the fork.
+If you need to change something, please do it on the fork, and then re-generate the app.
 -->
 
 This PR:
 
 - adds/changes/removes etc
 
-### Testing
-
-Description on how cilium can be tested.
-
-- [ ] fresh install works
-  - [ ] AWS
-  - [ ] Azure
-  - [ ] KVM
-- [ ] upgrade from previous version works
-  - [ ] AWS
-  - [ ] Azure
-  - [ ] KVM
-
-#### Other testing
-
-Description of features to additionally test for cilium installations.
-
-- [ ] check reconciliation of existing resources after upgrading
-- [ ] X still works after upgrade
-- [ ] Y is installed correctly
-
-<!--
-Changelog must always be updated.
--->
-
 ### Checklist
 
 - [ ] Update changelog in CHANGELOG.md.
-- [ ] Make sure `values.yaml` and `values.schema.json` are valid.
