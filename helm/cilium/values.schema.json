@@ -921,7 +921,7 @@
                     "type": "string"
                 },
                 "chainingMode": {
-                    "type": "null"
+                    "type": "string"
                 },
                 "chainingTarget": {
                     "type": "null"
