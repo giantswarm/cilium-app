@@ -475,7 +475,7 @@ cni:
   #  - flannel
   #  - generic-veth
   #  - portmap
-  chainingMode: none
+  chainingMode: portmap
 
   # -- Make Cilium take ownership over the `/etc/cni/net.d` directory on the
   # node, renaming all non-Cilium CNI configurations to `*.cilium_bak`.
