@@ -547,7 +547,7 @@ cni:
   #  - flannel
   #  - generic-veth
   #  - portmap
-  chainingMode: ~
+  chainingMode: portmap
 
   # -- A CNI network name in to which the Cilium plugin should be added as a chained plugin.
   # This will cause the agent to watch for a CNI network with this network name. When it is
