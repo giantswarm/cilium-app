@@ -921,7 +921,7 @@
                     "type": "string"
                 },
                 "chainingMode": {
-                    "type": "string"
+                    "type": "null"
                 },
                 "chainingTarget": {
                     "type": "null"
@@ -2780,6 +2780,9 @@
             "type": "boolean"
         },
         "kubeConfigPath": {
+            "type": "string"
+        },
+        "kubeProxyReplacement": {
             "type": "string"
         },
         "kubeProxyReplacementHealthzBindAddr": {
