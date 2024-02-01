@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Use gsoci.azurecr.io container registry
-      sha: 82f50123b03c35c3d964a036679c4d9a17d661c8
+      commitTitle: Change how cilium build-config flags are templated
+      sha: f704ed9b607ed17934af6e8292b22a507f0a17d2
       tags:
-      - v1.14.3-256-g82f50123b0
+      - v1.14.3-263-gf704ed9b60
     path: cilium
   path: vendor
 - contents:

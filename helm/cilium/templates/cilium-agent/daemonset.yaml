@@ -421,14 +421,14 @@ spec:
         command:
         - cilium
         - build-config
-        {{- if (not (kindIs "invalid" .Values.daemon.configSources)) }}
-        - "--source={{.Values.daemon.configSources}}"
+        {{- with .Values.daemon.configSources }}
+        - "--source={{.}}"
         {{- end }}
-        {{- if (not (kindIs "invalid" .Values.daemon.allowedConfigOverrides)) }}
-        - "--allow-config-keys={{.Values.daemon.allowedConfigOverrides}}"
+        {{- with .Values.daemon.allowedConfigOverrides }}
+        - "--allow-config-keys={{.}}"
         {{- end }}
-        {{- if (not (kindIs "invalid" .Values.daemon.blockedConfigOverrides)) }}
-        - "--deny-config-keys={{.Values.daemon.blockedConfigOverrides}}"
+        {{- with .Values.daemon.blockedConfigOverrides }}
+        - "--deny-config-keys={{.}}"
         {{- end }}
         env:
         - name: K8S_NODE_NAME
