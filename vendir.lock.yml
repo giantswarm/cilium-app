@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Use gsoci.azurecr.io container registry
-      sha: 82f50123b03c35c3d964a036679c4d9a17d661c8
+      commitTitle: 'Merge pull request #5 from giantswarm/gs-remove-nulls-helm-values...'
+      sha: 31780812ec5e3b10d69899f0cc1020220d05754e
       tags:
-      - v1.14.3-256-g82f50123b0
+      - v1.14.3-264-g31780812ec
     path: cilium
   path: vendor
 - contents:

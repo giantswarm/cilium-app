@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Replace `null` values in `values.yaml` with its actual defaults. Config values with `null` types in the values schema prevented users from changing its values.
+
 ## [0.19.2] - 2024-01-22
 
 ### Fixed
