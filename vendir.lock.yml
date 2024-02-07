@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Change how cilium build-config flags are templated
-      sha: f704ed9b607ed17934af6e8292b22a507f0a17d2
+      commitTitle: 'Merge pull request #5 from giantswarm/gs-remove-nulls-helm-values...'
+      sha: 31780812ec5e3b10d69899f0cc1020220d05754e
       tags:
-      - v1.14.3-263-gf704ed9b60
+      - v1.14.3-264-g31780812ec
     path: cilium
   path: vendor
 - contents:
