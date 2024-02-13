@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Support CAPA clusters for ENI mode
+
 ## [0.20.1] - 2024-02-27
 
 ### Changed

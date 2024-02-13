@@ -28,7 +28,11 @@ data:
                 "giantswarm.io/subnet-type": "aws-cni"
               }
               {{- end}}
-              {{- if .Values.eksMode }}
+
+              {{- if .Values.eksMode -}}
+              {{/*
+                  For CAPA EKS clusters (https://github.com/giantswarm/cluster-eks)
+              */}}
               "first-interface-index": 1,
               "security-group-tags": {
                 "kubernetes.io/cluster/{{ .Values.cluster.name }}": "owned",
@@ -37,6 +41,22 @@ data:
               "subnet-tags": {
                 "sigs.k8s.io/cluster-api-provider-aws/cluster/{{ .Values.cluster.name }}": "owned",
                 "sigs.k8s.io/cluster-api-provider-aws/association": "secondary",
+                "sigs.k8s.io/cluster-api-provider-aws/role": "private"
+              }
+              {{- end }}
+
+              {{- if and (not .Values.eksMode) (eq .Values.provider "capa") -}}
+              {{/*
+                  For CAPA EC2-based clusters (https://github.com/giantswarm/cluster-aws)
+
+                  The full ENI mode feature is in development (https://github.com/giantswarm/roadmap/issues/2563). Open TODOs:
+
+                  - Once a secondary VPC CIDR is added, this must be set as well for the below subnet tags selector: `"sigs.k8s.io/cluster-api-provider-aws/association": "secondary",`
+                  - And `"security-group-tags": [...]` should be added once there's a specific pod security group.
+              */}}
+              "first-interface-index": 1,
+              "subnet-tags": {
+                "sigs.k8s.io/cluster-api-provider-aws/cluster/{{ .Values.cluster.name }}": "owned",
                 "sigs.k8s.io/cluster-api-provider-aws/role": "private"
               }
               {{- end }}
