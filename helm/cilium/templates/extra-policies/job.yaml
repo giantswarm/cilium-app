@@ -31,7 +31,7 @@ spec:
           name: cilium-extra-policies
       initContainers:
       - name: wait-crds
-        image: "{{ .Values.image.registry }}/giantswarm/docker-kubectl:latest"
+        image: "quay.io/giantswarm/docker-kubectl:latest"
         imagePullPolicy: IfNotPresent
         command:
         - sh
@@ -48,7 +48,7 @@ spec:
           done
       containers:
       - name: cilium-create-extra-policies
-        image: "{{ .Values.image.registry }}/giantswarm/docker-kubectl:latest"
+        image: "quay.io/giantswarm/docker-kubectl:latest"
         imagePullPolicy: IfNotPresent
         volumeMounts:
         - name: policies

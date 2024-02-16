@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: 'Merge pull request #5 from giantswarm/gs-remove-nulls-helm-values...'
-      sha: 31780812ec5e3b10d69899f0cc1020220d05754e
+      commitTitle: Merge tag 'v1.15.1' of github.com:cilium/cilium into v1.15...
+      sha: bf585c7f5e3e92d9f249d9365c0d68732109929c
       tags:
-      - v1.14.3-264-g31780812ec
+      - v1.15.0-68-gbf585c7f5e
     path: cilium
   path: vendor
 - contents:
