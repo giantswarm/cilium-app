@@ -49,11 +49,11 @@ k8sServicePort: ""
 k8sClientRateLimit:
   # -- (int) The sustained request rate in requests per second.
   # @default -- 5 for k8s up to 1.26. 10 for k8s version 1.27+
-  qps: 10
+  qps: 5
   # -- (int) The burst request rate in requests per second.
   # The rate limiter will allow short bursts with a higher rate.
   # @default -- 10 for k8s up to 1.26. 20 for k8s version 1.27+
-  burst: 20
+  burst: 10
 
 cluster:
   # -- Name of the cluster. Only required for Cluster Mesh and mutual authentication with SPIRE.
@@ -1507,7 +1507,7 @@ hubble:
       # -- Hubble-ui frontend image.
       image:
         override: ""
-        repository: "giantswarm/cilium-hubble-ui"
+        repository: "giantswarm/hubble-ui"
         tag: "v0.13.0"
         digest: "sha256:7d663dc16538dd6e29061abd1047013a645e6e69c115e008bee9ea9fef9a6666"
         useDigest: false
