@@ -55,7 +55,7 @@ spec:
       {{- end }}
       containers:
       - name: frontend
-        image: "{{ .Values.image.registry }}/{{ include "cilium.image" .Values.hubble.ui.frontend.image }}"
+        image: {{ include "cilium.image" (list $ .Values.hubble.ui.frontend.image) | quote }}
         imagePullPolicy: {{ .Values.hubble.ui.frontend.image.pullPolicy }}
         ports:
         - name: http
@@ -91,7 +91,7 @@ spec:
           {{- toYaml . | trim | nindent 10 }}
         {{- end }}
       - name: backend
-        image: "{{ .Values.image.registry }}/{{ include "cilium.image" .Values.hubble.ui.backend.image }}"
+        image: {{ include "cilium.image" (list $ .Values.hubble.ui.backend.image) | quote }}
         imagePullPolicy: {{ .Values.hubble.ui.backend.image.pullPolicy }}
         env:
         - name: EVENTS_SERVER_PORT

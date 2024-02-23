@@ -37,7 +37,7 @@ spec:
       {{- end }}
       containers:
         - name: cnp-validator
-          image: "{{ .Values.image.registry }}/{{ include "cilium.image" .Values.preflight.image }}"
+          image: {{ include "cilium.image" (list $ .Values.preflight.image) | quote }}
           imagePullPolicy: {{ .Values.preflight.image.pullPolicy }}
           command: ["/bin/sh"]
           args:

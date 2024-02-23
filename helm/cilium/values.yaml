@@ -1507,7 +1507,7 @@ hubble:
       # -- Hubble-ui frontend image.
       image:
         override: ""
-        repository: "quay.io/cilium/hubble-ui"
+        repository: "giantswarm/cilium-hubble-ui"
         tag: "v0.13.0"
         digest: "sha256:7d663dc16538dd6e29061abd1047013a645e6e69c115e008bee9ea9fef9a6666"
         useDigest: false
@@ -2072,7 +2072,7 @@ envoy:
   # -- Envoy container image.
   image:
     override: ""
-    repository: "quay.io/cilium/cilium-envoy"
+    repository: "giantswarm/cilium-envoy"
     tag: "v1.27.3-713b673cccf1af661efd75ca20532336517ddcb9"
     pullPolicy: "IfNotPresent"
     digest: "sha256:a811830c708296194eaf9cee6c1d22c5f8de3544b7eea6cbdfb810326522a4a2"

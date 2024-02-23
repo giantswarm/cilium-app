@@ -47,7 +47,7 @@ spec:
       {{- end }}
       containers:
         - name: node-init
-          image: "{{ .Values.image.registry }}/{{ include "cilium.image" .Values.nodeinit.image }}"
+          image: {{ include "cilium.image" (list $ .Values.nodeinit.image) | quote }}
           imagePullPolicy: {{ .Values.nodeinit.image.pullPolicy }}
           lifecycle:
             {{- if .Values.nodeinit.revertReconfigureKubelet }}

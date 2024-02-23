@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Merge tag 'v1.15.1' of github.com:cilium/cilium into v1.15...
-      sha: bf585c7f5e3e92d9f249d9365c0d68732109929c
+      commitTitle: More robust image registry setting (#11)
+      sha: db39ac88f7a87be2d74f4eef88c1874e092a576c
       tags:
-      - v1.15.0-68-gbf585c7f5e
+      - 1.15.1-35-gdb39ac88f7
     path: cilium
   path: vendor
 - contents:
