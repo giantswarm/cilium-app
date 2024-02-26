@@ -26,11 +26,20 @@
 Return cilium operator image
 */}}
 {{- define "cilium.operator.image" -}}
+{{- if not (kindIs "slice" .) }}
+{{- (fail (printf "required list, but got %q" (kindOf .))) }}
+{{- end }}
+{{- if (ne (len .) 2) }}
+{{- (fail (printf "required list of 2 arguments, but got %d" (len .))) }}
+{{- end }}
+{{- $ := index . 0 }}
+{{- with index . 1 }}
 {{- if .Values.operator.image.override -}}
 {{- printf "%s" .Values.operator.image.override -}}
 {{- else -}}
 {{- $cloud := include "cilium.operator.cloud" . }}
 {{- $imageDigest := include "cilium.operator.imageDigestName" . }}
-{{- printf "%s/%s-%s%s:%s%s" .Values.image.registry .Values.operator.image.repository $cloud .Values.operator.image.suffix .Values.operator.image.tag $imageDigest -}}
+{{- printf "%s/%s-%s%s:%s%s" $.Values.image.registry .Values.operator.image.repository $cloud .Values.operator.image.suffix .Values.operator.image.tag $imageDigest -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}

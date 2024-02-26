@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: certgen
-          image: "{{ .Values.image.registry }}/{{ include "cilium.image" .Values.certgen.image }}"
+          image: {{ include "cilium.image" .Values.certgen.image | quote }}
           imagePullPolicy: {{ .Values.certgen.image.pullPolicy }}
           command:
             - "/usr/bin/cilium-certgen"
@@ -59,6 +59,10 @@ spec:
       {{- with .Values.certgen.extraVolumes }}
       volumes:
       {{- toYaml . | nindent 6 }}
+      {{- end }}
+      affinity:
+      {{- with .Values.certgen.affinity }}
+      {{- toYaml . | nindent 8 }}
       {{- end }}
   ttlSecondsAfterFinished: {{ .Values.certgen.ttlSecondsAfterFinished }}
 {{- end }}
