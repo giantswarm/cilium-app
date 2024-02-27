@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Fix hubble-ui retagged image (#13)
-      sha: 9995ffa820c0e829b80e89be5904455df9f2b447
+      commitTitle: Revert helm schema and removal of nulls (#16)
+      sha: 6638023a0c8aeacf0d883dc4720be81394714cc0
       tags:
-      - 1.15.1-37-g9995ffa820
+      - 1.15.1-38-g6638023a0c
     path: cilium
   path: vendor
 - contents:
