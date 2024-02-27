@@ -61,7 +61,7 @@ contributors across the globe, there is almost always someone available to help.
 | alibabacloud.enabled | bool | `false` | Enable AlibabaCloud ENI integration |
 | annotateK8sNode | bool | `false` | Annotate k8s node upon initialization with Cilium's metadata. |
 | annotations | object | `{}` | Annotations to be added to all top-level cilium-agent objects (resources under templates/cilium-agent) |
-| apiRateLimit | string | `""` | The api-rate-limit option can be used to overwrite individual settings of the default configuration for rate limiting calls to the Cilium Agent API |
+| apiRateLimit | string | `nil` | The api-rate-limit option can be used to overwrite individual settings of the default configuration for rate limiting calls to the Cilium Agent API |
 | authentication.enabled | bool | `true` | Enable authentication processing and garbage collection. Note that if disabled, policy enforcement will still block requests that require authentication. But the resulting authentication requests for these requests will not be processed, therefore the requests not be allowed. |
 | authentication.gcInterval | string | `"5m0s"` | Interval for garbage collection of auth map entries. |
 | authentication.mutual.connectTimeout | string | `"5s"` | Timeout for connecting to the remote node TCP socket |
@@ -92,7 +92,7 @@ contributors across the globe, there is almost always someone available to help.
 | authentication.mutual.spire.install.server.dataStorage.accessMode | string | `"ReadWriteOnce"` | Access mode of the SPIRE server data storage |
 | authentication.mutual.spire.install.server.dataStorage.enabled | bool | `true` | Enable SPIRE server data storage |
 | authentication.mutual.spire.install.server.dataStorage.size | string | `"1Gi"` | Size of the SPIRE server data storage |
-| authentication.mutual.spire.install.server.dataStorage.storageClass | string | `""` | StorageClass of the SPIRE server data storage |
+| authentication.mutual.spire.install.server.dataStorage.storageClass | string | `nil` | StorageClass of the SPIRE server data storage |
 | authentication.mutual.spire.install.server.image | object | `{"digest":"sha256:28269265882048dcf0fed32fe47663cd98613727210b8d1a55618826f9bf5428","override":"","pullPolicy":"IfNotPresent","repository":"ghcr.io/spiffe/spire-server","tag":"1.8.5","useDigest":true}` | SPIRE server image |
 | authentication.mutual.spire.install.server.initContainers | list | `[]` | SPIRE server init containers |
 | authentication.mutual.spire.install.server.labels | object | `{}` | SPIRE server labels |
@@ -104,7 +104,7 @@ contributors across the globe, there is almost always someone available to help.
 | authentication.mutual.spire.install.server.service.type | string | `"ClusterIP"` | Service type for the SPIRE server service |
 | authentication.mutual.spire.install.server.serviceAccount | object | `{"create":true,"name":"spire-server"}` | SPIRE server service account |
 | authentication.mutual.spire.install.server.tolerations | list | `[]` | SPIRE server tolerations configuration ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ |
-| authentication.mutual.spire.serverAddress | string | `""` | SPIRE server address used by Cilium Operator  If k8s Service DNS along with port number is used (e.g. <service-name>.<namespace>.svc(.*):<port-number> format), Cilium Operator will resolve its address by looking up the clusterIP from Service resource.  Example values: 10.0.0.1:8081, spire-server.cilium-spire.svc:8081 |
+| authentication.mutual.spire.serverAddress | string | `nil` | SPIRE server address used by Cilium Operator  If k8s Service DNS along with port number is used (e.g. <service-name>.<namespace>.svc(.*):<port-number> format), Cilium Operator will resolve its address by looking up the clusterIP from Service resource.  Example values: 10.0.0.1:8081, spire-server.cilium-spire.svc:8081 |
 | authentication.mutual.spire.trustDomain | string | `"spiffe.cilium"` | SPIFFE trust domain to use for fetching certificates |
 | authentication.queueSize | int | `1024` | Buffer size of the channel Cilium uses to receive authentication events from the signal map. |
 | authentication.rotatedIdentitiesQueueSize | int | `1024` | Buffer size of the channel Cilium uses to receive certificate expiration events from auth handlers. |
@@ -136,7 +136,7 @@ contributors across the globe, there is almost always someone available to help.
 | bpf.monitorInterval | string | `"5s"` | Configure the typical time between monitor notifications for active connections. |
 | bpf.natMax | int | `524288` | Configure the maximum number of entries for the NAT table. |
 | bpf.neighMax | int | `524288` | Configure the maximum number of entries for the neighbor table. |
-| bpf.policyMapMax | int | `65536` | Configure the maximum number of entries in endpoint policy map (per endpoint). |
+| bpf.policyMapMax | int | `16384` | Configure the maximum number of entries in endpoint policy map (per endpoint). |
 | bpf.preallocateMaps | bool | `false` | Enables pre-allocation of eBPF map values. This increases memory usage but can reduce latency. |
 | bpf.root | string | `"/sys/fs/bpf"` | Configure the mount point for the BPF filesystem |
 | bpf.tproxy | bool | `false` | Configure the eBPF-based TPROXY to reduce reliance on iptables rules for implementing Layer 7 policy. |
@@ -190,19 +190,20 @@ contributors across the globe, there is almost always someone available to help.
 | clustermesh.apiserver.metrics.serviceMonitor.annotations | object | `{}` | Annotations to add to ServiceMonitor clustermesh-apiserver |
 | clustermesh.apiserver.metrics.serviceMonitor.enabled | bool | `false` | Enable service monitor. This requires the prometheus CRDs to be available (see https://github.com/prometheus-operator/prometheus-operator/blob/main/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml) |
 | clustermesh.apiserver.metrics.serviceMonitor.etcd.interval | string | `"10s"` | Interval for scrape metrics (etcd metrics) |
-| clustermesh.apiserver.metrics.serviceMonitor.etcd.metricRelabelings | list | `[]` | Metrics relabeling configs for the ServiceMonitor clustermesh-apiserver (etcd metrics) |
-| clustermesh.apiserver.metrics.serviceMonitor.etcd.relabelings | list | `[]` | Relabeling configs for the ServiceMonitor clustermesh-apiserver (etcd metrics) |
+| clustermesh.apiserver.metrics.serviceMonitor.etcd.metricRelabelings | string | `nil` | Metrics relabeling configs for the ServiceMonitor clustermesh-apiserver (etcd metrics) |
+| clustermesh.apiserver.metrics.serviceMonitor.etcd.relabelings | string | `nil` | Relabeling configs for the ServiceMonitor clustermesh-apiserver (etcd metrics) |
 | clustermesh.apiserver.metrics.serviceMonitor.interval | string | `"10s"` | Interval for scrape metrics (apiserver metrics) |
 | clustermesh.apiserver.metrics.serviceMonitor.kvstoremesh.interval | string | `"10s"` | Interval for scrape metrics (KVStoreMesh metrics) |
-| clustermesh.apiserver.metrics.serviceMonitor.kvstoremesh.metricRelabelings | list | `[]` | Metrics relabeling configs for the ServiceMonitor clustermesh-apiserver (KVStoreMesh metrics) |
-| clustermesh.apiserver.metrics.serviceMonitor.kvstoremesh.relabelings | list | `[]` | Relabeling configs for the ServiceMonitor clustermesh-apiserver (KVStoreMesh metrics) |
+| clustermesh.apiserver.metrics.serviceMonitor.kvstoremesh.metricRelabelings | string | `nil` | Metrics relabeling configs for the ServiceMonitor clustermesh-apiserver (KVStoreMesh metrics) |
+| clustermesh.apiserver.metrics.serviceMonitor.kvstoremesh.relabelings | string | `nil` | Relabeling configs for the ServiceMonitor clustermesh-apiserver (KVStoreMesh metrics) |
 | clustermesh.apiserver.metrics.serviceMonitor.labels | object | `{}` | Labels to add to ServiceMonitor clustermesh-apiserver |
-| clustermesh.apiserver.metrics.serviceMonitor.metricRelabelings | list | `[]` | Metrics relabeling configs for the ServiceMonitor clustermesh-apiserver (apiserver metrics) |
-| clustermesh.apiserver.metrics.serviceMonitor.relabelings | list | `[]` | Relabeling configs for the ServiceMonitor clustermesh-apiserver (apiserver metrics) |
+| clustermesh.apiserver.metrics.serviceMonitor.metricRelabelings | string | `nil` | Metrics relabeling configs for the ServiceMonitor clustermesh-apiserver (apiserver metrics) |
+| clustermesh.apiserver.metrics.serviceMonitor.relabelings | string | `nil` | Relabeling configs for the ServiceMonitor clustermesh-apiserver (apiserver metrics) |
 | clustermesh.apiserver.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for pod assignment ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
 | clustermesh.apiserver.podAnnotations | object | `{}` | Annotations to be added to clustermesh-apiserver pods |
 | clustermesh.apiserver.podDisruptionBudget.enabled | bool | `false` | enable PodDisruptionBudget ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/ |
-| clustermesh.apiserver.podDisruptionBudget.maxUnavailable | string | `"1"` | Maximum number/percentage of pods that may be made unavailable |
+| clustermesh.apiserver.podDisruptionBudget.maxUnavailable | int | `1` | Maximum number/percentage of pods that may be made unavailable |
+| clustermesh.apiserver.podDisruptionBudget.minAvailable | string | `nil` | Minimum number/percentage of pods that should remain scheduled. When it's set, maxUnavailable must be disabled by `maxUnavailable: null` |
 | clustermesh.apiserver.podLabels | object | `{}` | Labels to be added to clustermesh-apiserver pods |
 | clustermesh.apiserver.podSecurityContext | object | `{}` | Security context to be added to clustermesh-apiserver pods |
 | clustermesh.apiserver.priorityClassName | string | `""` | The priority class to use for clustermesh-apiserver |
@@ -210,8 +211,8 @@ contributors across the globe, there is almost always someone available to help.
 | clustermesh.apiserver.resources | object | `{}` | Resource requests and limits for the clustermesh-apiserver |
 | clustermesh.apiserver.securityContext | object | `{}` | Security context to be added to clustermesh-apiserver containers |
 | clustermesh.apiserver.service.annotations | object | `{}` | Annotations for the clustermesh-apiserver For GKE LoadBalancer, use annotation cloud.google.com/load-balancer-type: "Internal" For EKS LoadBalancer, use annotation service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0 |
-| clustermesh.apiserver.service.externalTrafficPolicy | string | `"Cluster"` | The externalTrafficPolicy of service used for apiserver access. |
-| clustermesh.apiserver.service.internalTrafficPolicy | string | `"Cluster"` | The internalTrafficPolicy of service used for apiserver access. |
+| clustermesh.apiserver.service.externalTrafficPolicy | string | `nil` | The externalTrafficPolicy of service used for apiserver access. |
+| clustermesh.apiserver.service.internalTrafficPolicy | string | `nil` | The internalTrafficPolicy of service used for apiserver access. |
 | clustermesh.apiserver.service.nodePort | int | `32379` | Optional port to use as the node port for apiserver access.  WARNING: make sure to configure a different NodePort in each cluster if kube-proxy replacement is enabled, as Cilium is currently affected by a known bug (#24692) when NodePorts are handled by the KPR implementation. If a service with the same NodePort exists both in the local and the remote cluster, all traffic originating from inside the cluster and targeting the corresponding NodePort will be redirected to a local backend, regardless of whether the destination node belongs to the local or the remote cluster. |
 | clustermesh.apiserver.service.type | string | `"NodePort"` | The type of service used for apiserver access. |
 | clustermesh.apiserver.terminationGracePeriodSeconds | int | `30` | terminationGracePeriodSeconds for the clustermesh-apiserver deployment |
@@ -236,8 +237,8 @@ contributors across the globe, there is almost always someone available to help.
 | clustermesh.maxConnectedClusters | int | `255` | The maximum number of clusters to support in a ClusterMesh. This value cannot be changed on running clusters, and all clusters in a ClusterMesh must be configured with the same value. Values > 255 will decrease the maximum allocatable cluster-local identities. Supported values are 255 and 511. |
 | clustermesh.useAPIServer | bool | `false` | Deploy clustermesh-apiserver for clustermesh |
 | cni.binPath | string | `"/opt/cni/bin"` | Configure the path to the CNI binary directory on the host. |
-| cni.chainingMode | string | `"none"` | Configure chaining on top of other CNI plugins. Possible values:  - none  - aws-cni  - flannel  - generic-veth  - portmap |
-| cni.chainingTarget | string | `""` | A CNI network name in to which the Cilium plugin should be added as a chained plugin. This will cause the agent to watch for a CNI network with this network name. When it is found, this will be used as the basis for Cilium's CNI configuration file. If this is set, it assumes a chaining mode of generic-veth. As a special case, a chaining mode of aws-cni implies a chainingTarget of aws-cni. |
+| cni.chainingMode | string | `nil` | Configure chaining on top of other CNI plugins. Possible values:  - none  - aws-cni  - flannel  - generic-veth  - portmap |
+| cni.chainingTarget | string | `nil` | A CNI network name in to which the Cilium plugin should be added as a chained plugin. This will cause the agent to watch for a CNI network with this network name. When it is found, this will be used as the basis for Cilium's CNI configuration file. If this is set, it assumes a chaining mode of generic-veth. As a special case, a chaining mode of aws-cni implies a chainingTarget of aws-cni. |
 | cni.confFileMountPath | string | `"/tmp/cni-configuration"` | Configure the path to where to mount the ConfigMap inside the agent pod. |
 | cni.confPath | string | `"/etc/cni/net.d"` | Configure the path to the CNI configuration directory on the host. |
 | cni.configMapKey | string | `"cni-config"` | Configure the key in the CNI ConfigMap to read the contents of the CNI configuration from. |
@@ -255,13 +256,13 @@ contributors across the globe, there is almost always someone available to help.
 | crdWaitTimeout | string | `"5m"` | Configure timeout in which Cilium will exit if CRDs are not available |
 | customCalls | object | `{"enabled":false}` | Tail call hooks for custom eBPF programs. |
 | customCalls.enabled | bool | `false` | Enable tail call hooks for custom eBPF programs. |
-| daemon.allowedConfigOverrides | string | `""` | allowedConfigOverrides is a list of config-map keys that can be overridden. That is to say, if this value is set, config sources (excepting the first one) can only override keys in this list.  This takes precedence over blockedConfigOverrides.  By default, all keys may be overridden. To disable overrides, set this to "none" or change the configSources variable. |
-| daemon.blockedConfigOverrides | string | `""` | blockedConfigOverrides is a list of config-map keys that may not be overridden. In other words, if any of these keys appear in a configuration source excepting the first one, they will be ignored  This is ignored if allowedConfigOverrides is set.  By default, all keys may be overridden. |
-| daemon.configSources | string | `""` | Configure a custom list of possible configuration override sources The default is "config-map:cilium-config,cilium-node-config". For supported values, see the help text for the build-config subcommand. Note that this value should be a comma-separated string. |
+| daemon.allowedConfigOverrides | string | `nil` | allowedConfigOverrides is a list of config-map keys that can be overridden. That is to say, if this value is set, config sources (excepting the first one) can only override keys in this list.  This takes precedence over blockedConfigOverrides.  By default, all keys may be overridden. To disable overrides, set this to "none" or change the configSources variable. |
+| daemon.blockedConfigOverrides | string | `nil` | blockedConfigOverrides is a list of config-map keys that may not be overridden. In other words, if any of these keys appear in a configuration source excepting the first one, they will be ignored  This is ignored if allowedConfigOverrides is set.  By default, all keys may be overridden. |
+| daemon.configSources | string | `nil` | Configure a custom list of possible configuration override sources The default is "config-map:cilium-config,cilium-node-config". For supported values, see the help text for the build-config subcommand. Note that this value should be a comma-separated string. |
 | daemon.runPath | string | `"/var/run/cilium"` | Configure where Cilium runtime state should be stored. |
-| dashboards | object | `{"annotations":{},"enabled":false,"label":"grafana_dashboard","labelValue":"1","namespace":""}` | Grafana dashboards for cilium-agent grafana can import dashboards based on the label and value ref: https://github.com/grafana/helm-charts/tree/main/charts/grafana#sidecar-for-dashboards |
+| dashboards | object | `{"annotations":{},"enabled":false,"label":"grafana_dashboard","labelValue":"1","namespace":null}` | Grafana dashboards for cilium-agent grafana can import dashboards based on the label and value ref: https://github.com/grafana/helm-charts/tree/main/charts/grafana#sidecar-for-dashboards |
 | debug.enabled | bool | `false` | Enable debug logging |
-| debug.verbose | string | `""` | Configure verbosity levels for debug logging This option is used to enable debug messages for operations related to such sub-system such as (e.g. kvstore, envoy, datapath or policy), and flow is for enabling debug messages emitted per request, message and connection. Multiple values can be set via a space-separated string (e.g. "datapath envoy").  Applicable values: - flow - kvstore - envoy - datapath - policy |
+| debug.verbose | string | `nil` | Configure verbosity levels for debug logging This option is used to enable debug messages for operations related to such sub-system such as (e.g. kvstore, envoy, datapath or policy), and flow is for enabling debug messages emitted per request, message and connection. Multiple values can be set via a space-separated string (e.g. "datapath envoy").  Applicable values: - flow - kvstore - envoy - datapath - policy |
 | defaultPolicies.enabled | bool | `false` |  |
 | defaultPolicies.remove | bool | `false` |  |
 | defaultPolicies.tolerations | list | `[{"operator":"Exists"}]` | Node tolerations for default-policies job scheduling to nodes with taints ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ |
@@ -327,7 +328,7 @@ contributors across the globe, there is almost always someone available to help.
 | envoy.affinity | object | `{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"k8s-app":"cilium-envoy"}},"topologyKey":"kubernetes.io/hostname"}]}}` | Affinity for cilium-envoy. |
 | envoy.annotations | object | `{}` | Annotations to be added to all top-level cilium-envoy objects (resources under templates/cilium-envoy) |
 | envoy.connectTimeoutSeconds | int | `2` | Time in seconds after which a TCP connection attempt times out |
-| envoy.dnsPolicy | string | `""` | DNS policy for Cilium envoy pods. Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy |
+| envoy.dnsPolicy | string | `nil` | DNS policy for Cilium envoy pods. Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy |
 | envoy.enabled | bool | `false` | Enable Envoy Proxy in standalone DaemonSet. |
 | envoy.extraArgs | list | `[]` | Additional envoy container arguments. |
 | envoy.extraContainers | list | `[]` | Additional containers added to the cilium Envoy DaemonSet. |
@@ -348,15 +349,15 @@ contributors across the globe, there is almost always someone available to help.
 | envoy.podAnnotations | object | `{}` | Annotations to be added to envoy pods |
 | envoy.podLabels | object | `{}` | Labels to be added to envoy pods |
 | envoy.podSecurityContext | object | `{}` | Security Context for cilium-envoy pods. |
-| envoy.priorityClassName | string | `""` | The priority class to use for cilium-envoy. |
-| envoy.prometheus | object | `{"enabled":true,"port":"9964","serviceMonitor":{"annotations":{},"enabled":false,"interval":"10s","labels":{},"metricRelabelings":[],"relabelings":[{"replacement":"${1}","sourceLabels":["__meta_kubernetes_pod_node_name"],"targetLabel":"node"}]}}` | Configure Cilium Envoy Prometheus options. Note that some of these apply to either cilium-agent or cilium-envoy. |
+| envoy.priorityClassName | string | `nil` | The priority class to use for cilium-envoy. |
+| envoy.prometheus | object | `{"enabled":true,"port":"9964","serviceMonitor":{"annotations":{},"enabled":false,"interval":"10s","labels":{},"metricRelabelings":null,"relabelings":[{"replacement":"${1}","sourceLabels":["__meta_kubernetes_pod_node_name"],"targetLabel":"node"}]}}` | Configure Cilium Envoy Prometheus options. Note that some of these apply to either cilium-agent or cilium-envoy. |
 | envoy.prometheus.enabled | bool | `true` | Enable prometheus metrics for cilium-envoy |
 | envoy.prometheus.port | string | `"9964"` | Serve prometheus metrics for cilium-envoy on the configured port |
 | envoy.prometheus.serviceMonitor.annotations | object | `{}` | Annotations to add to ServiceMonitor cilium-envoy |
 | envoy.prometheus.serviceMonitor.enabled | bool | `false` | Enable service monitors. This requires the prometheus CRDs to be available (see https://github.com/prometheus-operator/prometheus-operator/blob/main/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml) Note that this setting applies to both cilium-envoy _and_ cilium-agent with Envoy enabled. |
 | envoy.prometheus.serviceMonitor.interval | string | `"10s"` | Interval for scrape metrics. |
 | envoy.prometheus.serviceMonitor.labels | object | `{}` | Labels to add to ServiceMonitor cilium-envoy |
-| envoy.prometheus.serviceMonitor.metricRelabelings | list | `[]` | Metrics relabeling configs for the ServiceMonitor cilium-envoy or for cilium-agent with Envoy configured. |
+| envoy.prometheus.serviceMonitor.metricRelabelings | string | `nil` | Metrics relabeling configs for the ServiceMonitor cilium-envoy or for cilium-agent with Envoy configured. |
 | envoy.prometheus.serviceMonitor.relabelings | list | `[{"replacement":"${1}","sourceLabels":["__meta_kubernetes_pod_node_name"],"targetLabel":"node"}]` | Relabeling configs for the ServiceMonitor cilium-envoy or for cilium-agent with Envoy configured. |
 | envoy.readinessProbe.failureThreshold | int | `3` | failure threshold of readiness probe |
 | envoy.readinessProbe.periodSeconds | int | `30` | interval between checks of the readiness probe |
@@ -386,7 +387,8 @@ contributors across the globe, there is almost always someone available to help.
 | etcd.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for cilium-etcd-operator pod assignment ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
 | etcd.podAnnotations | object | `{}` | Annotations to be added to cilium-etcd-operator pods |
 | etcd.podDisruptionBudget.enabled | bool | `false` | enable PodDisruptionBudget ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/ |
-| etcd.podDisruptionBudget.maxUnavailable | string | `"1"` | Maximum number/percentage of pods that may be made unavailable |
+| etcd.podDisruptionBudget.maxUnavailable | int | `1` | Maximum number/percentage of pods that may be made unavailable |
+| etcd.podDisruptionBudget.minAvailable | string | `nil` | Minimum number/percentage of pods that should remain scheduled. When it's set, maxUnavailable must be disabled by `maxUnavailable: null` |
 | etcd.podLabels | object | `{}` | Labels to be added to cilium-etcd-operator pods |
 | etcd.podSecurityContext | object | `{}` | Security context to be added to cilium-etcd-operator pods |
 | etcd.priorityClassName | string | `""` | The priority class to use for cilium-etcd-operator |
@@ -440,10 +442,10 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.export.fileMaxSizeMb | int | `10` | - Defines max file size of output file before it gets rotated. |
 | hubble.export.static | object | `{"allowList":[],"denyList":[],"enabled":false,"fieldMask":[],"filePath":"/var/run/cilium/hubble/events.log"}` | - Static exporter configuration. Static exporter is bound to agent lifecycle. |
 | hubble.listenAddress | string | `":4244"` | An additional address for Hubble to listen to. Set this field ":4244" if you are enabling Hubble Relay, as it assumes that Hubble is listening on port 4244. |
-| hubble.metrics | object | `{"dashboards":{"annotations":{},"enabled":false,"label":"grafana_dashboard","labelValue":"1","namespace":""},"enableOpenMetrics":false,"enabled":"","port":9965,"serviceAnnotations":{},"serviceMonitor":{"annotations":{},"enabled":false,"interval":"10s","jobLabel":"","labels":{},"metricRelabelings":[],"relabelings":[{"replacement":"${1}","sourceLabels":["__meta_kubernetes_pod_node_name"],"targetLabel":"node"}]}}` | Hubble metrics configuration. See https://docs.cilium.io/en/stable/observability/metrics/#hubble-metrics for more comprehensive documentation about Hubble metrics. |
-| hubble.metrics.dashboards | object | `{"annotations":{},"enabled":false,"label":"grafana_dashboard","labelValue":"1","namespace":""}` | Grafana dashboards for hubble grafana can import dashboards based on the label and value ref: https://github.com/grafana/helm-charts/tree/main/charts/grafana#sidecar-for-dashboards |
+| hubble.metrics | object | `{"dashboards":{"annotations":{},"enabled":false,"label":"grafana_dashboard","labelValue":"1","namespace":null},"enableOpenMetrics":false,"enabled":null,"port":9965,"serviceAnnotations":{},"serviceMonitor":{"annotations":{},"enabled":false,"interval":"10s","jobLabel":"","labels":{},"metricRelabelings":null,"relabelings":[{"replacement":"${1}","sourceLabels":["__meta_kubernetes_pod_node_name"],"targetLabel":"node"}]}}` | Hubble metrics configuration. See https://docs.cilium.io/en/stable/observability/metrics/#hubble-metrics for more comprehensive documentation about Hubble metrics. |
+| hubble.metrics.dashboards | object | `{"annotations":{},"enabled":false,"label":"grafana_dashboard","labelValue":"1","namespace":null}` | Grafana dashboards for hubble grafana can import dashboards based on the label and value ref: https://github.com/grafana/helm-charts/tree/main/charts/grafana#sidecar-for-dashboards |
 | hubble.metrics.enableOpenMetrics | bool | `false` | Enables exporting hubble metrics in OpenMetrics format. |
-| hubble.metrics.enabled | string | `""` | Configures the list of metrics to collect. If empty or null, metrics are disabled. Example:    enabled:   - dns:query;ignoreAAAA   - drop   - tcp   - flow   - icmp   - http  You can specify the list of metrics from the helm CLI:    --set hubble.metrics.enabled="{dns:query;ignoreAAAA,drop,tcp,flow,icmp,http}"  |
+| hubble.metrics.enabled | string | `nil` | Configures the list of metrics to collect. If empty or null, metrics are disabled. Example:    enabled:   - dns:query;ignoreAAAA   - drop   - tcp   - flow   - icmp   - http  You can specify the list of metrics from the helm CLI:    --set hubble.metrics.enabled="{dns:query;ignoreAAAA,drop,tcp,flow,icmp,http}"  |
 | hubble.metrics.port | int | `9965` | Configure the port the hubble metric server listens on. |
 | hubble.metrics.serviceAnnotations | object | `{}` | Annotations to be added to hubble-metrics service. |
 | hubble.metrics.serviceMonitor.annotations | object | `{}` | Annotations to add to ServiceMonitor hubble |
@@ -451,7 +453,7 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.metrics.serviceMonitor.interval | string | `"10s"` | Interval for scrape metrics. |
 | hubble.metrics.serviceMonitor.jobLabel | string | `""` | jobLabel to add for ServiceMonitor hubble |
 | hubble.metrics.serviceMonitor.labels | object | `{}` | Labels to add to ServiceMonitor hubble |
-| hubble.metrics.serviceMonitor.metricRelabelings | list | `[]` | Metrics relabeling configs for the ServiceMonitor hubble |
+| hubble.metrics.serviceMonitor.metricRelabelings | string | `nil` | Metrics relabeling configs for the ServiceMonitor hubble |
 | hubble.metrics.serviceMonitor.relabelings | list | `[{"replacement":"${1}","sourceLabels":["__meta_kubernetes_pod_node_name"],"targetLabel":"node"}]` | Relabeling configs for the ServiceMonitor hubble |
 | hubble.peerService.clusterDomain | string | `"cluster.local"` | The cluster domain to use to query the Hubble Peer service. It should be the local cluster. |
 | hubble.peerService.targetPort | int | `4244` | Target Port for the Peer service, must match the hubble.listenAddress' port. |
@@ -464,7 +466,7 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.redact.kafka.apiKey | bool | `false` | Enables redacting Kafka's API key. Example:    redact:     enabled: true     kafka:       apiKey: true  You can specify the options from the helm CLI:    --set hubble.redact.enabled="true"   --set hubble.redact.kafka.apiKey="true" |
 | hubble.relay.affinity | object | `{"podAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"k8s-app":"cilium"}},"topologyKey":"kubernetes.io/hostname"}]}}` | Affinity for hubble-replay |
 | hubble.relay.annotations | object | `{}` | Annotations to be added to all top-level hubble-relay objects (resources under templates/hubble-relay) |
-| hubble.relay.dialTimeout | string | `""` | Dial timeout to connect to the local hubble instance to receive peer information (e.g. "30s"). |
+| hubble.relay.dialTimeout | string | `nil` | Dial timeout to connect to the local hubble instance to receive peer information (e.g. "30s"). |
 | hubble.relay.enabled | bool | `true` | Enable Hubble Relay (requires hubble.enabled=true) |
 | hubble.relay.extraEnv | list | `[]` | Additional hubble-relay environment variables. |
 | hubble.relay.extraVolumeMounts | list | `[]` | Additional hubble-relay volumeMounts. |
@@ -477,30 +479,31 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.relay.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for pod assignment ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
 | hubble.relay.podAnnotations | object | `{}` | Annotations to be added to hubble-relay pods |
 | hubble.relay.podDisruptionBudget.enabled | bool | `false` | enable PodDisruptionBudget ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/ |
-| hubble.relay.podDisruptionBudget.maxUnavailable | string | `"1"` | Maximum number/percentage of pods that may be made unavailable |
+| hubble.relay.podDisruptionBudget.maxUnavailable | int | `1` | Maximum number/percentage of pods that may be made unavailable |
+| hubble.relay.podDisruptionBudget.minAvailable | string | `nil` | Minimum number/percentage of pods that should remain scheduled. When it's set, maxUnavailable must be disabled by `maxUnavailable: null` |
 | hubble.relay.podLabels | object | `{}` | Labels to be added to hubble-relay pods |
 | hubble.relay.podSecurityContext | object | `{"fsGroup":65532}` | hubble-relay pod security context |
 | hubble.relay.pprof.address | string | `"localhost"` | Configure pprof listen address for hubble-relay |
 | hubble.relay.pprof.enabled | bool | `false` | Enable pprof for hubble-relay |
 | hubble.relay.pprof.port | int | `6062` | Configure pprof listen port for hubble-relay |
 | hubble.relay.priorityClassName | string | `""` | The priority class to use for hubble-relay |
-| hubble.relay.prometheus | object | `{"enabled":true,"port":9966,"serviceMonitor":{"annotations":{},"enabled":false,"interval":"10s","labels":{},"metricRelabelings":[],"relabelings":[]}}` | Enable prometheus metrics for hubble-relay on the configured port at /metrics |
+| hubble.relay.prometheus | object | `{"enabled":true,"port":9966,"serviceMonitor":{"annotations":{},"enabled":false,"interval":"10s","labels":{},"metricRelabelings":null,"relabelings":null}}` | Enable prometheus metrics for hubble-relay on the configured port at /metrics |
 | hubble.relay.prometheus.serviceMonitor.annotations | object | `{}` | Annotations to add to ServiceMonitor hubble-relay |
 | hubble.relay.prometheus.serviceMonitor.enabled | bool | `false` | Enable service monitors. This requires the prometheus CRDs to be available (see https://github.com/prometheus-operator/prometheus-operator/blob/main/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml) |
 | hubble.relay.prometheus.serviceMonitor.interval | string | `"10s"` | Interval for scrape metrics. |
 | hubble.relay.prometheus.serviceMonitor.labels | object | `{}` | Labels to add to ServiceMonitor hubble-relay |
-| hubble.relay.prometheus.serviceMonitor.metricRelabelings | list | `[]` | Metrics relabeling configs for the ServiceMonitor hubble-relay |
-| hubble.relay.prometheus.serviceMonitor.relabelings | list | `[]` | Relabeling configs for the ServiceMonitor hubble-relay |
+| hubble.relay.prometheus.serviceMonitor.metricRelabelings | string | `nil` | Metrics relabeling configs for the ServiceMonitor hubble-relay |
+| hubble.relay.prometheus.serviceMonitor.relabelings | string | `nil` | Relabeling configs for the ServiceMonitor hubble-relay |
 | hubble.relay.replicas | int | `1` | Number of replicas run for the hubble-relay deployment. |
 | hubble.relay.resources | object | `{}` | Specifies the resources for the hubble-relay pods |
-| hubble.relay.retryTimeout | string | `""` | Backoff duration to retry connecting to the local hubble instance in case of failure (e.g. "30s"). |
+| hubble.relay.retryTimeout | string | `nil` | Backoff duration to retry connecting to the local hubble instance in case of failure (e.g. "30s"). |
 | hubble.relay.rollOutPods | bool | `false` | Roll out Hubble Relay pods automatically when configmap is updated. |
 | hubble.relay.securityContext | object | `{"capabilities":{"drop":["ALL"]},"runAsGroup":65532,"runAsNonRoot":true,"runAsUser":65532}` | hubble-relay container security context |
 | hubble.relay.service | object | `{"nodePort":31234,"type":"ClusterIP"}` | hubble-relay service configuration. |
 | hubble.relay.service.nodePort | int | `31234` | - The port to use when the service type is set to NodePort. |
 | hubble.relay.service.type | string | `"ClusterIP"` | - The type of service used for Hubble Relay access, either ClusterIP or NodePort. |
-| hubble.relay.sortBufferDrainTimeout | string | `""` | When the per-request flows sort buffer is not full, a flow is drained every time this timeout is reached (only affects requests in follow-mode) (e.g. "1s"). |
-| hubble.relay.sortBufferLenMax | int | `100` | Max number of flows that can be buffered for sorting before being sent to the client (per request) (e.g. 100). |
+| hubble.relay.sortBufferDrainTimeout | string | `nil` | When the per-request flows sort buffer is not full, a flow is drained every time this timeout is reached (only affects requests in follow-mode) (e.g. "1s"). |
+| hubble.relay.sortBufferLenMax | string | `nil` | Max number of flows that can be buffered for sorting before being sent to the client (per request) (e.g. 100). |
 | hubble.relay.terminationGracePeriodSeconds | int | `1` | Configure termination grace period for hubble relay Deployment. |
 | hubble.relay.tls | object | `{"client":{"cert":"","key":""},"server":{"cert":"","enabled":false,"extraDnsNames":[],"extraIpAddresses":[],"key":"","mtls":false,"relayName":"ui.hubble-relay.cilium.io"}}` | TLS configuration for Hubble Relay |
 | hubble.relay.tls.client | object | `{"cert":"","key":""}` | base64 encoded PEM values for the hubble-relay client certificate and private key This keypair is presented to Hubble server instances for mTLS authentication and is required when hubble.tls.enabled is true. These values need to be set manually if hubble.tls.auto.enabled is false. |
@@ -546,7 +549,8 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.ui.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for pod assignment ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
 | hubble.ui.podAnnotations | object | `{}` | Annotations to be added to hubble-ui pods |
 | hubble.ui.podDisruptionBudget.enabled | bool | `false` | enable PodDisruptionBudget ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/ |
-| hubble.ui.podDisruptionBudget.maxUnavailable | string | `"1"` | Maximum number/percentage of pods that may be made unavailable |
+| hubble.ui.podDisruptionBudget.maxUnavailable | int | `1` | Maximum number/percentage of pods that may be made unavailable |
+| hubble.ui.podDisruptionBudget.minAvailable | string | `nil` | Minimum number/percentage of pods that should remain scheduled. When it's set, maxUnavailable must be disabled by `maxUnavailable: null` |
 | hubble.ui.podLabels | object | `{}` | Labels to be added to hubble-ui pods |
 | hubble.ui.priorityClassName | string | `""` | The priority class to use for hubble-ui |
 | hubble.ui.replicas | int | `1` | The number of replicas of Hubble UI to deploy. |
@@ -565,10 +569,10 @@ contributors across the globe, there is almost always someone available to help.
 | identityAllocationMode | string | `"crd"` | Method to use for identity allocation (`crd` or `kvstore`). |
 | identityChangeGracePeriod | string | `"5s"` | Time to wait before using new identity on endpoint identity change. |
 | image | object | `{"digest":"","override":"","pullPolicy":"IfNotPresent","registry":"gsoci.azurecr.io","repository":"giantswarm/cilium","tag":"v1.15.1","useDigest":false}` | Agent container image. |
-| imagePullSecrets | list | `[]` | Configure image pull secrets for pulling container images |
+| imagePullSecrets | string | `nil` | Configure image pull secrets for pulling container images |
 | ingressController.default | bool | `false` | Set cilium ingress controller to be the default ingress controller This will let cilium ingress controller route entries without ingress class set |
-| ingressController.defaultSecretName | string | `""` | Default secret name for ingresses without .spec.tls[].secretName set. |
-| ingressController.defaultSecretNamespace | string | `""` | Default secret namespace for ingresses without .spec.tls[].secretName set. |
+| ingressController.defaultSecretName | string | `nil` | Default secret name for ingresses without .spec.tls[].secretName set. |
+| ingressController.defaultSecretNamespace | string | `nil` | Default secret namespace for ingresses without .spec.tls[].secretName set. |
 | ingressController.enableProxyProtocol | bool | `false` | Enable proxy protocol for all Ingress listeners. Note that _only_ Proxy protocol traffic will be accepted once this is enabled. |
 | ingressController.enabled | bool | `false` | Enable cilium ingress controller This will automatically set enable-envoy-config as well. |
 | ingressController.enforceHttps | bool | `true` | Enforce https for host having matching TLS host in Ingress. Incoming traffic to http listener will return 308 http error code with respective location in header. |
@@ -578,15 +582,15 @@ contributors across the globe, there is almost always someone available to help.
 | ingressController.secretsNamespace.create | bool | `true` | Create secrets namespace for Ingress. |
 | ingressController.secretsNamespace.name | string | `"cilium-secrets"` | Name of Ingress secret namespace. |
 | ingressController.secretsNamespace.sync | bool | `true` | Enable secret sync, which will make sure all TLS secrets used by Ingress are synced to secretsNamespace.name. If disabled, TLS secrets must be maintained externally. |
-| ingressController.service | object | `{"allocateLoadBalancerNodePorts":true,"annotations":{},"insecureNodePort":0,"labels":{},"loadBalancerClass":"","loadBalancerIP":"","name":"cilium-ingress","secureNodePort":0,"type":"LoadBalancer"}` | Load-balancer service in shared mode. This is a single load-balancer service for all Ingress resources. |
-| ingressController.service.allocateLoadBalancerNodePorts | bool | `true` | Configure if node port allocation is required for LB service ref: https://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-nodeport-allocation |
+| ingressController.service | object | `{"allocateLoadBalancerNodePorts":null,"annotations":{},"insecureNodePort":null,"labels":{},"loadBalancerClass":null,"loadBalancerIP":null,"name":"cilium-ingress","secureNodePort":null,"type":"LoadBalancer"}` | Load-balancer service in shared mode. This is a single load-balancer service for all Ingress resources. |
+| ingressController.service.allocateLoadBalancerNodePorts | string | `nil` | Configure if node port allocation is required for LB service ref: https://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-nodeport-allocation |
 | ingressController.service.annotations | object | `{}` | Annotations to be added for the shared LB service |
-| ingressController.service.insecureNodePort | int | `0` | Configure a specific nodePort for insecure HTTP traffic on the shared LB service |
+| ingressController.service.insecureNodePort | string | `nil` | Configure a specific nodePort for insecure HTTP traffic on the shared LB service |
 | ingressController.service.labels | object | `{}` | Labels to be added for the shared LB service |
-| ingressController.service.loadBalancerClass | string | `""` | Configure a specific loadBalancerClass on the shared LB service (requires Kubernetes 1.24+) |
-| ingressController.service.loadBalancerIP | string | `""` | Configure a specific loadBalancerIP on the shared LB service |
+| ingressController.service.loadBalancerClass | string | `nil` | Configure a specific loadBalancerClass on the shared LB service (requires Kubernetes 1.24+) |
+| ingressController.service.loadBalancerIP | string | `nil` | Configure a specific loadBalancerIP on the shared LB service |
 | ingressController.service.name | string | `"cilium-ingress"` | Service name |
-| ingressController.service.secureNodePort | int | `0` | Configure a specific nodePort for secure HTTPS traffic on the shared LB service |
+| ingressController.service.secureNodePort | string | `nil` | Configure a specific nodePort for secure HTTPS traffic on the shared LB service |
 | ingressController.service.type | string | `"LoadBalancer"` | Service type for the shared LB service |
 | initResources | object | `{}` | resources & limits for the agent init containers |
 | installNoConntrackIptablesRules | bool | `false` | Install Iptables rules to skip netfilter connection tracking on all pod traffic. This option is only effective when Cilium is running in direct routing and full KPR mode. Moreover, this option cannot be enabled when Cilium is running in a managed Kubernetes environment or in a chained CNI setup. |
@@ -598,14 +602,14 @@ contributors across the globe, there is almost always someone available to help.
 | ipam.operator.clusterPoolIPv4PodCIDRList | list | `["10.0.0.0/8"]` | IPv4 CIDR list range to delegate to individual nodes for IPAM. |
 | ipam.operator.clusterPoolIPv6MaskSize | int | `120` | IPv6 CIDR mask size to delegate to individual nodes for IPAM. |
 | ipam.operator.clusterPoolIPv6PodCIDRList | list | `["fd00::/104"]` | IPv6 CIDR list range to delegate to individual nodes for IPAM. |
-| ipam.operator.externalAPILimitBurstSize | int | `20` | The maximum burst size when rate limiting access to external APIs. Also known as the token bucket capacity. |
-| ipam.operator.externalAPILimitQPS | float | `4.0` | The maximum queries per second when rate limiting access to external APIs. Also known as the bucket refill rate, which is used to refill the bucket up to the burst size capacity. |
+| ipam.operator.externalAPILimitBurstSize | string | `20` | The maximum burst size when rate limiting access to external APIs. Also known as the token bucket capacity. |
+| ipam.operator.externalAPILimitQPS | string | `4.0` | The maximum queries per second when rate limiting access to external APIs. Also known as the bucket refill rate, which is used to refill the bucket up to the burst size capacity. |
 | ipv4.enabled | bool | `true` | Enable IPv4 support. |
 | ipv4NativeRoutingCIDR | string | `""` | Allows to explicitly specify the IPv4 CIDR for native routing. When specified, Cilium assumes networking for this CIDR is preconfigured and hands traffic destined for that range to the Linux network stack without applying any SNAT. Generally speaking, specifying a native routing CIDR implies that Cilium can depend on the underlying networking stack to route packets to their destination. To offer a concrete example, if Cilium is configured to use direct routing and the Kubernetes CIDR is included in the native routing CIDR, the user must configure the routes to reach pods, either manually or by setting the auto-direct-node-routes flag. |
 | ipv6.enabled | bool | `false` | Enable IPv6 support. |
 | ipv6NativeRoutingCIDR | string | `""` | Allows to explicitly specify the IPv6 CIDR for native routing. When specified, Cilium assumes networking for this CIDR is preconfigured and hands traffic destined for that range to the Linux network stack without applying any SNAT. Generally speaking, specifying a native routing CIDR implies that Cilium can depend on the underlying networking stack to route packets to their destination. To offer a concrete example, if Cilium is configured to use direct routing and the Kubernetes CIDR is included in the native routing CIDR, the user must configure the routes to reach pods, either manually or by setting the auto-direct-node-routes flag. |
 | k8s | object | `{}` | Configure Kubernetes specific configuration |
-| k8sClientRateLimit | object | `{"burst":10,"qps":5}` | Configure the client side rate limit for the agent and operator  If the amount of requests to the Kubernetes API server exceeds the configured rate limit, the agent and operator will start to throttle requests by delaying them until there is budget or the request times out. |
+| k8sClientRateLimit | object | `{"burst":null,"qps":null}` | Configure the client side rate limit for the agent and operator  If the amount of requests to the Kubernetes API server exceeds the configured rate limit, the agent and operator will start to throttle requests by delaying them until there is budget or the request times out. |
 | k8sClientRateLimit.burst | int | 10 for k8s up to 1.26. 20 for k8s version 1.27+ | The burst request rate in requests per second. The rate limiter will allow short bursts with a higher rate. |
 | k8sClientRateLimit.qps | int | 5 for k8s up to 1.26. 10 for k8s version 1.27+ | The sustained request rate in requests per second. |
 | k8sNetworkPolicy.enabled | bool | `true` | Enable support for K8s NetworkPolicy |
@@ -667,7 +671,7 @@ contributors across the globe, there is almost always someone available to help.
 | nodeinit.updateStrategy | object | `{"type":"RollingUpdate"}` | node-init update strategy |
 | operator.affinity | object | `{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"io.cilium/app":"operator"}},"topologyKey":"kubernetes.io/hostname"}]}}` | Affinity for cilium-operator |
 | operator.annotations | object | `{}` | Annotations to be added to all top-level cilium-operator objects (resources under templates/cilium-operator) |
-| operator.dashboards | object | `{"annotations":{},"enabled":false,"label":"grafana_dashboard","labelValue":"1","namespace":""}` | Grafana dashboards for cilium-operator grafana can import dashboards based on the label and value ref: https://github.com/grafana/helm-charts/tree/main/charts/grafana#sidecar-for-dashboards |
+| operator.dashboards | object | `{"annotations":{},"enabled":false,"label":"grafana_dashboard","labelValue":"1","namespace":null}` | Grafana dashboards for cilium-operator grafana can import dashboards based on the label and value ref: https://github.com/grafana/helm-charts/tree/main/charts/grafana#sidecar-for-dashboards |
 | operator.dnsPolicy | string | `""` | DNS policy for Cilium operator pods. Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy |
 | operator.enabled | bool | `true` | Enable the cilium-operator component (required). |
 | operator.endpointGCInterval | string | `"5m0s"` | Interval for endpoint garbage collection. |
@@ -683,28 +687,29 @@ contributors across the globe, there is almost always someone available to help.
 | operator.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for cilium-operator pod assignment ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
 | operator.podAnnotations | object | `{}` | Annotations to be added to cilium-operator pods |
 | operator.podDisruptionBudget.enabled | bool | `true` | enable PodDisruptionBudget ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/ |
-| operator.podDisruptionBudget.maxUnavailable | string | `"1"` | Maximum number/percentage of pods that may be made unavailable |
+| operator.podDisruptionBudget.maxUnavailable | int | `1` | Maximum number/percentage of pods that may be made unavailable |
+| operator.podDisruptionBudget.minAvailable | string | `nil` | Minimum number/percentage of pods that should remain scheduled. When it's set, maxUnavailable must be disabled by `maxUnavailable: null` |
 | operator.podLabels | object | `{}` | Labels to be added to cilium-operator pods |
 | operator.podSecurityContext | object | `{}` | Security context to be added to cilium-operator pods |
 | operator.pprof.address | string | `"localhost"` | Configure pprof listen address for cilium-operator |
 | operator.pprof.enabled | bool | `false` | Enable pprof for cilium-operator |
 | operator.pprof.port | int | `6061` | Configure pprof listen port for cilium-operator |
 | operator.priorityClassName | string | `""` | The priority class to use for cilium-operator |
-| operator.prometheus | object | `{"enabled":true,"port":9963,"serviceMonitor":{"annotations":{},"enabled":false,"interval":"10s","jobLabel":"","labels":{},"metricRelabelings":[],"relabelings":[]}}` | Enable prometheus metrics for cilium-operator on the configured port at /metrics |
+| operator.prometheus | object | `{"enabled":true,"port":9963,"serviceMonitor":{"annotations":{},"enabled":false,"interval":"10s","jobLabel":"","labels":{},"metricRelabelings":null,"relabelings":null}}` | Enable prometheus metrics for cilium-operator on the configured port at /metrics |
 | operator.prometheus.serviceMonitor.annotations | object | `{}` | Annotations to add to ServiceMonitor cilium-operator |
 | operator.prometheus.serviceMonitor.enabled | bool | `false` | Enable service monitors. This requires the prometheus CRDs to be available (see https://github.com/prometheus-operator/prometheus-operator/blob/main/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml) |
 | operator.prometheus.serviceMonitor.interval | string | `"10s"` | Interval for scrape metrics. |
 | operator.prometheus.serviceMonitor.jobLabel | string | `""` | jobLabel to add for ServiceMonitor cilium-operator |
 | operator.prometheus.serviceMonitor.labels | object | `{}` | Labels to add to ServiceMonitor cilium-operator |
-| operator.prometheus.serviceMonitor.metricRelabelings | list | `[]` | Metrics relabeling configs for the ServiceMonitor cilium-operator |
-| operator.prometheus.serviceMonitor.relabelings | list | `[]` | Relabeling configs for the ServiceMonitor cilium-operator |
+| operator.prometheus.serviceMonitor.metricRelabelings | string | `nil` | Metrics relabeling configs for the ServiceMonitor cilium-operator |
+| operator.prometheus.serviceMonitor.relabelings | string | `nil` | Relabeling configs for the ServiceMonitor cilium-operator |
 | operator.removeNodeTaints | bool | `true` | Remove Cilium node taint from Kubernetes nodes that have a healthy Cilium pod running. |
 | operator.replicas | int | `2` | Number of replicas to run for the cilium-operator deployment |
 | operator.resources | object | `{}` | cilium-operator resource limits & requests ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ |
 | operator.rollOutPods | bool | `false` | Roll out cilium-operator pods automatically when configmap is updated. |
 | operator.securityContext | object | `{}` | Security context to be added to cilium-operator pods |
 | operator.setNodeNetworkStatus | bool | `true` | Set Node condition NetworkUnavailable to 'false' with the reason 'CiliumIsUp' for nodes that have a healthy Cilium pod. |
-| operator.setNodeTaints | bool | same as removeNodeTaints | Taint nodes where Cilium is scheduled but not running. This prevents pods from being scheduled to nodes where Cilium is not the default CNI provider. |
+| operator.setNodeTaints | string | same as removeNodeTaints | Taint nodes where Cilium is scheduled but not running. This prevents pods from being scheduled to nodes where Cilium is not the default CNI provider. |
 | operator.skipCNPStatusStartupClean | bool | `false` | Skip CNP node status clean up at operator startup. |
 | operator.skipCRDCreation | bool | `false` | Skip CRDs creation for cilium-operator |
 | operator.tolerations | list | `[{"operator":"Exists"}]` | Node tolerations for cilium-operator scheduling to nodes with taints ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ |
@@ -716,7 +721,7 @@ contributors across the globe, there is almost always someone available to help.
 | podAnnotations | object | `{}` | Annotations to be added to agent pods |
 | podLabels | object | `{}` | Labels to be added to agent pods |
 | podSecurityContext | object | `{}` | Security Context for cilium-agent pods. |
-| policyCIDRMatchMode | list | `[]` | policyCIDRMatchMode is a list of entities that may be selected by CIDR selector. The possible value is "nodes". |
+| policyCIDRMatchMode | string | `nil` | policyCIDRMatchMode is a list of entities that may be selected by CIDR selector. The possible value is "nodes". |
 | policyEnforcementMode | string | `"default"` | The agent can be put into one of the three policy enforcement modes: default, always and never. ref: https://docs.cilium.io/en/stable/security/policy/intro/#policy-enforcement-modes |
 | pprof.address | string | `"localhost"` | Configure pprof listen address for cilium-agent |
 | pprof.enabled | bool | `false` | Enable pprof for cilium-agent |
@@ -731,7 +736,8 @@ contributors across the globe, there is almost always someone available to help.
 | preflight.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for preflight pod assignment ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
 | preflight.podAnnotations | object | `{}` | Annotations to be added to preflight pods |
 | preflight.podDisruptionBudget.enabled | bool | `false` | enable PodDisruptionBudget ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/ |
-| preflight.podDisruptionBudget.maxUnavailable | string | `"1"` | Maximum number/percentage of pods that may be made unavailable |
+| preflight.podDisruptionBudget.maxUnavailable | int | `1` | Maximum number/percentage of pods that may be made unavailable |
+| preflight.podDisruptionBudget.minAvailable | string | `nil` | Minimum number/percentage of pods that should remain scheduled. When it's set, maxUnavailable must be disabled by `maxUnavailable: null` |
 | preflight.podLabels | object | `{}` | Labels to be added to the preflight pod. |
 | preflight.podSecurityContext | object | `{}` | Security context to be added to preflight pods. |
 | preflight.priorityClassName | string | `""` | The priority class to use for the preflight pod. |
@@ -743,7 +749,7 @@ contributors across the globe, there is almost always someone available to help.
 | preflight.updateStrategy | object | `{"type":"RollingUpdate"}` | preflight update strategy |
 | preflight.validateCNPs | bool | `true` | By default we should always validate the installed CNPs before upgrading Cilium. This will make sure the user will have the policies deployed in the cluster with the right schema. |
 | priorityClassName | string | `""` | The priority class to use for cilium-agent. |
-| prometheus | object | `{"controllerGroupMetrics":["write-cni-file","sync-host-ips","sync-lb-maps-with-k8s-services"],"enabled":true,"metrics":["+cilium_bpf_map_pressure"],"port":9962,"serviceMonitor":{"annotations":{},"enabled":false,"interval":"10s","jobLabel":"","labels":{},"metricRelabelings":[],"relabelings":[{"replacement":"${1}","sourceLabels":["__meta_kubernetes_pod_node_name"],"targetLabel":"node"}],"trustCRDsExist":false}}` | Configure prometheus metrics on the configured port at /metrics |
+| prometheus | object | `{"controllerGroupMetrics":["write-cni-file","sync-host-ips","sync-lb-maps-with-k8s-services"],"enabled":true,"metrics":["+cilium_bpf_map_pressure"],"port":9962,"serviceMonitor":{"annotations":{},"enabled":false,"interval":"10s","jobLabel":"","labels":{},"metricRelabelings":null,"relabelings":[{"replacement":"${1}","sourceLabels":["__meta_kubernetes_pod_node_name"],"targetLabel":"node"}],"trustCRDsExist":false}}` | Configure prometheus metrics on the configured port at /metrics |
 | prometheus.controllerGroupMetrics | list | `["write-cni-file","sync-host-ips","sync-lb-maps-with-k8s-services"]` | - Enable controller group metrics for monitoring specific Cilium subsystems. The list is a list of controller group names. The special values of "all" and "none" are supported. The set of controller group names is not guaranteed to be stable between Cilium versions. |
 | prometheus.metrics | list | `["+cilium_bpf_map_pressure"]` | Metrics that should be enabled or disabled from the default metric list. The list is expected to be separated by a space. (+metric_foo to enable metric_foo , -metric_bar to disable metric_bar). ref: https://docs.cilium.io/en/stable/observability/metrics/ |
 | prometheus.serviceMonitor.annotations | object | `{}` | Annotations to add to ServiceMonitor cilium-agent |
@@ -751,12 +757,12 @@ contributors across the globe, there is almost always someone available to help.
 | prometheus.serviceMonitor.interval | string | `"10s"` | Interval for scrape metrics. |
 | prometheus.serviceMonitor.jobLabel | string | `""` | jobLabel to add for ServiceMonitor cilium-agent |
 | prometheus.serviceMonitor.labels | object | `{}` | Labels to add to ServiceMonitor cilium-agent |
-| prometheus.serviceMonitor.metricRelabelings | list | `[]` | Metrics relabeling configs for the ServiceMonitor cilium-agent |
+| prometheus.serviceMonitor.metricRelabelings | string | `nil` | Metrics relabeling configs for the ServiceMonitor cilium-agent |
 | prometheus.serviceMonitor.relabelings | list | `[{"replacement":"${1}","sourceLabels":["__meta_kubernetes_pod_node_name"],"targetLabel":"node"}]` | Relabeling configs for the ServiceMonitor cilium-agent |
 | prometheus.serviceMonitor.trustCRDsExist | bool | `false` | Set to `true` and helm will not check for monitoring.coreos.com/v1 CRDs before deploying |
-| proxy | object | `{"prometheus":{"enabled":true,"port":""},"sidecarImageRegex":"cilium/istio_proxy"}` | Configure Istio proxy options. |
+| proxy | object | `{"prometheus":{"enabled":true,"port":null},"sidecarImageRegex":"cilium/istio_proxy"}` | Configure Istio proxy options. |
 | proxy.prometheus.enabled | bool | `true` | Deprecated in favor of envoy.prometheus.enabled |
-| proxy.prometheus.port | string | `""` | Deprecated in favor of envoy.prometheus.port |
+| proxy.prometheus.port | string | `nil` | Deprecated in favor of envoy.prometheus.port |
 | proxy.sidecarImageRegex | string | `"cilium/istio_proxy"` | Regular expression matching compatible Istio sidecar istio-proxy container image names |
 | rbac.create | bool | `true` | Enable creation of Resource-Based Access Control configuration. |
 | readinessProbe.failureThreshold | int | `3` | failure threshold of readiness probe |
