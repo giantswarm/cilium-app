@@ -5,7 +5,7 @@ directories:
     contents:
       - path: cilium
         git:
-          url: https://github.com/giantswarm/cilium
+          url: https://github.com/giantswarm/cilium-upstream
           ref: "v1.15"
         includePaths:
           - install/kubernetes/cilium/**/*

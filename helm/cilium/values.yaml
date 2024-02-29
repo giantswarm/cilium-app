@@ -965,7 +965,7 @@ socketLB:
   enabled: false
 
   # -- Disable socket lb for non-root ns. This is used to enable Istio routing rules.
-  # hostNamespaceOnly: false
+  hostNamespaceOnly: true
 
 # -- Configure certificate generation for Hubble integration.
 # If hubble.tls.auto.method=cronJob, these values are used

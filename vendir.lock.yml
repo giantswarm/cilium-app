@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Revert helm schema and removal of nulls (#16)
-      sha: 6638023a0c8aeacf0d883dc4720be81394714cc0
+      commitTitle: Enable SocketLB only for hostNamespace (#15)...
+      sha: 0e53669d830a8e28af201c944d9dd84507650c44
       tags:
-      - 1.15.1-38-g6638023a0c
+      - 1.15.1-39-g0e53669d83
     path: cilium
   path: vendor
 - contents:
