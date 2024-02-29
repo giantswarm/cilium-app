@@ -45,7 +45,7 @@ git cherry-pick a4b22dee87ba3663f967f6dd6d8e666c849c742d^..25c449534cc325a5798fc
 It's probable that conflicts will happen, so we need to fix those when applying the commits.
 One last thing we need to do in our fork is to update the `values.schema.json` file, because upstream does not provide one. You can do it with
 ```
-helm schema-gen install/kubernetes/cilium/values.yaml > install/kubernetes/cilium/values.schema.json
+make schema-gen
 ```
 
 Don't forget to commit the changes, if any.

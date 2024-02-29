@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Support CAPA clusters for ENI mode
+
 ### Changed
 
 - Use SocketLB on host namespace only.
