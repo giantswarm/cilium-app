@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Enable SocketLB only for hostNamespace (#15)...
-      sha: 0e53669d830a8e28af201c944d9dd84507650c44
+      commitTitle: Add safe-to-evict annotations to Hubble Relay and UI (#18)...
+      sha: fd765921724555b37e0cfbc11ee97791413aa2ff
       tags:
-      - 1.15.1-39-g0e53669d83
+      - 1.15.1-41-gfd76592172
     path: cilium
   path: vendor
 - contents:

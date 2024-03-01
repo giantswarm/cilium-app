@@ -1275,7 +1275,8 @@ hubble:
     annotations: {}
 
     # -- Annotations to be added to hubble-relay pods
-    podAnnotations: {}
+    podAnnotations:
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
 
     # -- Labels to be added to hubble-relay pods
     podLabels: {}
@@ -1545,7 +1546,8 @@ hubble:
     annotations: {}
 
     # -- Annotations to be added to hubble-ui pods
-    podAnnotations: {}
+    podAnnotations:
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
 
     # -- Labels to be added to hubble-ui pods
     podLabels: {}
