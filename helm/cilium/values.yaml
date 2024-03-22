@@ -975,7 +975,7 @@ certgen:
   image:
     override: ""
     repository: "giantswarm/cilium-certgen"
-    tag: "v0.1.9@sha256:89a0847753686444daabde9474b48340993bd19c7bea66a46e45b2974b82041f"
+    tag: "v0.1.10@sha256:dd45c80e5717c521858708e43f78b9c390e17bc31a236f1b620deecd702bc335"
     pullPolicy: "IfNotPresent"
   # -- Seconds after which the completed job pod will be deleted
   ttlSecondsAfterFinished: 1800
