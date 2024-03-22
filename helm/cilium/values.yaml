@@ -2375,7 +2375,7 @@ etcd:
   image:
     override: ""
     repository: "giantswarm/cilium-etcd-operator"
-    tag: "v2.0.7@sha256:04b8327f7f992693c2cb483b999041ed8f92efc8e14f2a5f3ab95574a65ea2dc"
+    tag: "v2.0.7@sha256:00cf2c0ab5204b5c5ace7d5e2696a7d5ab3f19d96c088201f39bfea8822c0861"
     pullPolicy: "IfNotPresent"
 
   # -- The priority class to use for cilium-etcd-operator
