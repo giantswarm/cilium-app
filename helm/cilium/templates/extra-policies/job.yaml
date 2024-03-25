@@ -1,11 +1,11 @@
-{{- if or .Values.extraPolicies.allowEgressToCoreDNS.enabled .Values.extraPolicies.allowEgressToProxy.enabled -}}
+{{- if or .Values.extraPolicies.allowEgressToCoreDNS.enabled .Values.extraPolicies.allowEgressToProxy.enabled .Values.extraPolicies.remove -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: cilium-create-extra-policies
+  name: cilium-{{ ternary "remove" "create" .Values.extraPolicies.remove }}-extra-policies
   namespace: {{ .Release.Namespace }}
   labels:
-    app: cilium-create-extra-policies
+    app: cilium-{{ ternary "remove" "create" .Values.extraPolicies.remove }}-extra-policies
   annotations:
     helm.sh/hook: post-install,post-upgrade
     helm.sh/hook-weight: "1"
@@ -15,7 +15,7 @@ spec:
   template:
     metadata:
       labels:
-        app: cilium-create-extra-policies
+        app: cilium-{{ ternary "remove" "create" .Values.extraPolicies.remove }}-extra-policies
     spec:
       hostNetwork: true
       restartPolicy: OnFailure
@@ -47,7 +47,7 @@ spec:
             done
           done
       containers:
-      - name: cilium-create-extra-policies
+      - name: cilium-{{ ternary "remove" "create" .Values.extraPolicies.remove }}-extra-policies
         image: "{{ .Values.image.registry }}/giantswarm/docker-kubectl:latest"
         imagePullPolicy: IfNotPresent
         volumeMounts:
@@ -60,5 +60,13 @@ spec:
         - |
           set -o errexit ; set -o xtrace ; set -o nounset
 
-          kubectl apply --server-side=true --field-manager='kubectl-client-side-apply' --force-conflicts -f /policies/ 2>&1
+          kubectl \
+{{- if .Values.extraPolicies.remove }}
+            delete \
+            --ignore-not-found \
+{{- else }}
+            apply \
+            --server-side=true --field-manager='kubectl-client-side-apply' --force-conflicts \
+{{- end }}
+            -f /policies/ 2>&1
 {{- end -}}

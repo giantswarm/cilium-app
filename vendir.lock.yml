@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Backport helm schema from upstream (#20)
-      sha: 3e632da7ab56811ce7a430a86ca4274f385e9fd9
+      commitTitle: 'Chart Makefile: Only specify --userns=keep-id for podman (#21)...'
+      sha: 5bc3c59f0fe4c060e6abf94dc03dedc73d82e559
       tags:
-      - 1.15.1-42-g3e632da7ab
+      - 1.15.1-44-g5bc3c59f0f
     path: cilium
   path: vendor
 - contents:
