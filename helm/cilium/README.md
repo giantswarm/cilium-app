@@ -211,8 +211,8 @@ contributors across the globe, there is almost always someone available to help.
 | clustermesh.apiserver.resources | object | `{}` | Resource requests and limits for the clustermesh-apiserver |
 | clustermesh.apiserver.securityContext | object | `{}` | Security context to be added to clustermesh-apiserver containers |
 | clustermesh.apiserver.service.annotations | object | `{}` | Annotations for the clustermesh-apiserver For GKE LoadBalancer, use annotation cloud.google.com/load-balancer-type: "Internal" For EKS LoadBalancer, use annotation service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0 |
-| clustermesh.apiserver.service.externalTrafficPolicy | string | `nil` | The externalTrafficPolicy of service used for apiserver access. |
-| clustermesh.apiserver.service.internalTrafficPolicy | string | `nil` | The internalTrafficPolicy of service used for apiserver access. |
+| clustermesh.apiserver.service.externalTrafficPolicy | string | `"Cluster"` | The externalTrafficPolicy of service used for apiserver access. |
+| clustermesh.apiserver.service.internalTrafficPolicy | string | `"Cluster"` | The internalTrafficPolicy of service used for apiserver access. |
 | clustermesh.apiserver.service.nodePort | int | `32379` | Optional port to use as the node port for apiserver access.  WARNING: make sure to configure a different NodePort in each cluster if kube-proxy replacement is enabled, as Cilium is currently affected by a known bug (#24692) when NodePorts are handled by the KPR implementation. If a service with the same NodePort exists both in the local and the remote cluster, all traffic originating from inside the cluster and targeting the corresponding NodePort will be redirected to a local backend, regardless of whether the destination node belongs to the local or the remote cluster. |
 | clustermesh.apiserver.service.type | string | `"NodePort"` | The type of service used for apiserver access. |
 | clustermesh.apiserver.terminationGracePeriodSeconds | int | `30` | terminationGracePeriodSeconds for the clustermesh-apiserver deployment |
@@ -477,7 +477,7 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.relay.listenHost | string | `""` | Host to listen to. Specify an empty string to bind to all the interfaces. |
 | hubble.relay.listenPort | string | `"4245"` | Port to listen to. |
 | hubble.relay.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for pod assignment ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
-| hubble.relay.podAnnotations | object | `{}` | Annotations to be added to hubble-relay pods |
+| hubble.relay.podAnnotations | object | `{"cluster-autoscaler.kubernetes.io/safe-to-evict":"true"}` | Annotations to be added to hubble-relay pods |
 | hubble.relay.podDisruptionBudget.enabled | bool | `false` | enable PodDisruptionBudget ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/ |
 | hubble.relay.podDisruptionBudget.maxUnavailable | int | `1` | Maximum number/percentage of pods that may be made unavailable |
 | hubble.relay.podDisruptionBudget.minAvailable | string | `nil` | Minimum number/percentage of pods that should remain scheduled. When it's set, maxUnavailable must be disabled by `maxUnavailable: null` |
@@ -547,7 +547,7 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.ui.frontend.server.ipv6 | object | `{"enabled":true}` | Controls server listener for ipv6 |
 | hubble.ui.ingress | object | `{"annotations":{},"className":"","enabled":false,"hosts":["chart-example.local"],"labels":{},"tls":[]}` | hubble-ui ingress configuration. |
 | hubble.ui.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for pod assignment ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
-| hubble.ui.podAnnotations | object | `{}` | Annotations to be added to hubble-ui pods |
+| hubble.ui.podAnnotations | object | `{"cluster-autoscaler.kubernetes.io/safe-to-evict":"true"}` | Annotations to be added to hubble-ui pods |
 | hubble.ui.podDisruptionBudget.enabled | bool | `false` | enable PodDisruptionBudget ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/ |
 | hubble.ui.podDisruptionBudget.maxUnavailable | int | `1` | Maximum number/percentage of pods that may be made unavailable |
 | hubble.ui.podDisruptionBudget.minAvailable | string | `nil` | Minimum number/percentage of pods that should remain scheduled. When it's set, maxUnavailable must be disabled by `maxUnavailable: null` |
@@ -569,7 +569,7 @@ contributors across the globe, there is almost always someone available to help.
 | identityAllocationMode | string | `"crd"` | Method to use for identity allocation (`crd` or `kvstore`). |
 | identityChangeGracePeriod | string | `"5s"` | Time to wait before using new identity on endpoint identity change. |
 | image | object | `{"digest":"","override":"","pullPolicy":"IfNotPresent","registry":"gsoci.azurecr.io","repository":"giantswarm/cilium","tag":"v1.15.1","useDigest":false}` | Agent container image. |
-| imagePullSecrets | string | `nil` | Configure image pull secrets for pulling container images |
+| imagePullSecrets | list | `[]` | Configure image pull secrets for pulling container images |
 | ingressController.default | bool | `false` | Set cilium ingress controller to be the default ingress controller This will let cilium ingress controller route entries without ingress class set |
 | ingressController.defaultSecretName | string | `nil` | Default secret name for ingresses without .spec.tls[].secretName set. |
 | ingressController.defaultSecretNamespace | string | `nil` | Default secret namespace for ingresses without .spec.tls[].secretName set. |
@@ -786,8 +786,9 @@ contributors across the globe, there is almost always someone available to help.
 | serviceAccounts.nodeinit.enabled | bool | `false` | Enabled is temporary until https://github.com/cilium/cilium-cli/issues/1396 is implemented. Cilium CLI doesn't create the SAs for node-init, thus the workaround. Helm is not affected by this issue. Name and automount can be configured, if enabled is set to true. Otherwise, they are ignored. Enabled can be removed once the issue is fixed. Cilium-nodeinit DS must also be fixed. |
 | serviceNoBackendResponse | string | `"reject"` | Configure what the response should be to traffic for a service without backends. "reject" only works on kernels >= 5.10, on lower kernels we fallback to "drop". Possible values:  - reject (default)  - drop |
 | sleepAfterInit | bool | `false` | Do not run Cilium agent when running with clean mode. Useful to completely uninstall Cilium as it will stop Cilium from starting and create artifacts in the node. |
-| socketLB | object | `{"enabled":false}` | Configure socket LB |
+| socketLB | object | `{"enabled":false,"hostNamespaceOnly":true}` | Configure socket LB |
 | socketLB.enabled | bool | `false` | Enable socket LB |
+| socketLB.hostNamespaceOnly | bool | `true` | Disable socket lb for non-root ns. This is used to enable Istio routing rules. |
 | startupProbe.failureThreshold | int | `105` | failure threshold of startup probe. 105 x 2s translates to the old behaviour of the readiness probe (120s delay + 30 x 3s) |
 | startupProbe.periodSeconds | int | `2` | interval between checks of the startup probe |
 | svcSourceRangeCheck | bool | `true` | Enable check of service source ranges (currently, only for LoadBalancer). |

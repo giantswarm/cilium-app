@@ -42,12 +42,7 @@ We can apply our commits with
 git cherry-pick a4b22dee87ba3663f967f6dd6d8e666c849c742d^..25c449534cc325a5798fc7c839b8ac33591b3516
 ```
 
-It's probable that conflicts will happen, so we need to fix those when applying the commits.
-One last thing we need to do in our fork is to update the `values.schema.json` file, because upstream does not provide one. You can do it with
-```
-make schema-gen
-```
-
+It's probable that conflicts will happen, so we need to fix those when applying the commits. To update the charts `values.schema.json` and others, execute `make -C install/kubernetes` in the upstream repo.
 Don't forget to commit the changes, if any.
 Once we are done, we can push our new branch to our fork, and it will be ready to be used by `vendir` from here.
 

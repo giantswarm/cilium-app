@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Add safe-to-evict annotations to Hubble Relay and UI (#18)...
-      sha: fd765921724555b37e0cfbc11ee97791413aa2ff
+      commitTitle: Backport helm schema from upstream (#20)
+      sha: 3e632da7ab56811ce7a430a86ca4274f385e9fd9
       tags:
-      - 1.15.1-41-gfd76592172
+      - 1.15.1-42-g3e632da7ab
     path: cilium
   path: vendor
 - contents:
