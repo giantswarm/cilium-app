@@ -4,6 +4,6 @@
     "github>giantswarm/renovate-presets:default.json5",
   ],
   "ignorePaths": [
-    "helm/cilium-app/**",
+    "helm/cilium/**",
   ],
 }
