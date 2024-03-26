@@ -3,4 +3,7 @@
     // Base config - https://github.com/giantswarm/renovate-presets/blob/main/default.json5
     "github>giantswarm/renovate-presets:default.json5",
   ],
+  "ignorePaths": [
+    "helm/cilium-app/**",
+  ],
 }
