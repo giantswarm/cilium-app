@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Backport helm schema from upstream (#20)
-      sha: 3e632da7ab56811ce7a430a86ca4274f385e9fd9
+      commitTitle: add some extra checks for extra policies deletion (#23)...
+      sha: d03ff1c98125211dbd4b243982ddde35192e9309
       tags:
-      - 1.15.1-42-g3e632da7ab
+      - 1.15.1-45-gd03ff1c981
     path: cilium
   path: vendor
 - contents:

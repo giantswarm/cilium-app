@@ -2090,6 +2090,9 @@
     },
     "extraPolicies": {
       "properties": {
+        "remove": {
+          "type": "boolean"
+        },
         "allowEgressToCoreDNS": {
           "properties": {
             "enabled": {
