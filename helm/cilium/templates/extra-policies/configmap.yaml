@@ -1,4 +1,10 @@
-{{- if or .Values.extraPolicies.allowEgressToCoreDNS.enabled .Values.extraPolicies.allowEgressToProxy.enabled -}}
+{{- if and .Values.extraPolicies.allowEgressToCoreDNS.enabled .Values.extraPolicies.remove -}}
+{{- fail "extraPolicies.allowEgressToCoreDNS.enabled and extraPolicies.remove cannot both be true" -}}
+{{- end -}}
+{{- if and .Values.extraPolicies.allowEgressToProxy.enabled .Values.extraPolicies.remove -}}
+{{- fail "extraPolicies.allowEgressToProxy.enabled and extraPolicies.remove cannot both be true" -}}
+{{- end -}}
+{{- if or .Values.extraPolicies.allowEgressToCoreDNS.enabled .Values.extraPolicies.allowEgressToProxy.enabled .Values.extraPolicies.remove -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:

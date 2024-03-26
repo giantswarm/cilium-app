@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: 'Chart Makefile: Only specify --userns=keep-id for podman (#21)...'
-      sha: 5bc3c59f0fe4c060e6abf94dc03dedc73d82e559
+      commitTitle: add some extra checks for extra policies deletion (#23)...
+      sha: d03ff1c98125211dbd4b243982ddde35192e9309
       tags:
-      - 1.15.1-44-g5bc3c59f0f
+      - 1.15.1-45-gd03ff1c981
     path: cilium
   path: vendor
 - contents:

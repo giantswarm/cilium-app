@@ -1,4 +1,4 @@
-{{- if or .Values.extraPolicies.allowEgressToCoreDNS.enabled .Values.extraPolicies.allowEgressToProxy.enabled .Values.extraPolicies.remove -}}
+{{- if or .Values.extraPolicies.allowEgressToCoreDNS.enabled .Values.extraPolicies.allowEgressToProxy.enabled .Values.extraPolicies.remove }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -60,13 +60,17 @@ spec:
         - |
           set -o errexit ; set -o xtrace ; set -o nounset
 
+          {{- if .Values.extraPolicies.remove }}
+          {{- range $_, $ns := $.Values.extraPolicies.allowEgressToCoreDNS.namespaces }}
+          {{ printf "kubectl delete cnp -n %s %s --ignore-not-found 2>&1" $ns "cilium-extra-policies-dns" }}
+          {{- end }}
+          {{- range $_, $ns := $.Values.extraPolicies.allowEgressToProxy.namespaces }}
+          {{ printf "kubectl delete cnp -n %s %s --ignore-not-found 2>&1" $ns "cilium-extra-policies-proxy" }}
+          {{- end }}
+          {{- else }}
           kubectl \
-{{- if .Values.extraPolicies.remove }}
-            delete \
-            --ignore-not-found \
-{{- else }}
             apply \
             --server-side=true --field-manager='kubectl-client-side-apply' --force-conflicts \
-{{- end }}
             -f /policies/ 2>&1
-{{- end -}}
+          {{- end }}
+{{- end }}
