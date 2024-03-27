@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add safe-to-evict annotations to Hubble Relay and UI pods.
 - Enable deletion of extra network policies.
+- Update team label to `cabbage`
 
 ## [0.21.0] - 2024-02-29
 
