@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Cilium ENI mode for CAPA becomes usable with these changes
+
+  - Add security group tag filter for pod network
+  - Select subnets from secondary VPC CIDRs
+
 ## [0.22.0] - 2024-03-27
 
 ### Added
