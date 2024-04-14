@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: add some extra checks for extra policies deletion (#23)...
-      sha: d03ff1c98125211dbd4b243982ddde35192e9309
+      commitTitle: Prepare for release v1.15.1...
+      sha: a368c8f0f34dfe9a47e8a621af31ea94337f6fb5
       tags:
-      - 1.15.1-45-gd03ff1c981
+      - 1.15.1
     path: cilium
   path: vendor
 - contents:
