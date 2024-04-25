@@ -548,6 +548,12 @@
             "integer"
           ]
         },
+        "nodeMapMax": {
+          "type": [
+            "null",
+            "integer"
+          ]
+        },
         "policyMapMax": {
           "type": [
             "null",
@@ -1565,6 +1571,86 @@
       "properties": {
         "affinity": {
           "properties": {
+            "nodeAffinity": {
+              "properties": {
+                "requiredDuringSchedulingIgnoredDuringExecution": {
+                  "properties": {
+                    "nodeSelectorTerms": {
+                      "items": {
+                        "anyOf": [
+                          {
+                            "properties": {
+                              "matchExpressions": {
+                                "items": {
+                                  "anyOf": [
+                                    {
+                                      "properties": {
+                                        "key": {
+                                          "type": "string"
+                                        },
+                                        "operator": {
+                                          "type": "string"
+                                        },
+                                        "values": {
+                                          "items": {
+                                            "anyOf": [
+                                              {
+                                                "type": "string"
+                                              }
+                                            ]
+                                          },
+                                          "type": "array"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                },
+                                "type": "array"
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "podAffinity": {
+              "properties": {
+                "requiredDuringSchedulingIgnoredDuringExecution": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "properties": {
+                          "labelSelector": {
+                            "properties": {
+                              "matchLabels": {
+                                "properties": {
+                                  "k8s-app": {
+                                    "type": "string"
+                                  }
+                                },
+                                "type": "object"
+                              }
+                            },
+                            "type": "object"
+                          },
+                          "topologyKey": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            },
             "podAntiAffinity": {
               "properties": {
                 "requiredDuringSchedulingIgnoredDuringExecution": {
@@ -2090,9 +2176,6 @@
     },
     "extraPolicies": {
       "properties": {
-        "remove": {
-          "type": "boolean"
-        },
         "allowEgressToCoreDNS": {
           "properties": {
             "enabled": {
@@ -2140,6 +2223,9 @@
             }
           },
           "type": "object"
+        },
+        "remove": {
+          "type": "boolean"
         },
         "tolerations": {
           "items": {
@@ -3647,6 +3733,9 @@
         },
         "image": {
           "properties": {
+            "digest": {
+              "type": "string"
+            },
             "override": {
               "type": "string"
             },
@@ -3658,6 +3747,9 @@
             },
             "tag": {
               "type": "string"
+            },
+            "useDigest": {
+              "type": "boolean"
             }
           },
           "type": "object"
