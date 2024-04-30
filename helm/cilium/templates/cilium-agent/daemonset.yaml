@@ -201,6 +201,7 @@ spec:
           valueFrom:
             resourceFieldRef:
               resource: limits.memory
+              divisor: '1'
         - name: CILIUM_CNI_CHAINING_MODE
           valueFrom:
             configMapKeyRef:

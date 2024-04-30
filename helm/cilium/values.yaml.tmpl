@@ -514,7 +514,14 @@ bpf:
   # @schema
   # type: [null, integer]
   # @schema
+  # @default -- `16384`
+  # -- (int) Configures the maximum number of entries for the node table.
+  nodeMapMax: ~
+
   # -- Configure the maximum number of entries in endpoint policy map (per endpoint).
+  # @schema
+  # type: [null, integer]
+  # @schema
   policyMapMax: 16384
 
   # @schema
@@ -2364,7 +2371,20 @@ envoy:
         labelSelector:
           matchLabels:
             k8s-app: cilium-envoy
-
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - topologyKey: kubernetes.io/hostname
+        labelSelector:
+          matchLabels:
+            k8s-app: cilium
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+            - key: cilium.io/no-schedule
+              operator: NotIn
+              values:
+              - "true"
   # -- Node selector for cilium-envoy.
   nodeSelector:
     kubernetes.io/os: linux
@@ -2901,6 +2921,8 @@ nodeinit:
     override: ""
     repository: "${CILIUM_NODEINIT_REPO}"
     tag: "${CILIUM_NODEINIT_VERSION}"
+    digest: "${CILIUM_NODEINIT_DIGEST}"
+    useDigest: true
     pullPolicy: "${PULL_POLICY}"
 
   # -- The priority class to use for the nodeinit pod.
