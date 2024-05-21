@@ -1797,6 +1797,16 @@
           "type": "object"
         },
         "podSecurityContext": {
+          "properties": {
+            "appArmorProfile": {
+              "properties": {
+                "type": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
           "type": "object"
         },
         "priorityClassName": {
@@ -1966,6 +1976,12 @@
             }
           },
           "type": "object"
+        },
+        "xffNumTrustedHopsL7PolicyEgress": {
+          "type": "integer"
+        },
+        "xffNumTrustedHopsL7PolicyIngress": {
+          "type": "integer"
         }
       },
       "type": "object"
@@ -3768,6 +3784,19 @@
         "podLabels": {
           "type": "object"
         },
+        "podSecurityContext": {
+          "properties": {
+            "appArmorProfile": {
+              "properties": {
+                "type": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
         "prestop": {
           "properties": {
             "postScript": {
@@ -4219,6 +4248,16 @@
       "type": "object"
     },
     "podSecurityContext": {
+      "properties": {
+        "appArmorProfile": {
+          "properties": {
+            "type": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
       "type": "object"
     },
     "policyCIDRMatchMode": {
