@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Bump v1.15.5 (#26)...
-      sha: d591b7bad1a15539c35d3b1fac9d298828f8d7af
+      commitTitle: Update v1.15.6 (#27)...
+      sha: 97669716b354c655a21752f91c6b812666204f31
       tags:
-      - 1.15.1-50-gd591b7bad1
+      - 1.15.1-52-g97669716b3
     path: cilium
   path: vendor
 - contents:
