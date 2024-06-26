@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Fix regression setting Policy BPF Max map `policyMapMax` back to 65536 from 16384.
+
 ## [0.25.0] - 2024-06-19
 
 ### Changed
