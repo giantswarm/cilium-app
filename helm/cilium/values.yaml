@@ -527,7 +527,7 @@ bpf:
   # @schema
   # type: [null, integer]
   # @schema
-  policyMapMax: 16384
+  policyMapMax: 65536
 
   # @schema
   # type: [null, number]
