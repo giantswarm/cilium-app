@@ -1,0 +1,13 @@
+diff --git a/cilium.orig/install/kubernetes/cilium/templates/cilium-nodeinit/daemonset.yaml b/cilium/install/kubernetes/cilium/templates/cilium-nodeinit/daemonset.yaml
+index 3ed0926..e268da7 100644
+--- a/cilium.orig/install/kubernetes/cilium/templates/cilium-nodeinit/daemonset.yaml
++++ b/cilium/install/kubernetes/cilium/templates/cilium-nodeinit/daemonset.yaml
+@@ -58,7 +58,7 @@ spec:
+       {{- end }}
+       containers:
+         - name: node-init
+-          image: {{ include "cilium.image" .Values.nodeinit.image | quote }}
++          image: {{ include "cilium.image" (list $ .Values.nodeinit.image) | quote }}
+           imagePullPolicy: {{ .Values.nodeinit.image.pullPolicy }}
+           lifecycle:
+             {{- if .Values.nodeinit.revertReconfigureKubelet }}

@@ -1,0 +1,14 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+directories:
+  - path: vendor
+    contents:
+      - path: cilium
+        git:
+          url: https://github.com/cilium/cilium
+          ref: "v1.15.6"
+        includePaths:
+          - install/kubernetes/**/*
+          - Makefile.defs
+          - Makefile.quiet
+          - VERSION

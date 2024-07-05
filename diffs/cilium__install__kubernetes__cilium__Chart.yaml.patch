@@ -1,0 +1,27 @@
+diff --git a/cilium.orig/install/kubernetes/cilium/Chart.yaml b/cilium/install/kubernetes/cilium/Chart.yaml
+index 7d847e3..ef4b74f 100644
+--- a/cilium.orig/install/kubernetes/cilium/Chart.yaml
++++ b/cilium/install/kubernetes/cilium/Chart.yaml
+@@ -2,7 +2,7 @@ apiVersion: v2
+ name: cilium
+ displayName: Cilium
+ home: https://cilium.io/
+-version: 1.15.6
++version: 0.25.1
+ appVersion: 1.15.6
+ kubeVersion: ">= 1.16.0-0"
+ icon: https://cdn.jsdelivr.net/gh/cilium/cilium@v1.15/Documentation/images/logo-solo.svg
+@@ -16,11 +16,13 @@ keywords:
+   - Observability
+   - Troubleshooting
+ sources:
++  - https://github.com/giantswarm/cilium-app
+   - https://github.com/cilium/cilium
+ links:
+   - name: eBPF.io
+     url: https://ebpf.io/
+ annotations:
++  application.giantswarm.io/team: "cabbage"
+   artifacthub.io/crds: |
+     - kind: CiliumNetworkPolicy
+       version: v2

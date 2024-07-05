@@ -1,0 +1,67 @@
+diff --git a/cilium.orig/install/kubernetes/Makefile.values b/cilium/install/kubernetes/Makefile.values
+index 89f3f9e..7f7912d 100644
+--- a/cilium.orig/install/kubernetes/Makefile.values
++++ b/cilium/install/kubernetes/Makefile.values
+@@ -13,47 +13,47 @@ export RELEASE := yes
+ ifeq ($(RELEASE),yes)
+     export CILIUM_BRANCH:=v1.15
+     export PULL_POLICY:=IfNotPresent
+-    export CILIUM_REPO:=${RELEASE_REGISTRY}/${RELEASE_ORG}/cilium
+-    export CILIUM_OPERATOR_BASE_REPO:=${RELEASE_REGISTRY}/${RELEASE_ORG}/operator
+-    export CLUSTERMESH_APISERVER_REPO:=${RELEASE_REGISTRY}/${RELEASE_ORG}/clustermesh-apiserver
+-    export HUBBLE_RELAY_REPO:=${RELEASE_REGISTRY}/${RELEASE_ORG}/hubble-relay
++    export CILIUM_REPO:=giantswarm/cilium
++    export CILIUM_OPERATOR_BASE_REPO:=giantswarm/cilium-operator
++    export CLUSTERMESH_APISERVER_REPO:=giantswarm/cilium-clustermesh-apiserver
++    export HUBBLE_RELAY_REPO:=giantswarm/hubble-relay
+ else
+     export CILIUM_BRANCH:=main
+     export PULL_POLICY:=Always
+-    export CILIUM_REPO:=${CI_REGISTRY}/${CI_ORG}/cilium-ci
+-    export CILIUM_OPERATOR_BASE_REPO:=${CI_REGISTRY}/${CI_ORG}/operator
++    export CILIUM_REPO:=${CI_ORG}/cilium-ci
++    export CILIUM_OPERATOR_BASE_REPO:=${CI_ORG}/operator
+     export CILIUM_OPERATOR_SUFFIX=-ci
+     export CILIUM_VERSION:=latest
+-    export CLUSTERMESH_APISERVER_REPO:=${CI_REGISTRY}/${CI_ORG}/clustermesh-apiserver-ci
+-    export HUBBLE_RELAY_REPO:=${CI_REGISTRY}/${CI_ORG}/hubble-relay-ci
++    export CLUSTERMESH_APISERVER_REPO:=${CI_ORG}/clustermesh-apiserver-ci
++    export HUBBLE_RELAY_REPO:=${CI_ORG}/hubble-relay-ci
+ endif
+ 
+ ifndef CILIUM_BRANCH
+ $(error "CILIUM_BRANCH needs to be defined")
+ endif
+ 
+-export CERTGEN_REPO:=quay.io/cilium/certgen
++export CERTGEN_REPO:=giantswarm/cilium-certgen
+ # renovate: datasource=docker depName=quay.io/cilium/certgen
+ export CERTGEN_VERSION:=v0.1.12
+ export CERTGEN_DIGEST:=sha256:bbc5e65e9dc65bc6b58967fe536b7f3b54e12332908aeb0a96a36866b4372b4e
+ 
+-export CILIUM_ETCD_OPERATOR_REPO:=quay.io/cilium/cilium-etcd-operator
+-export CILIUM_ETCD_OPERATOR_VERSION:=v2.0.7
++export CILIUM_ETCD_OPERATOR_REPO:=giantswarm/cilium-etcd-operator
++export CILIUM_ETCD_OPERATOR_VERSION:=v2.0.7@sha256:04b8327f7f992693c2cb483b999041ed8f92efc8e14f2a5f3ab95574a65ea2dc
+ export CILIUM_ETCD_OPERATOR_DIGEST:=sha256:04b8327f7f992693c2cb483b999041ed8f92efc8e14f2a5f3ab95574a65ea2dc
+ 
+-export CILIUM_NODEINIT_REPO:=quay.io/cilium/startup-script
++export CILIUM_NODEINIT_REPO:=giantswarm/cilium-startup-script
+ # renovate: datasource=docker depName=quay.io/cilium/startup-script
+ export CILIUM_NODEINIT_VERSION:=19fb149fb3d5c7a37d3edfaf10a2be3ab7386661
+ export CILIUM_NODEINIT_DIGEST:=sha256:820155cb3b7f00c8d61c1cffa68c44440906cb046bdbad8ff544f5deb1103456
+ 
+-export CILIUM_ENVOY_REPO:=quay.io/cilium/cilium-envoy
++export CILIUM_ENVOY_REPO:=giantswarm/cilium-envoy
+ export CILIUM_ENVOY_VERSION:=v1.28.4-b35188ffa1bbe54d1720d2e392779f7a48e58f6b
+ export CILIUM_ENVOY_DIGEST:=sha256:b528b291561e459024f66414ac3325b88cdd8f9f4854828a155a11e5b10b78a3
+ 
+-export HUBBLE_UI_BACKEND_REPO:=quay.io/cilium/hubble-ui-backend
++export HUBBLE_UI_BACKEND_REPO:=giantswarm/hubble-ui-backend
+ export HUBBLE_UI_BACKEND_VERSION:=v0.13.0
+ export HUBBLE_UI_BACKEND_DIGEST:=sha256:1e7657d997c5a48253bb8dc91ecee75b63018d16ff5e5797e5af367336bc8803
+-export HUBBLE_UI_FRONTEND_REPO:=quay.io/cilium/hubble-ui
++export HUBBLE_UI_FRONTEND_REPO:=giantswarm/hubble-ui
+ export HUBBLE_UI_FRONTEND_VERSION:=v0.13.0
+ export HUBBLE_UI_FRONTEND_DIGEST:=sha256:7d663dc16538dd6e29061abd1047013a645e6e69c115e008bee9ea9fef9a6666
+ 

@@ -1,0 +1,13 @@
+diff --git a/cilium.orig/install/kubernetes/cilium/templates/cilium-preflight/deployment.yaml b/cilium/install/kubernetes/cilium/templates/cilium-preflight/deployment.yaml
+index af0a31b..9c259d4 100644
+--- a/cilium.orig/install/kubernetes/cilium/templates/cilium-preflight/deployment.yaml
++++ b/cilium/install/kubernetes/cilium/templates/cilium-preflight/deployment.yaml
+@@ -37,7 +37,7 @@ spec:
+       {{- end }}
+       containers:
+         - name: cnp-validator
+-          image: {{ include "cilium.image" .Values.preflight.image | quote }}
++          image: {{ include "cilium.image" (list $ .Values.preflight.image) | quote }}
+           imagePullPolicy: {{ .Values.preflight.image.pullPolicy }}
+           command: ["/bin/sh"]
+           args:
