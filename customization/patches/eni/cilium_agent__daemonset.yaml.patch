@@ -1,0 +1,42 @@
+diff --git b/vendor/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml a/vendor/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml
+index fb406fb..6ea18cb 100644
+--- b/vendor/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml
++++ a/vendor/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml
+@@ -209,6 +209,18 @@ spec:
+             resourceFieldRef:
+               resource: limits.memory
+               divisor: '1'
++        - name: CILIUM_CNI_CHAINING_MODE
++          valueFrom:
++            configMapKeyRef:
++              name: cilium-config
++              key: cni-chaining-mode
++              optional: true
++        - name: CILIUM_CUSTOM_CNI_CONF
++          valueFrom:
++            configMapKeyRef:
++              name: cilium-config
++              key: custom-cni-conf
++              optional: true
+         {{- if .Values.k8sServiceHost }}
+         - name: KUBERNETES_SERVICE_HOST
+           value: {{ .Values.k8sServiceHost | quote }}
+@@ -454,6 +466,18 @@ spec:
+             fieldRef:
+               apiVersion: v1
+               fieldPath: metadata.namespace
++        - name: CILIUM_CNI_CHAINING_MODE
++          valueFrom:
++            configMapKeyRef:
++              name: cilium-config
++              key: cni-chaining-mode
++              optional: true
++        - name: CILIUM_CUSTOM_CNI_CONF
++          valueFrom:
++            configMapKeyRef:
++              name: cilium-config
++              key: custom-cni-conf
++              optional: true
+         {{- if .Values.k8sServiceHost }}
+         - name: KUBERNETES_SERVICE_HOST
+           value: {{ .Values.k8sServiceHost | quote }}

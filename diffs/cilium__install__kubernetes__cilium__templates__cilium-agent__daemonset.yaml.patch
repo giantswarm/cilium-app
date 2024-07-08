@@ -1,5 +1,5 @@
 diff --git a/cilium.orig/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml b/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml
-index 2949091..48f36c9 100644
+index 2949091..8e5dc4a 100644
 --- a/cilium.orig/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml
 +++ b/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml
 @@ -94,7 +94,7 @@ spec:
@@ -11,7 +11,26 @@ index 2949091..48f36c9 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          {{- if .Values.sleepAfterInit }}
          command:
-@@ -394,7 +394,7 @@ spec:
+@@ -209,6 +209,18 @@ spec:
+             resourceFieldRef:
+               resource: limits.memory
+               divisor: '1'
++        - name: CILIUM_CNI_CHAINING_MODE
++          valueFrom:
++            configMapKeyRef:
++              name: cilium-config
++              key: cni-chaining-mode
++              optional: true
++        - name: CILIUM_CUSTOM_CNI_CONF
++          valueFrom:
++            configMapKeyRef:
++              name: cilium-config
++              key: custom-cni-conf
++              optional: true
+         {{- if .Values.k8sServiceHost }}
+         - name: KUBERNETES_SERVICE_HOST
+           value: {{ .Values.k8sServiceHost | quote }}
+@@ -394,7 +406,7 @@ spec:
          {{- end }}
        {{- if .Values.monitor.enabled }}
        - name: cilium-monitor
@@ -20,7 +39,7 @@ index 2949091..48f36c9 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          command:
          - /bin/bash
-@@ -426,7 +426,7 @@ spec:
+@@ -426,7 +438,7 @@ spec:
        {{- end }}
        initContainers:
        - name: config
@@ -29,7 +48,26 @@ index 2949091..48f36c9 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          command:
          - cilium-dbg
-@@ -481,7 +481,7 @@ spec:
+@@ -454,6 +466,18 @@ spec:
+             fieldRef:
+               apiVersion: v1
+               fieldPath: metadata.namespace
++        - name: CILIUM_CNI_CHAINING_MODE
++          valueFrom:
++            configMapKeyRef:
++              name: cilium-config
++              key: cni-chaining-mode
++              optional: true
++        - name: CILIUM_CUSTOM_CNI_CONF
++          valueFrom:
++            configMapKeyRef:
++              name: cilium-config
++              key: custom-cni-conf
++              optional: true
+         {{- if .Values.k8sServiceHost }}
+         - name: KUBERNETES_SERVICE_HOST
+           value: {{ .Values.k8sServiceHost | quote }}
+@@ -481,7 +505,7 @@ spec:
        # Required to mount cgroup2 filesystem on the underlying Kubernetes node.
        # We use nsenter command with host's cgroup and mount namespaces enabled.
        - name: mount-cgroup
@@ -38,7 +76,7 @@ index 2949091..48f36c9 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          env:
          - name: CGROUP_ROOT
-@@ -527,7 +527,7 @@ spec:
+@@ -527,7 +551,7 @@ spec:
                - ALL
            {{- end}}
        - name: apply-sysctl-overwrites
@@ -47,7 +85,7 @@ index 2949091..48f36c9 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          {{- with .Values.initResources }}
          resources:
-@@ -576,7 +576,7 @@ spec:
+@@ -576,7 +600,7 @@ spec:
        # from a privileged container because the mount propagation bidirectional
        # only works from privileged containers.
        - name: mount-bpf-fs
@@ -56,7 +94,7 @@ index 2949091..48f36c9 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          {{- with .Values.initResources }}
          resources:
-@@ -601,7 +601,7 @@ spec:
+@@ -601,7 +625,7 @@ spec:
        {{- end }}
        {{- if and .Values.nodeinit.enabled .Values.nodeinit.bootstrapFile }}
        - name: wait-for-node-init
@@ -65,7 +103,7 @@ index 2949091..48f36c9 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          {{- with .Values.initResources }}
          resources:
-@@ -621,7 +621,7 @@ spec:
+@@ -621,7 +645,7 @@ spec:
            mountPath: "/tmp/cilium-bootstrap.d"
        {{- end }}
        - name: clean-cilium-state
@@ -74,7 +112,7 @@ index 2949091..48f36c9 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          command:
          - /init-container.sh
-@@ -693,7 +693,7 @@ spec:
+@@ -693,7 +717,7 @@ spec:
          {{- end }}
        {{- if and .Values.waitForKubeProxy (and (ne (toString $kubeProxyReplacement) "strict") (ne (toString $kubeProxyReplacement) "true"))  }}
        - name: wait-for-kube-proxy
@@ -83,7 +121,7 @@ index 2949091..48f36c9 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          {{- with .Values.initResources }}
          resources:
-@@ -728,10 +728,22 @@ spec:
+@@ -728,10 +752,22 @@ spec:
              done
          terminationMessagePolicy: FallbackToLogsOnError
        {{- end }} # wait-for-kube-proxy
