@@ -9,7 +9,7 @@ First, stage the changes (in `./helm`) and the run:
 > Skip the `-R` flags if the changes were added.
 
 ```bash
-git --no-pager diff --cached -R helm/cilium/templates/cilium-agent/daemonset.yaml \
+git --no-pager diff -R helm/cilium/templates/cilium-agent/daemonset.yaml \
         > customization/patches/cleanup_kube_proxy/cilium_agent__daemonset.yaml.patch
 
 # Replace all `/helm/cilium/` with `/vendor/cilium/install/kubernetes/cilium/`.

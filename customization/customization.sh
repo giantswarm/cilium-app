@@ -19,6 +19,7 @@ cp -a ./vendor/cilium ./vendor/cilium.orig
 ./customization/patches/cleanup_kube_proxy/patch.sh
 ./customization/patches/schema/patch.sh
 ./customization/patches/image_registries/patch.sh
+./customization/patches/metrics_port/patch.sh
 ./customization/patches/chart.yaml/patch.sh
 
 # Store diffs
