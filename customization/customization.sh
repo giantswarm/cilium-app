@@ -16,6 +16,7 @@ vendir sync --file vendir.s1.yml --lock-file vendir.s1.lock
 cp -a ./vendor/cilium ./vendor/cilium.orig
 
 # Patches
+./customization/patches/cleanup_kube_proxy/patch.sh
 ./customization/patches/schema/patch.sh
 ./customization/patches/image_registries/patch.sh
 ./customization/patches/chart.yaml/patch.sh

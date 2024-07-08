@@ -27,3 +27,10 @@ Just in case this is the desired definition of `cilium.image` that should be pre
 {{- end -}}
 {{- end -}}
 ```
+
+Also all calls to `include "cilium.image"` should be replaced (done with `sed` in `patch.sh`) like so:
+
+```diff
+-          image: {{ include "cilium.image" .Values.preflight.image | quote }}
++          image: {{ include "cilium.image" (list $ .Values.preflight.image) | quote }}
+```
