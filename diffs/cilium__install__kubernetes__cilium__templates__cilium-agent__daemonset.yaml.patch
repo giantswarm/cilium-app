@@ -1,5 +1,5 @@
 diff --git a/cilium.orig/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml b/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml
-index 2949091..8e5dc4a 100644
+index 2949091..2eebb44 100644
 --- a/cilium.orig/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml
 +++ b/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml
 @@ -94,7 +94,7 @@ spec:
@@ -127,7 +127,7 @@ index 2949091..8e5dc4a 100644
        {{- end }} # wait-for-kube-proxy
 +      {{ if and (.Values.cleanupKubeProxy) (not (eq .Values.kubeProxyReplacement "disabled")) }}
 +      - name: cleanup-kube-proxy-iptables
-+        image: "{{ include "cilium.image" (list $ (list) $ .Values.image) }}"
++        image: "{{ include "cilium.image" (list $ .Values.image) }}"
 +        imagePullPolicy: {{ .Values.image.pullPolicy }}
 +        securityContext:
 +          privileged: true

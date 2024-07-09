@@ -8,7 +8,7 @@ index 0b6081c..6ea18cb 100644
        {{- end }} # wait-for-kube-proxy
 +      {{ if and (.Values.cleanupKubeProxy) (not (eq .Values.kubeProxyReplacement "disabled")) }}
 +      - name: cleanup-kube-proxy-iptables
-+        image: "{{ include "cilium.image" (list $ .Values.image) }}"
++        image: "{{ include "cilium.image" .Values.image }}"
 +        imagePullPolicy: {{ .Values.image.pullPolicy }}
 +        securityContext:
 +          privileged: true
