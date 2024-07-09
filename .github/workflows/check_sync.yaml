@@ -1,0 +1,21 @@
+name: 'Check sync.sh was called'
+on:
+  push: {}
+
+jobs:
+  check:
+    name: 'Check sync.sh was called'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run sync.sh
+        run: |
+          ./sync/sync.sh
+
+      - name: Check there is no diff
+        run: |
+          git diff --exit-code
