@@ -1,9 +1,9 @@
 If there is an regression the patches can be created like this:
 
 ```
-$ git --no-pager diff --no-color -R vendor/cilium/install/kubernetes/cilium/templates/_helpers.tpl > ./customization/patches/image_registries/_helpers.tpl.patch
+$ git --no-pager diff --no-color -R vendor/cilium/install/kubernetes/cilium/templates/_helpers.tpl > ./sync/patches/image_registries/_helpers.tpl.patch
 
-$ git --no-pager diff --no-color patch -R vendor/cilium/install/kubernetes/cilium/templates/cilium-operator/_helpers.tpl > ./customization/patches/image_registries/_cilium_operator__helpers.tpl.patch
+$ git --no-pager diff --no-color patch -R vendor/cilium/install/kubernetes/cilium/templates/cilium-operator/_helpers.tpl > ./sync/patches/image_registries/_cilium_operator__helpers.tpl.patch
 ```
 
 Just in case this is the desired definition of `cilium.image` that should be present in `_helpers.tpl` and `cilium-operator/_helpers.tpl`:

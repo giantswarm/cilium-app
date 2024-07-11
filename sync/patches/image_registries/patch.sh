@@ -15,8 +15,8 @@ set -x
 
 # Apply patches to _helpers.tpl files. More info in README.md of this patch
 # directory.
-git apply ./customization/patches/image_registries/_helpers.tpl.patch
-git apply ./customization/patches/image_registries/_cilium_operator__helpers.tpl.patch
+git apply ./sync/patches/image_registries/_helpers.tpl.patch
+git apply ./sync/patches/image_registries/_cilium_operator__helpers.tpl.patch
 
 { set +x; } 2>/dev/null
 

@@ -7,11 +7,11 @@ First, stage the changes (in `./helm`) and the run:
 
 ```bash
 git --no-pager diff -R helm/cilium/templates/cilium-agent/service.yaml \
-        > customization/patches/metrics_port/cilium_agent__service.yaml.patch
+        > sync/patches/metrics_port/cilium_agent__service.yaml.patch
 
 # Replace all `/helm/cilium/` with `/vendor/cilium/install/kubernetes/cilium/`.
 sed -i 's#/helm/cilium/#/vendor/cilium/install/kubernetes/cilium/#g' \
-        customization/patches/metrics_port/cilium_agent__service.yaml.patch
+        sync/patches/metrics_port/cilium_agent__service.yaml.patch
 ```
 
 ## What is the patched change?
