@@ -16,8 +16,8 @@ sed -i \
         -e '/^version:/c\version: 0.25.1' \
         -e '/^sources:/a\  - https://github.com/giantswarm/cilium-app' \
         -e '/^annotations:/a\  application.giantswarm.io/team: "cabbage"' \
-        "./vendor/cilium/install/kubernetes/cilium/Chart.yaml"
+        "./helm/cilium/Chart.yaml"
 sed -i \
         -e '/^\* <https:\/\/github.com\/cilium\/cilium>/i\* <https://github.com/giantswarm/cilium-app>' \
-        "./vendor/cilium/install/kubernetes/cilium/README.md"
+        "./helm/cilium/README.md"
 { set +x; } 2>/dev/null

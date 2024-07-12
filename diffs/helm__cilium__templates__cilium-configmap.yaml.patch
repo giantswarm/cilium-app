@@ -1,7 +1,7 @@
-diff --git b/helm/cilium/cilium/templates/cilium-configmap.yaml a/helm/cilium/cilium/templates/cilium-configmap.yaml
+diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-configmap.yaml b/helm/cilium/templates/cilium-configmap.yaml
 index 9531ca1..f1362e5 100644
---- b/helm/cilium/templates/cilium-configmap.yaml
-+++ a/helm/cilium/templates/cilium-configmap.yaml
+--- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-configmap.yaml
++++ b/helm/cilium/templates/cilium-configmap.yaml
 @@ -810,10 +810,7 @@ data:
  {{- end }}
  {{- if .Values.cni.configMap }}

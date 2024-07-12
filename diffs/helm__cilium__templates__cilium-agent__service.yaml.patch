@@ -1,7 +1,7 @@
-diff --git b/helm/cilium/cilium/templates/cilium-agent/service.yaml a/helm/cilium/cilium/templates/cilium-agent/service.yaml
+diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-agent/service.yaml b/helm/cilium/templates/cilium-agent/service.yaml
 index f6ec495..8a34bde 100644
---- b/helm/cilium/templates/cilium-agent/service.yaml
-+++ a/helm/cilium/templates/cilium-agent/service.yaml
+--- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-agent/service.yaml
++++ b/helm/cilium/templates/cilium-agent/service.yaml
 @@ -48,6 +48,10 @@ spec:
    selector:
      k8s-app: cilium

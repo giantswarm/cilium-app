@@ -1,0 +1,27 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+directories:
+  - path: vendor
+    contents:
+      - path: cilium
+        git:
+          url: https://github.com/cilium/cilium
+          ref: "v1.15.6"
+        includePaths:
+          - install/kubernetes/**/*
+          - Makefile.defs
+          - Makefile.quiet
+          - VERSION
+  - path: helm
+    contents:
+      - path: .
+        directory:
+          path: vendor/cilium/install/kubernetes
+        ignorePaths:
+          - cilium/files/policies/*
+          - cilium/templates/default-policies/*
+          - cilium/templates/extra-policies/*
+          - cilium/templates/**/networkpolicy.yaml
+          - cilium/templates/**/podsecuritypolicy.yaml
+          - cilium/templates/cilium-cni-configmap.yaml
+

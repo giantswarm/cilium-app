@@ -9,11 +9,8 @@ cd "${dir}/.."
 
 # Stage 1 sync - intermediate to the ./vendir folder
 set -x
-vendir sync --file vendir.s1.yml --lock-file vendir.s1.lock
+vendir sync
 { set +x; } 2>/dev/null
-
-# Copy cilium original files so we can do a diff later on.
-cp -a ./vendor/cilium ./vendor/cilium.orig
 
 # Patches
 ./sync/patches/cleanup_kube_proxy/patch.sh
@@ -25,10 +22,10 @@ cp -a ./vendor/cilium ./vendor/cilium.orig
 
 # Store diffs
 rm -f ./diffs/*
-for f in $(git -C ./vendor --no-pager diff --no-exit-code --no-color --no-index cilium{.orig,} --name-only) ; do
+for f in $(git --no-pager diff --no-exit-code --no-color --no-index vendor/cilium/install/kubernetes helm --name-only) ; do
         set +e
         set -x
-        git -C ./vendor --no-pager diff --no-exit-code --no-color --no-index "cilium.orig/${f#"cilium/"}" "${f}" \
+        git --no-pager diff --no-exit-code --no-color --no-index "vendor/cilium/install/kubernetes/${f#"helm/"}" "${f}" \
                 > "./diffs/${f//\//__}.patch" # ${f//\//__} replaces all "/" with "__"
         ret=$?
         { set +x; } 2>/dev/null
@@ -37,8 +34,3 @@ for f in $(git -C ./vendor --no-pager diff --no-exit-code --no-color --no-index 
                 exit $ret
         fi
 done
-
-# Stage 2 sync - from ./vendir to ./helm
-set -x
-vendir sync --file vendir.s2.yml --lock-file vendir.s2.lock
-{ set +x; } 2>/dev/null

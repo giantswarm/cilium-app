@@ -11,10 +11,6 @@ First, stage the changes (in `./helm`) and the run:
 ```bash
 git --no-pager diff -R helm/cilium/templates/cilium-agent/daemonset.yaml \
         > sync/patches/cleanup_kube_proxy/cilium_agent__daemonset.yaml.patch
-
-# Replace all `/helm/cilium/` with `/vendor/cilium/install/kubernetes/cilium/`.
-sed -i 's#/helm/cilium/#/vendor/cilium/install/kubernetes/cilium/#g' \
-        sync/patches/cleanup_kube_proxy/cilium_agent__daemonset.yaml.patch
 ```
 
 ## What is the patched change?

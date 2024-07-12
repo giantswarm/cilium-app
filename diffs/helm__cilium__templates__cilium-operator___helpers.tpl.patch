@@ -1,7 +1,7 @@
-diff --git b/helm/cilium/templates/cilium-operator/_helpers.tpl a/helm/cilium/templates/cilium-operator/_helpers.tpl
+diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-operator/_helpers.tpl b/helm/cilium/templates/cilium-operator/_helpers.tpl
 index 0910de6..bcc1cf2 100644
---- b/helm/cilium/templates/cilium-operator/_helpers.tpl
-+++ a/helm/cilium/templates/cilium-operator/_helpers.tpl
+--- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-operator/_helpers.tpl
++++ b/helm/cilium/templates/cilium-operator/_helpers.tpl
 @@ -26,11 +26,20 @@
  Return cilium operator image
  */}}

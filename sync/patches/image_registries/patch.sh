@@ -34,7 +34,7 @@ set -x
 #    - image: {{ include "cilium.operator.image" .Values.preflight.image | quote }}
 #    + image: {{ include "cilium.oprator.image" (list $ .Values.preflight.image) | quote }}
 #
-find ./vendor/cilium/install/kubernetes/cilium/templates -type f -name '*.yaml' -exec \
+find ./helm/cilium/templates -type f -name '*.yaml' -exec \
         sed -i 's/\({{ include "cilium[^"]*\.image"[[:space:]]\+\)\([^ ]*\)/\1(list $ \2)/' "{}" \;
 
 { set +x; } 2>/dev/null

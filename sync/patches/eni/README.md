@@ -10,11 +10,6 @@ git --no-pager diff -R helm/cilium/templates/cilium-agent/daemonset.yaml \
         > sync/patches/eni/cilium_agent__daemonset.yaml.patch
 git --no-pager diff -R helm/cilium/templates/cilium-configmap.yaml \
         > sync/patches/eni/cilium-configmap.yaml.patch
-
-# Replace all `/helm/cilium/` with `/vendor/cilium/install/kubernetes/cilium/`.
-sed -i 's#/helm/cilium/#/vendor/cilium/install/kubernetes/cilium/#g' \
-        sync/patches/eni/cilium_agent__daemonset.yaml.patch \
-        sync/patches/eni/cilium-configmap.yaml.patch
 ```
 
 ## What is the patched change?

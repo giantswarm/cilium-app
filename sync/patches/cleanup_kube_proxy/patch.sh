@@ -15,12 +15,12 @@ set -x
 git apply "${script_dir_rel}/cilium_agent__daemonset.yaml.patch"
 
 #
-# Because patches/schema/patch.sh overwrites values.yaml.tmpl the changes below
-# had to be added there. If `patches/schema` is removee, please uncomment the
+# Because patches/schema/patch.sh overwrites values.yaml.tmpl, the changes below
+# had to be added there. If `patches/schema` is removed, please uncomment the
 # lines below.
 #
 ## Add cleanupKubeProxy: to values.yaml
-#cat <<'EOF' > "./vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl"
+#cat <<'EOF' > "./helm/cilium/values.yaml.tmpl"
 ## If true, it adds an initContainer to cilium-agent pods that cleans up any legacy kube-proxy iptables rules from the node before running cilium.
 ## Only makes sense when `kubeProxyReplacement` is enabled (i.e. not set to 'disabled').
 #cleanupKubeProxy: false

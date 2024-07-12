@@ -1,7 +1,7 @@
-diff --git b/vendor/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml a/vendor/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml
+diff --git b/helm/cilium/cilium/templates/cilium-agent/daemonset.yaml a/helm/cilium/cilium/templates/cilium-agent/daemonset.yaml
 index fb406fb..6ea18cb 100644
---- b/vendor/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml
-+++ a/vendor/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml
+--- b/helm/cilium/templates/cilium-agent/daemonset.yaml
++++ a/helm/cilium/templates/cilium-agent/daemonset.yaml
 @@ -209,6 +209,18 @@ spec:
              resourceFieldRef:
                resource: limits.memory
