@@ -1015,6 +1015,18 @@
                     "Cluster"
                   ]
                 },
+                "loadBalancerClass": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "loadBalancerIP": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
                 "nodePort": {
                   "type": "integer"
                 },
@@ -5063,6 +5075,14 @@
     },
     "synchronizeK8sNodes": {
       "type": "boolean"
+    },
+    "sysctlfix": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
     },
     "terminationGracePeriodSeconds": {
       "type": "integer"

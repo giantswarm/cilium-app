@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml b/helm/cilium/values.yaml
-index 4bea90c..bd03efb 100644
+index c88cc2d..fb5c285 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml
 +++ b/helm/cilium/values.yaml
 @@ -1,5 +1,5 @@
@@ -80,7 +80,7 @@ index 4bea90c..bd03efb 100644
 +  registry: gsoci.azurecr.io
 +  override: ""
 +  repository: "giantswarm/cilium"
-   tag: "v1.15.6"
+   tag: "v1.15.7"
    pullPolicy: "IfNotPresent"
    # cilium-digest
 @@ -327,6 +349,9 @@ securityContext:
@@ -320,8 +320,8 @@ index 4bea90c..bd03efb 100644
 -    repository: "quay.io/cilium/certgen"
 +    override: ""
 +    repository: "giantswarm/cilium-certgen"
-     tag: "v0.1.12"
--    digest: "sha256:bbc5e65e9dc65bc6b58967fe536b7f3b54e12332908aeb0a96a36866b4372b4e"
+     tag: "v0.1.13"
+-    digest: "sha256:01802e6a153a9473b06ebade7ee5730f8f2c6cc8db8768508161da3cdd778641"
 -    useDigest: true
      pullPolicy: "IfNotPresent"
    # -- Seconds after which the completed job pod will be deleted
@@ -382,7 +382,7 @@ index 4bea90c..bd03efb 100644
 -      repository: "quay.io/cilium/hubble-relay"
 +      override: ""
 +      repository: "giantswarm/hubble-relay"
-       tag: "v1.15.6"
+       tag: "v1.15.7"
         # hubble-relay-digest
        digest: ""
 @@ -1279,7 +1389,8 @@ hubble:
@@ -499,8 +499,8 @@ index 4bea90c..bd03efb 100644
 -        repository: "quay.io/cilium/hubble-ui-backend"
 +        override: ""
 +        repository: "giantswarm/hubble-ui-backend"
-         tag: "v0.13.0"
-         digest: "sha256:1e7657d997c5a48253bb8dc91ecee75b63018d16ff5e5797e5af367336bc8803"
+         tag: "v0.13.1"
+         digest: "sha256:0e0eed917653441fded4e7cdb096b7be6a3bddded5a2dd10812a27b1fc6ed95b"
 -        useDigest: true
 +        useDigest: false
          pullPolicy: "IfNotPresent"
@@ -514,8 +514,8 @@ index 4bea90c..bd03efb 100644
 -        repository: "quay.io/cilium/hubble-ui"
 +        override: ""
 +        repository: "giantswarm/hubble-ui"
-         tag: "v0.13.0"
-         digest: "sha256:7d663dc16538dd6e29061abd1047013a645e6e69c115e008bee9ea9fef9a6666"
+         tag: "v0.13.1"
+         digest: "sha256:e2e9313eb7caf64b0061d9da0efbdad59c6c461f6ca1752768942bfeda0796c6"
 -        useDigest: true
 +        useDigest: false
          pullPolicy: "IfNotPresent"
@@ -685,9 +685,9 @@ index 4bea90c..bd03efb 100644
 -    repository: "quay.io/cilium/cilium-envoy"
 +    override: ""
 +    repository: "giantswarm/cilium-envoy"
-     tag: "v1.28.4-b35188ffa1bbe54d1720d2e392779f7a48e58f6b"
+     tag: "v1.29.7-39a2a56bbd5b3a591f69dbca51d3e30ef97e0e51"
      pullPolicy: "IfNotPresent"
-     digest: "sha256:b528b291561e459024f66414ac3325b88cdd8f9f4854828a155a11e5b10b78a3"
+     digest: "sha256:bd5ff8c66716080028f414ec1cb4f7dc66f40d2fb5a009fff187f4a9b90b566b"
 @@ -2120,6 +2299,9 @@ envoy:
    updateStrategy:
      type: RollingUpdate
@@ -730,12 +730,11 @@ index 4bea90c..bd03efb 100644
    image:
 -    override: ~
 -    repository: "quay.io/cilium/cilium-etcd-operator"
--    tag: "v2.0.7"
--    digest: "sha256:04b8327f7f992693c2cb483b999041ed8f92efc8e14f2a5f3ab95574a65ea2dc"
--    useDigest: true
 +    override: ""
 +    repository: "giantswarm/cilium-etcd-operator"
-+    tag: "v2.0.7@sha256:04b8327f7f992693c2cb483b999041ed8f92efc8e14f2a5f3ab95574a65ea2dc"
+     tag: "v2.0.7"
+-    digest: "sha256:04b8327f7f992693c2cb483b999041ed8f92efc8e14f2a5f3ab95574a65ea2dc"
+-    useDigest: true
      pullPolicy: "IfNotPresent"
  
    # -- The priority class to use for cilium-etcd-operator
@@ -777,7 +776,7 @@ index 4bea90c..bd03efb 100644
 -    repository: "quay.io/cilium/operator"
 +    override: ""
 +    repository: "giantswarm/cilium-operator"
-     tag: "v1.15.6"
+     tag: "v1.15.7"
      # operator-generic-digest
      genericDigest: ""
 @@ -2530,7 +2731,13 @@ operator:
@@ -855,8 +854,8 @@ index 4bea90c..bd03efb 100644
 -    repository: "quay.io/cilium/startup-script"
 +    override: ""
 +    repository: "giantswarm/cilium-startup-script"
-     tag: "19fb149fb3d5c7a37d3edfaf10a2be3ab7386661"
-     digest: "sha256:820155cb3b7f00c8d61c1cffa68c44440906cb046bdbad8ff544f5deb1103456"
+     tag: "c54c7edeab7fde4da68e59acd319ab24af242c3f"
+     digest: "sha256:8d7b41c4ca45860254b3c19e20210462ef89479bb6331d6760c4e609d651b29c"
      useDigest: true
 @@ -2802,8 +3027,8 @@ preflight:
  
@@ -866,7 +865,7 @@ index 4bea90c..bd03efb 100644
 -    repository: "quay.io/cilium/cilium"
 +    override: ""
 +    repository: "giantswarm/cilium"
-     tag: "v1.15.6"
+     tag: "v1.15.7"
      # cilium-digest
      digest: ""
 @@ -2876,9 +3101,15 @@ preflight:
@@ -893,10 +892,10 @@ index 4bea90c..bd03efb 100644
 -      repository: "quay.io/cilium/clustermesh-apiserver"
 +      override: ""
 +      repository: "giantswarm/cilium-clustermesh-apiserver"
-       tag: "v1.15.6"
+       tag: "v1.15.7"
        # clustermesh-apiserver-digest
        digest: ""
-@@ -3062,12 +3293,17 @@ clustermesh:
+@@ -3059,11 +3290,17 @@ clustermesh:
        # For EKS LoadBalancer, use annotation service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
        annotations: {}
  
@@ -912,12 +911,11 @@ index 4bea90c..bd03efb 100644
 +      # @schema
        # -- The internalTrafficPolicy of service used for apiserver access.
 -      internalTrafficPolicy:
--
 +      internalTrafficPolicy: Cluster
-     # -- Number of replicas run for the clustermesh-apiserver deployment.
-     replicas: 1
  
-@@ -3106,9 +3342,15 @@ clustermesh:
+       # @schema
+       # type: [null, string]
+@@ -3118,9 +3355,15 @@ clustermesh:
        # -- enable PodDisruptionBudget
        # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
        enabled: false
@@ -933,7 +931,7 @@ index 4bea90c..bd03efb 100644
        # -- Maximum number/percentage of pods that may be made unavailable
        maxUnavailable: 1
  
-@@ -3157,6 +3399,9 @@ clustermesh:
+@@ -3169,6 +3412,9 @@ clustermesh:
      updateStrategy:
        type: RollingUpdate
        rollingUpdate:
@@ -943,7 +941,7 @@ index 4bea90c..bd03efb 100644
          maxUnavailable: 1
  
      # -- The priority class to use for clustermesh-apiserver
-@@ -3279,24 +3524,42 @@ clustermesh:
+@@ -3291,24 +3537,42 @@ clustermesh:
  
          # -- Interval for scrape metrics (apiserver metrics)
          interval: "10s"
@@ -986,7 +984,7 @@ index 4bea90c..bd03efb 100644
            # -- Metrics relabeling configs for the ServiceMonitor clustermesh-apiserver (etcd metrics)
            metricRelabelings: ~
  
-@@ -3404,7 +3667,7 @@ authentication:
+@@ -3419,7 +3683,7 @@ authentication:
          existingNamespace: false
          # -- init container image of SPIRE agent and server
          initImage:
@@ -994,8 +992,8 @@ index 4bea90c..bd03efb 100644
 +          override: ""
            repository: "docker.io/library/busybox"
            tag: "1.36.1"
-           digest: "sha256:223ae047b1065bd069aac01ae3ac8088b3ca4a527827e283b85112f29385fb1b"
-@@ -3414,7 +3677,7 @@ authentication:
+           digest: "sha256:9ae97d36d26566ff84e8893c64a6dc4fe8ca6d1144bf5b87b2b85a32def253c7"
+@@ -3429,7 +3693,7 @@ authentication:
          agent:
            # -- SPIRE agent image
            image:
@@ -1004,7 +1002,7 @@ index 4bea90c..bd03efb 100644
              repository: "ghcr.io/spiffe/spire-agent"
              tag: "1.8.5"
              digest: "sha256:99405637647968245ff9fe215f8bd2bd0ea9807be9725f8bf19fe1b21471e52b"
-@@ -3462,7 +3725,7 @@ authentication:
+@@ -3477,7 +3741,7 @@ authentication:
          server:
            # -- SPIRE server image
            image:
@@ -1013,7 +1011,7 @@ index 4bea90c..bd03efb 100644
              repository: "ghcr.io/spiffe/spire-server"
              tag: "1.8.5"
              digest: "sha256:28269265882048dcf0fed32fe47663cd98613727210b8d1a55618826f9bf5428"
-@@ -3502,6 +3765,9 @@ authentication:
+@@ -3517,6 +3781,9 @@ authentication:
              size: 1Gi
              # -- Access mode of the SPIRE server data storage
              accessMode: ReadWriteOnce
@@ -1023,7 +1021,7 @@ index 4bea90c..bd03efb 100644
              # -- StorageClass of the SPIRE server data storage
              storageClass: null
            # -- Security context to be added to spire server pods.
-@@ -3522,6 +3788,9 @@ authentication:
+@@ -3537,6 +3804,9 @@ authentication:
                country: "US"
                organization: "SPIRE"
                commonName: "Cilium SPIRE CA"
@@ -1033,7 +1031,7 @@ index 4bea90c..bd03efb 100644
        # -- SPIRE server address used by Cilium Operator
        #
        # If k8s Service DNS along with port number is used (e.g. <service-name>.<namespace>.svc(.*):<port-number> format),
-@@ -3538,3 +3807,40 @@ authentication:
+@@ -3553,3 +3823,40 @@ authentication:
        agentSocketPath: /run/spire/sockets/agent/agent.sock
        # -- SPIRE connection timeout
        connectionTimeout: 30s
