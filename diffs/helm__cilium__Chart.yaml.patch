@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/Chart.yaml b/helm/cilium/Chart.yaml
-index 7d847e3..ef4b74f 100644
+index 7d847e3..868cfd9 100644
 --- a/vendor/cilium/install/kubernetes/cilium/Chart.yaml
 +++ b/helm/cilium/Chart.yaml
 @@ -2,7 +2,7 @@ apiVersion: v2
@@ -7,7 +7,7 @@ index 7d847e3..ef4b74f 100644
  displayName: Cilium
  home: https://cilium.io/
 -version: 1.15.6
-+version: 0.25.1
++version: 0.0.0-dev
  appVersion: 1.15.6
  kubeVersion: ">= 1.16.0-0"
  icon: https://cdn.jsdelivr.net/gh/cilium/cilium@v1.15/Documentation/images/logo-solo.svg

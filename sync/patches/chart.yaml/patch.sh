@@ -13,7 +13,7 @@ cd "${repo_dir}"
 
 set -x
 sed -i \
-        -e '/^version:/c\version: 0.25.1' \
+        -e '/^version:/c\version: 0.0.0-dev' \
         -e '/^sources:/a\  - https://github.com/giantswarm/cilium-app' \
         -e '/^annotations:/a\  application.giantswarm.io/team: "cabbage"' \
         "./helm/cilium/Chart.yaml"
