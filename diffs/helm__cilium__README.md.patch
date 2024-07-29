@@ -1,12 +1,12 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/README.md b/helm/cilium/README.md
-index f7083a1..447c74f 100644
+index f7083a1..e1a6987 100644
 --- a/vendor/cilium/install/kubernetes/cilium/README.md
 +++ b/helm/cilium/README.md
 @@ -1,6 +1,6 @@
  # cilium
  
 -![Version: 1.15.6](https://img.shields.io/badge/Version-1.15.6-informational?style=flat-square) ![AppVersion: 1.15.6](https://img.shields.io/badge/AppVersion-1.15.6-informational?style=flat-square)
-+![Version: 0.0.0-dev](https://img.shields.io/badge/Version-0.0.0--dev-informational?style=flat-square) ![AppVersion: 1.15.6](https://img.shields.io/badge/AppVersion-1.15.6-informational?style=flat-square)
++![Version: 0.25.1](https://img.shields.io/badge/Version-0.25.1-informational?style=flat-square) ![AppVersion: 1.15.6](https://img.shields.io/badge/AppVersion-1.15.6-informational?style=flat-square)
  
  Cilium is open source software for providing and transparently securing
  network connectivity and loadbalancing between application workloads such as
