@@ -1,6 +1,6 @@
-name: "Test"
-on:
-  push: {}
+name: "Validate sync diffs"
+
+on: [pull_request]
 
 jobs:
   check:

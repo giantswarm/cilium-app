@@ -18,6 +18,7 @@ directories:
         directory:
           path: vendor/cilium/install/kubernetes
         ignorePaths:
+          - cilium/Chart.yaml
           - cilium/files/policies/*
           - cilium/templates/default-policies/*
           - cilium/templates/extra-policies/*

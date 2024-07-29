@@ -12,12 +12,11 @@ cd "${repo_dir}"
 #readonly script_dir_rel=".${script_dir#"${repo_dir}"}"
 
 set -x
+
+# Revert the version to 0.0.0-dev because it's changed by `update-chart` target
+# in `./helm/Makefile`. This makefile is synced from upstream.
 sed -i \
         -e '/^version:/c\version: 0.0.0-dev' \
-        -e '/^sources:/a\  - https://github.com/giantswarm/cilium-app' \
-        -e '/^annotations:/a\  application.giantswarm.io/team: "cabbage"' \
         "./helm/cilium/Chart.yaml"
-sed -i \
-        -e '/^\* <https:\/\/github.com\/cilium\/cilium>/i\* <https://github.com/giantswarm/cilium-app>' \
-        "./helm/cilium/README.md"
+
 { set +x; } 2>/dev/null

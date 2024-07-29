@@ -23,6 +23,8 @@ vendir sync
 # Store diffs
 rm -f ./diffs/*
 for f in $(git --no-pager diff --no-exit-code --no-color --no-index vendor/cilium/install/kubernetes helm --name-only) ; do
+        [[ "$f" == "helm/cilium/Chart.yaml" ]] && continue
+        [[ "$f" == "helm/cilium/values.yaml" ]] && continue
         set +e
         set -x
         git --no-pager diff --no-exit-code --no-color --no-index "vendor/cilium/install/kubernetes/${f#"helm/"}" "${f}" \
