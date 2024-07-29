@@ -57,7 +57,7 @@ cilium/values.yaml: $(CILIUM_CHARTS)/$(VALUES_TMPL_FILE_NAME) $(ROOT_DIR)/VERSIO
 	$(ECHO_GEN)$@
 	$(call generate_values_yaml,$(CILIUM_CHARTS)/$(VALUES_TMPL_FILE_NAME),$@)
 
-update-versions: update-chart cilium/values.yaml # Update the Helm values file to point to the current version.
+update-versions: cilium/values.yaml # Update the Helm values file to point to the current version.
 
 CRD_FILES := $(shell find $(ROOT_DIR)/examples/crds/*/ -type f)
 CRDS := $(foreach path,$(patsubst %.yaml,%,$(CRD_FILES)),$(shell basename $(path)))

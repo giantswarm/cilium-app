@@ -26,6 +26,11 @@ sed -i 's#--workdir /src/install/kubernetes#--workdir /src#g' ./helm/Makefile
 # replace "--volume $(CURDIR)/../..:/src" with "--volume $(CURDIR):/src"
 sed -i 's#\(--volume .*\)\.\./\.\.:/src#\1:/src#g' ./helm/Makefile
 
+# We also need to remove changes to Chart.yaml because it's maintained by us.
+# The regexp makes sure the target starts with a letter so it doesn't match
+# .PHONY.
+sed -i 's/\(^[-_a-z]\+:.*\) update-chart/\1/g' ./helm/Makefile
+
 cd ./helm && make ; cd -
 
 HELM_TOOLBOX_VERSION="v1.1.0"

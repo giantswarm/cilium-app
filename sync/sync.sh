@@ -18,7 +18,6 @@ vendir sync
 ./sync/patches/eni/patch.sh
 ./sync/patches/image_registries/patch.sh
 ./sync/patches/metrics_port/patch.sh
-./sync/patches/chart.yaml/patch.sh
 
 # Store diffs
 rm -f ./diffs/*
