@@ -4,7 +4,6 @@ directories:
   - path: vendor
     contents:
       - path: cilium
-        lazy: true
         git:
           depth: 1
           url: https://github.com/cilium/cilium

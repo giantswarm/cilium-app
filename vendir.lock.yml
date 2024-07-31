@@ -1,8 +1,7 @@
 apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
-  - configDigest: 4a4a9bd67e3c3f96566597370ae98030d8d4e7e3468b6ebe4eb8cea11b2c7442
-    git:
+  - git:
       commitTitle: Prepare for release v1.16.0...
       sha: 82999990bc954699cf24853ef9747d9166ee24c8
       tags:
