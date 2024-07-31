@@ -123,7 +123,10 @@
                               "type": "string"
                             },
                             "override": {
-                              "type": "string"
+                              "type": [
+                                "null",
+                                "string"
+                              ]
                             },
                             "pullPolicy": {
                               "type": "string"
@@ -241,7 +244,10 @@
                           "type": "string"
                         },
                         "override": {
-                          "type": "string"
+                          "type": [
+                            "null",
+                            "string"
+                          ]
                         },
                         "pullPolicy": {
                           "type": "string"
@@ -317,7 +323,10 @@
                               "type": "string"
                             },
                             "override": {
-                              "type": "string"
+                              "type": [
+                                "null",
+                                "string"
+                              ]
                             },
                             "pullPolicy": {
                               "type": "string"
@@ -500,6 +509,44 @@
             "integer"
           ]
         },
+        "datapathMode": {
+          "type": "string"
+        },
+        "disableExternalIPMitigation": {
+          "type": "boolean"
+        },
+        "enableTCX": {
+          "type": "boolean"
+        },
+        "events": {
+          "properties": {
+            "drop": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "policyVerdict": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "trace": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
         "hostLegacyRouting": {
           "type": [
             "null",
@@ -610,8 +657,14 @@
         },
         "image": {
           "properties": {
-            "override": {
+            "digest": {
               "type": "string"
+            },
+            "override": {
+              "type": [
+                "null",
+                "string"
+              ]
             },
             "pullPolicy": {
               "type": "string"
@@ -621,6 +674,9 @@
             },
             "tag": {
               "type": "string"
+            },
+            "useDigest": {
+              "type": "boolean"
             }
           },
           "type": "object"
@@ -657,6 +713,60 @@
       },
       "type": "object"
     },
+    "ciliumEndpointSlice": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "rateLimits": {
+          "items": {
+            "anyOf": [
+              {
+                "properties": {
+                  "burst": {
+                    "type": "integer"
+                  },
+                  "limit": {
+                    "type": "integer"
+                  },
+                  "nodes": {
+                    "type": "integer"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "burst": {
+                    "type": "integer"
+                  },
+                  "limit": {
+                    "type": "integer"
+                  },
+                  "nodes": {
+                    "type": "integer"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "burst": {
+                    "type": "integer"
+                  },
+                  "limit": {
+                    "type": "integer"
+                  },
+                  "nodes": {
+                    "type": "integer"
+                  }
+                }
+              }
+            ]
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
     "cleanBpfState": {
       "type": "boolean"
     },
@@ -688,26 +798,34 @@
               "properties": {
                 "podAntiAffinity": {
                   "properties": {
-                    "requiredDuringSchedulingIgnoredDuringExecution": {
+                    "preferredDuringSchedulingIgnoredDuringExecution": {
                       "items": {
                         "anyOf": [
                           {
                             "properties": {
-                              "labelSelector": {
+                              "podAffinityTerm": {
                                 "properties": {
-                                  "matchLabels": {
+                                  "labelSelector": {
                                     "properties": {
-                                      "k8s-app": {
-                                        "type": "string"
+                                      "matchLabels": {
+                                        "properties": {
+                                          "k8s-app": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "type": "object"
                                       }
                                     },
                                     "type": "object"
+                                  },
+                                  "topologyKey": {
+                                    "type": "string"
                                   }
                                 },
                                 "type": "object"
                               },
-                              "topologyKey": {
-                                "type": "string"
+                              "weight": {
+                                "type": "integer"
                               }
                             }
                           }
@@ -746,7 +864,33 @@
                   "type": "object"
                 },
                 "securityContext": {
+                  "properties": {
+                    "allowPrivilegeEscalation": {
+                      "type": "boolean"
+                    },
+                    "capabilities": {
+                      "properties": {
+                        "drop": {
+                          "items": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
                   "type": "object"
+                },
+                "storageMedium": {
+                  "enum": [
+                    "Disk",
+                    "Memory"
+                  ]
                 }
               },
               "type": "object"
@@ -767,13 +911,19 @@
               "items": {},
               "type": "array"
             },
+            "healthPort": {
+              "type": "integer"
+            },
             "image": {
               "properties": {
                 "digest": {
                   "type": "string"
                 },
                 "override": {
-                  "type": "string"
+                  "type": [
+                    "null",
+                    "string"
+                  ]
                 },
                 "pullPolicy": {
                   "type": "string"
@@ -807,7 +957,13 @@
                   "items": {},
                   "type": "array"
                 },
+                "healthPort": {
+                  "type": "integer"
+                },
                 "lifecycle": {
+                  "type": "object"
+                },
+                "readinessProbe": {
                   "type": "object"
                 },
                 "resources": {
@@ -984,10 +1140,27 @@
               "type": "object"
             },
             "podSecurityContext": {
+              "properties": {
+                "fsGroup": {
+                  "type": "integer"
+                },
+                "runAsGroup": {
+                  "type": "integer"
+                },
+                "runAsNonRoot": {
+                  "type": "boolean"
+                },
+                "runAsUser": {
+                  "type": "integer"
+                }
+              },
               "type": "object"
             },
             "priorityClassName": {
               "type": "string"
+            },
+            "readinessProbe": {
+              "type": "object"
             },
             "replicas": {
               "type": "integer"
@@ -996,12 +1169,39 @@
               "type": "object"
             },
             "securityContext": {
+              "properties": {
+                "allowPrivilegeEscalation": {
+                  "type": "boolean"
+                },
+                "capabilities": {
+                  "properties": {
+                    "drop": {
+                      "items": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
               "type": "object"
             },
             "service": {
               "properties": {
                 "annotations": {
                   "type": "object"
+                },
+                "enableSessionAffinity": {
+                  "enum": [
+                    "HAOnly",
+                    "Always",
+                    "Never"
+                  ]
                 },
                 "externalTrafficPolicy": {
                   "enum": [
@@ -1013,6 +1213,18 @@
                   "enum": [
                     "Local",
                     "Cluster"
+                  ]
+                },
+                "loadBalancerClass": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "loadBalancerIP": {
+                  "type": [
+                    "null",
+                    "string"
                   ]
                 },
                 "nodePort": {
@@ -1071,6 +1283,9 @@
                   },
                   "type": "object"
                 },
+                "enableSecrets": {
+                  "type": "boolean"
+                },
                 "remote": {
                   "properties": {
                     "cert": {
@@ -1116,6 +1331,12 @@
               "properties": {
                 "rollingUpdate": {
                   "properties": {
+                    "maxSurge": {
+                      "type": [
+                        "integer",
+                        "string"
+                      ]
+                    },
                     "maxUnavailable": {
                       "type": [
                         "integer",
@@ -1148,6 +1369,12 @@
             }
           },
           "type": "object"
+        },
+        "enableEndpointSliceSynchronization": {
+          "type": "boolean"
+        },
+        "enableMCSAPISupport": {
+          "type": "boolean"
         },
         "maxConnectedClusters": {
           "type": "integer"
@@ -1185,6 +1412,9 @@
           "type": "string"
         },
         "customConf": {
+          "type": "boolean"
+        },
+        "enableRouteMTUForCNIChaining": {
           "type": "boolean"
         },
         "exclusive": {
@@ -1226,14 +1456,6 @@
     },
     "conntrackGCMaxInterval": {
       "type": "string"
-    },
-    "containerRuntime": {
-      "properties": {
-        "integration": {
-          "type": "string"
-        }
-      },
-      "type": "object"
     },
     "crdWaitTimeout": {
       "type": "string"
@@ -1334,6 +1556,9 @@
       },
       "type": "object"
     },
+    "directRoutingSkipUnreachable": {
+      "type": "boolean"
+    },
     "disableEndpointCRD": {
       "type": "boolean"
     },
@@ -1368,6 +1593,9 @@
         },
         "proxyResponseMaxDelay": {
           "type": "string"
+        },
+        "socketLingerTimeout": {
+          "type": "integer"
         }
       },
       "type": "object"
@@ -1375,9 +1603,6 @@
     "egressGateway": {
       "properties": {
         "enabled": {
-          "type": "boolean"
-        },
-        "installRoutes": {
           "type": "boolean"
         },
         "reconciliationTriggerInterval": {
@@ -1424,11 +1649,11 @@
         "enabled": {
           "type": "boolean"
         },
-        "interface": {
-          "type": "string"
-        },
         "ipsec": {
           "properties": {
+            "encryptedOverlay": {
+              "type": "boolean"
+            },
             "interface": {
               "type": "string"
             },
@@ -1450,17 +1675,8 @@
           },
           "type": "object"
         },
-        "keyFile": {
-          "type": "string"
-        },
-        "mountPath": {
-          "type": "string"
-        },
         "nodeEncryption": {
           "type": "boolean"
-        },
-        "secretName": {
-          "type": "string"
         },
         "strictMode": {
           "properties": {
@@ -1508,17 +1724,6 @@
             "boolean",
             "string"
           ]
-        }
-      },
-      "type": "object"
-    },
-    "endpointStatus": {
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
-        "status": {
-          "type": "string"
         }
       },
       "type": "object"
@@ -1689,8 +1894,27 @@
         "annotations": {
           "type": "object"
         },
+        "baseID": {
+          "type": "integer"
+        },
         "connectTimeoutSeconds": {
           "type": "integer"
+        },
+        "debug": {
+          "properties": {
+            "admin": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "port": {
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
         },
         "dnsPolicy": {
           "type": [
@@ -1699,7 +1923,10 @@
           ]
         },
         "enabled": {
-          "type": "boolean"
+          "type": [
+            "null",
+            "boolean"
+          ]
         },
         "extraArgs": {
           "items": {},
@@ -1737,7 +1964,10 @@
               "type": "string"
             },
             "override": {
-              "type": "string"
+              "type": [
+                "null",
+                "string"
+              ]
             },
             "pullPolicy": {
               "type": "string"
@@ -1909,6 +2139,9 @@
                     ]
                   },
                   "type": "array"
+                },
+                "keepCapNetBindService": {
+                  "type": "boolean"
                 }
               },
               "type": "object"
@@ -1991,6 +2224,9 @@
         "enabled": {
           "type": "boolean"
         },
+        "retryInterval": {
+          "type": "string"
+        },
         "secretsNamespace": {
           "properties": {
             "create": {
@@ -2007,12 +2243,6 @@
     },
     "etcd": {
       "properties": {
-        "annotations": {
-          "type": "object"
-        },
-        "clusterDomain": {
-          "type": "string"
-        },
         "enabled": {
           "type": "boolean"
         },
@@ -2026,131 +2256,8 @@
           },
           "type": "array"
         },
-        "extraArgs": {
-          "items": {},
-          "type": "array"
-        },
-        "extraVolumeMounts": {
-          "items": {},
-          "type": "array"
-        },
-        "extraVolumes": {
-          "items": {},
-          "type": "array"
-        },
-        "image": {
-          "properties": {
-            "override": {
-              "type": "string"
-            },
-            "pullPolicy": {
-              "type": "string"
-            },
-            "repository": {
-              "type": "string"
-            },
-            "tag": {
-              "type": "string"
-            }
-          },
-          "type": "object"
-        },
-        "k8sService": {
-          "type": "boolean"
-        },
-        "nodeSelector": {
-          "properties": {
-            "kubernetes.io/os": {
-              "type": "string"
-            }
-          },
-          "type": "object"
-        },
-        "podAnnotations": {
-          "type": "object"
-        },
-        "podDisruptionBudget": {
-          "properties": {
-            "enabled": {
-              "type": "boolean"
-            },
-            "maxUnavailable": {
-              "type": [
-                "null",
-                "integer",
-                "string"
-              ]
-            },
-            "minAvailable": {
-              "type": [
-                "null",
-                "integer",
-                "string"
-              ]
-            }
-          },
-          "type": "object"
-        },
-        "podLabels": {
-          "type": "object"
-        },
-        "podSecurityContext": {
-          "type": "object"
-        },
-        "priorityClassName": {
-          "type": "string"
-        },
-        "resources": {
-          "type": "object"
-        },
-        "securityContext": {
-          "type": "object"
-        },
         "ssl": {
           "type": "boolean"
-        },
-        "tolerations": {
-          "items": {
-            "anyOf": [
-              {
-                "properties": {
-                  "operator": {
-                    "type": "string"
-                  }
-                }
-              }
-            ]
-          },
-          "type": "array"
-        },
-        "topologySpreadConstraints": {
-          "items": {},
-          "type": "array"
-        },
-        "updateStrategy": {
-          "properties": {
-            "rollingUpdate": {
-              "properties": {
-                "maxSurge": {
-                  "type": [
-                    "integer",
-                    "string"
-                  ]
-                },
-                "maxUnavailable": {
-                  "type": [
-                    "integer",
-                    "string"
-                  ]
-                }
-              },
-              "type": "object"
-            },
-            "type": {
-              "type": "string"
-            }
-          },
-          "type": "object"
         }
       },
       "type": "object"
@@ -2187,6 +2294,10 @@
       "type": "array"
     },
     "extraHostPathMounts": {
+      "items": {},
+      "type": "array"
+    },
+    "extraInitContainers": {
       "items": {},
       "type": "array"
     },
@@ -2268,10 +2379,49 @@
       "items": {},
       "type": "array"
     },
+    "forceDeviceDetection": {
+      "type": "boolean"
+    },
     "gatewayAPI": {
       "properties": {
+        "enableAlpn": {
+          "type": "boolean"
+        },
+        "enableAppProtocol": {
+          "type": "boolean"
+        },
+        "enableProxyProtocol": {
+          "type": "boolean"
+        },
         "enabled": {
           "type": "boolean"
+        },
+        "externalTrafficPolicy": {
+          "type": "string"
+        },
+        "gatewayClass": {
+          "properties": {
+            "create": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "hostNetwork": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "nodes": {
+              "properties": {
+                "matchLabels": {
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
         },
         "secretsNamespace": {
           "properties": {
@@ -2286,6 +2436,9 @@
             }
           },
           "type": "object"
+        },
+        "xffNumTrustedHops": {
+          "type": "integer"
         }
       },
       "type": "object"
@@ -2344,6 +2497,30 @@
     "hubble": {
       "properties": {
         "annotations": {
+          "type": "object"
+        },
+        "dropEventEmitter": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "interval": {
+              "type": "string"
+            },
+            "reasons": {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            }
+          },
           "type": "object"
         },
         "enabled": {
@@ -2523,6 +2700,53 @@
                     ]
                   },
                   "type": "array"
+                },
+                "tlsConfig": {
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "tls": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "server": {
+                  "properties": {
+                    "cert": {
+                      "type": "string"
+                    },
+                    "extraDnsNames": {
+                      "items": {},
+                      "type": "array"
+                    },
+                    "extraIpAddresses": {
+                      "items": {},
+                      "type": "array"
+                    },
+                    "key": {
+                      "type": "string"
+                    },
+                    "mtls": {
+                      "properties": {
+                        "enabled": {
+                          "type": "boolean"
+                        },
+                        "key": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "null"
+                        },
+                        "useSecret": {
+                          "type": "boolean"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
                 }
               },
               "type": "object"
@@ -2664,7 +2888,10 @@
                   "type": "string"
                 },
                 "override": {
-                  "type": "string"
+                  "type": [
+                    "null",
+                    "string"
+                  ]
                 },
                 "pullPolicy": {
                   "type": "string"
@@ -3021,7 +3248,10 @@
                       "type": "string"
                     },
                     "override": {
-                      "type": "string"
+                      "type": [
+                        "null",
+                        "string"
+                      ]
                     },
                     "pullPolicy": {
                       "type": "string"
@@ -3089,7 +3319,10 @@
                       "type": "string"
                     },
                     "override": {
-                      "type": "string"
+                      "type": [
+                        "null",
+                        "string"
+                      ]
                     },
                     "pullPolicy": {
                       "type": "string"
@@ -3314,12 +3547,12 @@
           "type": "string"
         },
         "override": {
-          "type": "string"
+          "type": [
+            "null",
+            "string"
+          ]
         },
         "pullPolicy": {
-          "type": "string"
-        },
-        "registry": {
           "type": "string"
         },
         "repository": {
@@ -3364,9 +3597,34 @@
         "enforceHttps": {
           "type": "boolean"
         },
+        "hostNetwork": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "nodes": {
+              "properties": {
+                "matchLabels": {
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "sharedListenerPort": {
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        },
         "ingressLBAnnotationPrefixes": {
           "items": {
             "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "string"
+              },
               {
                 "type": "string"
               },
@@ -3407,6 +3665,9 @@
             },
             "annotations": {
               "type": "object"
+            },
+            "externalTrafficPolicy": {
+              "type": "string"
             },
             "insecureNodePort": {
               "type": [
@@ -3547,6 +3808,14 @@
       "type": "string"
     },
     "k8s": {
+      "properties": {
+        "requireIPv4PodCIDR": {
+          "type": "boolean"
+        },
+        "requireIPv6PodCIDR": {
+          "type": "boolean"
+        }
+      },
       "type": "object"
     },
     "k8sClientRateLimit": {
@@ -3693,8 +3962,23 @@
       },
       "type": "object"
     },
+    "nodeIPAM": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
     "nodePort": {
       "properties": {
+        "addresses": {
+          "type": [
+            "null",
+            "string",
+            "array"
+          ]
+        },
         "autoProtectPortRange": {
           "type": "boolean"
         },
@@ -3720,6 +4004,9 @@
         }
       },
       "type": "object"
+    },
+    "nodeSelectorLabels": {
+      "type": "boolean"
     },
     "nodeinit": {
       "properties": {
@@ -3753,7 +4040,10 @@
               "type": "string"
             },
             "override": {
-              "type": "string"
+              "type": [
+                "null",
+                "string"
+              ]
             },
             "pullPolicy": {
               "type": "string"
@@ -4003,6 +4293,9 @@
           "items": {},
           "type": "array"
         },
+        "hostNetwork": {
+          "type": "boolean"
+        },
         "identityGCInterval": {
           "type": "string"
         },
@@ -4024,7 +4317,10 @@
               "type": "string"
             },
             "override": {
-              "type": "string"
+              "type": [
+                "null",
+                "string"
+              ]
             },
             "pullPolicy": {
               "type": "string"
@@ -4169,9 +4465,6 @@
             "null",
             "boolean"
           ]
-        },
-        "skipCNPStatusStartupClean": {
-          "type": "boolean"
         },
         "skipCRDCreation": {
           "type": "boolean"
@@ -4347,7 +4640,10 @@
               "type": "string"
             },
             "override": {
-              "type": "string"
+              "type": [
+                "null",
+                "string"
+              ]
             },
             "pullPolicy": {
               "type": "string"
@@ -4406,6 +4702,17 @@
         "priorityClassName": {
           "type": "string"
         },
+        "readinessProbe": {
+          "properties": {
+            "initialDelaySeconds": {
+              "type": "integer"
+            },
+            "periodSeconds": {
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        },
         "resources": {
           "type": "object"
         },
@@ -4423,52 +4730,6 @@
             "anyOf": [
               {
                 "properties": {
-                  "effect": {
-                    "type": "string"
-                  },
-                  "key": {
-                    "type": "string"
-                  }
-                }
-              },
-              {
-                "properties": {
-                  "effect": {
-                    "type": "string"
-                  },
-                  "key": {
-                    "type": "string"
-                  }
-                }
-              },
-              {
-                "properties": {
-                  "effect": {
-                    "type": "string"
-                  },
-                  "key": {
-                    "type": "string"
-                  }
-                }
-              },
-              {
-                "properties": {
-                  "effect": {
-                    "type": "string"
-                  },
-                  "key": {
-                    "type": "string"
-                  },
-                  "value": {
-                    "type": "string"
-                  }
-                }
-              },
-              {
-                "properties": {
-                  "key": {
-                    "type": "string"
-                  },
                   "operator": {
                     "type": "string"
                   }
@@ -4591,28 +4852,6 @@
       },
       "type": "object"
     },
-    "proxy": {
-      "properties": {
-        "prometheus": {
-          "properties": {
-            "enabled": {
-              "type": "boolean"
-            },
-            "port": {
-              "type": [
-                "null",
-                "integer"
-              ]
-            }
-          },
-          "type": "object"
-        },
-        "sidecarImageRegex": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
     "rbac": {
       "properties": {
         "create": {
@@ -4631,9 +4870,6 @@
         }
       },
       "type": "object"
-    },
-    "remoteNodeIdentity": {
-      "type": "boolean"
     },
     "resourceQuotas": {
       "properties": {
@@ -5064,6 +5300,14 @@
     "synchronizeK8sNodes": {
       "type": "boolean"
     },
+    "sysctlfix": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
     "terminationGracePeriodSeconds": {
       "type": "integer"
     },
@@ -5144,6 +5388,12 @@
         }
       },
       "type": "object"
+    },
+    "upgradeCompatibility": {
+      "type": [
+        "null",
+        "string"
+      ]
     },
     "vtep": {
       "properties": {

@@ -1,8 +1,8 @@
-diff --git b/helm/cilium/cilium/templates/cilium-agent/daemonset.yaml a/helm/cilium/cilium/templates/cilium-agent/daemonset.yaml
-index fb406fb..6ea18cb 100644
---- b/helm/cilium/templates/cilium-agent/daemonset.yaml
-+++ a/helm/cilium/templates/cilium-agent/daemonset.yaml
-@@ -209,6 +209,18 @@ spec:
+diff --git a/helm/cilium/templates/cilium-agent/daemonset.yaml b/helm/cilium/templates/cilium-agent/daemonset.yaml
+index afde82d..91f3efd 100644
+--- a/helm/cilium/templates/cilium-agent/daemonset.yaml
++++ b/helm/cilium/templates/cilium-agent/daemonset.yaml
+@@ -197,6 +197,18 @@ spec:
              resourceFieldRef:
                resource: limits.memory
                divisor: '1'
@@ -20,8 +20,8 @@ index fb406fb..6ea18cb 100644
 +              optional: true
          {{- if .Values.k8sServiceHost }}
          - name: KUBERNETES_SERVICE_HOST
-           value: {{ .Values.k8sServiceHost | quote }}
-@@ -454,6 +466,18 @@ spec:
+           value: {{ include "k8sServiceHost" . }}
+@@ -457,6 +469,18 @@ spec:
              fieldRef:
                apiVersion: v1
                fieldPath: metadata.namespace
@@ -39,4 +39,4 @@ index fb406fb..6ea18cb 100644
 +              optional: true
          {{- if .Values.k8sServiceHost }}
          - name: KUBERNETES_SERVICE_HOST
-           value: {{ .Values.k8sServiceHost | quote }}
+           value: {{ include "k8sServiceHost" . }}

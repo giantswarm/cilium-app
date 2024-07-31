@@ -33,14 +33,4 @@ sed -i 's/\(^[-_a-z]\+:.*\) update-chart/\1/g' ./helm/Makefile
 
 cd ./helm && make ; cd -
 
-HELM_TOOLBOX_VERSION="v1.1.0"
-HELM_TOOLBOX_SHA="961693f182b9b456ed90e5274ac5df81e4af4343104e252666959cdf9570ce9e"
-HELM_TOOLBOX_IMAGE="quay.io/cilium/helm-toolbox:${HELM_TOOLBOX_VERSION}@sha256:${HELM_TOOLBOX_SHA}"
-cd ./helm && docker container run --rm \
-        --workdir /src \
-        --volume "${PWD}:/src" \
-        --user "$(id -u):$(id -g)" \
-        "${HELM_TOOLBOX_IMAGE}" helm-schema -c cilium --skip-auto-generation title,description,required,default,additionalProperties
-cd -
-
 { set +x; } 2>/dev/null
