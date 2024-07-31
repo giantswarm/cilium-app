@@ -1,0 +1,33 @@
+diff --git a/vendor/cilium/install/kubernetes/Makefile b/helm/Makefile
+index 42092cc..faff485 100644
+--- a/vendor/cilium/install/kubernetes/Makefile
++++ b/helm/Makefile
+@@ -4,7 +4,7 @@
+ MAKEFILE_VALUES?=Makefile.values
+ include $(MAKEFILE_VALUES)
+ 
+-include ../../Makefile.defs
++include Makefile.defs
+ 
+ ifeq ($(CILIUM_VERSION),)
+ export CILIUM_VERSION:=v$(VERSION)
+@@ -23,8 +23,8 @@ VERSION_REGEX := '[0-9]\+\.[0-9]\+\.[0-9]\+.*'
+ CILIUM_CHART_REGEX := '\([vV]ersion:\) '$(VERSION_REGEX)
+ 
+ DOCKER_RUN := $(CONTAINER_ENGINE) container run --rm \
+-	--workdir /src/install/kubernetes \
+-	--volume $(CURDIR)/../..:/src \
++	--workdir /src \
++	--volume $(CURDIR)/:/src \
+ 	--user "$(shell id -u):$(shell id -g)"
+ HELM_DOCS := $(DOCKER_RUN) $(HELM_TOOLBOX_IMAGE) helm-docs
+ HELM := $(DOCKER_RUN) $(HELM_TOOLBOX_IMAGE) helm
+@@ -57,7 +57,7 @@ cilium/values.yaml: $(CILIUM_CHARTS)/$(VALUES_TMPL_FILE_NAME) $(ROOT_DIR)/VERSIO
+ 	$(ECHO_GEN)$@
+ 	$(call generate_values_yaml,$(CILIUM_CHARTS)/$(VALUES_TMPL_FILE_NAME),$@)
+ 
+-update-versions: update-chart cilium/values.yaml # Update the Helm values file to point to the current version.
++update-versions: cilium/values.yaml # Update the Helm values file to point to the current version.
+ 
+ CRD_FILES := $(shell find $(ROOT_DIR)/examples/crds/*/ -type f)
+ CRDS := $(foreach path,$(patsubst %.yaml,%,$(CRD_FILES)),$(shell basename $(path)))

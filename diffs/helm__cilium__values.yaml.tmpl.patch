@@ -1,0 +1,1049 @@
+diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
+index 679b4ca..1ba50fc 100644
+--- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
++++ b/helm/cilium/values.yaml.tmpl
+@@ -8,6 +8,9 @@
+ debug:
+   # -- Enable debug logging
+   enabled: false
++  # @schema
++  # type: [null, string]
++  # @schema
+   # -- Configure verbosity levels for debug logging
+   # This option is used to enable debug messages for operations related to such
+   # sub-system such as (e.g. kvstore, envoy, datapath or policy), and flow is
+@@ -27,7 +30,7 @@ rbac:
+   create: true
+ 
+ # -- Configure image pull secrets for pulling container images
+-imagePullSecrets:
++imagePullSecrets: []
+ # - name: "image-pull-secret"
+ 
+ # -- (string) Kubernetes config path
+@@ -35,6 +38,9 @@ imagePullSecrets:
+ kubeConfigPath: ""
+ # -- (string) Kubernetes service host
+ k8sServiceHost: ""
++# @schema
++# type: [string, integer]
++# @schema
+ # -- (string) Kubernetes service port
+ k8sServicePort: ""
+ 
+@@ -44,9 +50,15 @@ k8sServicePort: ""
+ # rate limit, the agent and operator will start to throttle requests by delaying
+ # them until there is budget or the request times out.
+ k8sClientRateLimit:
++  # @schema
++  # type: [null, integer]
++  # @schema
+   # -- (int) The sustained request rate in requests per second.
+   # @default -- 5 for k8s up to 1.26. 10 for k8s version 1.27+
+   qps:
++  # @schema
++  # type: [null, integer]
++  # @schema
+   # -- (int) The burst request rate in requests per second.
+   # The rate limiter will allow short bursts with a higher rate.
+   # @default -- 10 for k8s up to 1.26. 20 for k8s version 1.27+
+@@ -126,6 +138,15 @@ serviceAccounts:
+     name: hubble-generate-certs
+     automount: true
+     annotations: {}
++  defaultPolicies:
++    create: true
++    name: cilium-default-policies
++    automount: true
++    annotations: {}
++  extraPolicies:
++    create: true
++    name: cilium-extra-policies
++    annotations: {}
+ 
+ # -- Configure termination grace period for cilium-agent DaemonSet.
+ terminationGracePeriodSeconds: 1
+@@ -141,7 +162,8 @@ rollOutCiliumPods: false
+ 
+ # -- Agent container image.
+ image:
+-  override: ~
++  registry: gsoci.azurecr.io
++  override: ""
+   repository: "${CILIUM_REPO}"
+   tag: "${CILIUM_VERSION}"
+   pullPolicy: "${PULL_POLICY}"
+@@ -324,6 +346,9 @@ securityContext:
+ updateStrategy:
+   type: RollingUpdate
+   rollingUpdate:
++    # @schema
++    # type: [integer, string]
++    # @schema
+     maxUnavailable: 2
+ 
+ # Configuration Values for cilium-agent
+@@ -334,6 +359,9 @@ aksbyocni:
+   # use Azure integration (`azure.enabled`) instead.
+   enabled: false
+ 
++# @schema
++# type: [boolean, string]
++# @schema
+ # -- Enable installation of PodCIDR routes between worker
+ # nodes if worker nodes share a common L2 network segment.
+ autoDirectNodeRoutes: false
+@@ -441,28 +469,46 @@ bpf:
+   # memory usage but can reduce latency.
+   preallocateMaps: false
+ 
++  # @schema
++  # type: [null, integer]
++  # @schema
+   # -- (int) Configure the maximum number of entries in auth map.
+   # @default -- `524288`
+   authMapMax: ~
+ 
++  # @schema
++  # type: [null, integer]
++  # @schema
+   # -- (int) Configure the maximum number of entries in the TCP connection tracking
+   # table.
+   # @default -- `524288`
+   ctTcpMax: ~
+ 
++  # @schema
++  # type: [null, integer]
++  # @schema
+   # -- (int) Configure the maximum number of entries for the non-TCP connection
+   # tracking table.
+   # @default -- `262144`
+   ctAnyMax: ~
+ 
++  # @schema
++  # type: [null, integer]
++  # @schema
+   # -- Configure the maximum number of service entries in the
+   # load balancer maps.
+   lbMapMax: 65536
+ 
++  # @schema
++  # type: [null, integer]
++  # @schema
+   # -- (int) Configure the maximum number of entries for the NAT table.
+   # @default -- `524288`
+   natMax: ~
+ 
++  # @schema
++  # type: [null, integer]
++  # @schema
+   # -- (int) Configure the maximum number of entries for the neighbor table.
+   # @default -- `524288`
+   neighMax: ~
+@@ -478,8 +524,11 @@ bpf:
+   # @schema
+   # type: [null, integer]
+   # @schema
+-  policyMapMax: 16384
++  policyMapMax: 65536
+ 
++  # @schema
++  # type: [null, number]
++  # @schema
+   # -- (float64) Configure auto-sizing for all BPF maps based on available memory.
+   # ref: https://docs.cilium.io/en/stable/network/ebpf/maps/
+   # @default -- `0.0025`
+@@ -500,10 +549,16 @@ bpf:
+   # -- Allow cluster external access to ClusterIP services.
+   lbExternalClusterIP: false
+ 
++  # @schema
++  # type: [null, boolean]
++  # @schema
+   # -- (bool) Enable native IP masquerade support in eBPF
+   # @default -- `false`
+   masquerade: ~
+ 
++  # @schema
++  # type: [null, boolean]
++  # @schema
+   # -- (bool) Configure whether direct routing mode should route traffic via
+   # host stack (true) or directly and more efficiently out of BPF (false) if
+   # the kernel supports it. The latter has the implication that it will also
+@@ -511,11 +566,17 @@ bpf:
+   # @default -- `false`
+   hostLegacyRouting: ~
+ 
++  # @schema
++  # type: [null, boolean]
++  # @schema
+   # -- (bool) Configure the eBPF-based TPROXY to reduce reliance on iptables rules
+   # for implementing Layer 7 policy.
+   # @default -- `false`
+   tproxy: ~
+ 
++  # @schema
++  # type: [null, array]
++  # @schema
+   # -- (list) Configure explicitly allowed VLAN id's for bpf logic bypass.
+   # [0] will allow all VLAN id's without any filtering.
+   # @default -- `[]`
+@@ -552,6 +613,9 @@ cni:
+   # nodes to go unmanageable.
+   uninstall: false
+ 
++  # @schema
++  # type: [null, string]
++  # @schema
+   # -- Configure chaining on top of other CNI plugins. Possible values:
+   #  - none
+   #  - aws-cni
+@@ -560,6 +624,9 @@ cni:
+   #  - portmap
+   chainingMode: ~
+ 
++  # @schema
++  # type: [null, string]
++  # @schema
+   # -- A CNI network name in to which the Cilium plugin should be added as a chained plugin.
+   # This will cause the agent to watch for a CNI network with this network name. When it is
+   # found, this will be used as the basis for Cilium's CNI configuration file. If this is
+@@ -649,12 +716,18 @@ daemon:
+   # -- Configure where Cilium runtime state should be stored.
+   runPath: "/var/run/cilium"
+ 
++  # @schema
++  # type: [null, string]
++  # @schema
+   # -- Configure a custom list of possible configuration override sources
+   # The default is "config-map:cilium-config,cilium-node-config". For supported
+   # values, see the help text for the build-config subcommand.
+   # Note that this value should be a comma-separated string.
+   configSources: ~
+ 
++  # @schema
++  # type: [null, string]
++  # @schema
+   # -- allowedConfigOverrides is a list of config-map keys that can be overridden.
+   # That is to say, if this value is set, config sources (excepting the first one) can
+   # only override keys in this list.
+@@ -665,6 +738,9 @@ daemon:
+   # change the configSources variable.
+   allowedConfigOverrides: ~
+ 
++  # @schema
++  # type: [null, string]
++  # @schema
+   # -- blockedConfigOverrides is a list of config-map keys that may not be overridden.
+   # In other words, if any of these keys appear in a configuration source excepting the
+   # first one, they will be ignored
+@@ -740,9 +816,15 @@ ingressController:
+   # -- IngressLBAnnotations are the annotation and label prefixes, which are used to filter annotations and/or labels to propagate from Ingress to the Load Balancer service
+   ingressLBAnnotationPrefixes: ['service.beta.kubernetes.io', 'service.kubernetes.io', 'cloud.google.com']
+ 
++  # @schema
++  # type: [null, string]
++  # @schema
+   # -- Default secret namespace for ingresses without .spec.tls[].secretName set.
+   defaultSecretNamespace:
+ 
++  # @schema
++  # type: [null, string]
++  # @schema
+   # -- Default secret name for ingresses without .spec.tls[].secretName set.
+   defaultSecretName:
+ 
+@@ -769,14 +851,29 @@ ingressController:
+     annotations: {}
+     # -- Service type for the shared LB service
+     type: LoadBalancer
++    # @schema
++    # type: [null, integer]
++    # @schema
+     # -- Configure a specific nodePort for insecure HTTP traffic on the shared LB service
+     insecureNodePort: ~
++    # @schema
++    # type: [null, integer]
++    # @schema
+     # -- Configure a specific nodePort for secure HTTPS traffic on the shared LB service
+     secureNodePort : ~
++    # @schema
++    # type: [null, string]
++    # @schema
+     # -- Configure a specific loadBalancerClass on the shared LB service (requires Kubernetes 1.24+)
+     loadBalancerClass: ~
++    # @schema
++    # type: [null, string]
++    # @schema
+     # -- Configure a specific loadBalancerIP on the shared LB service
+     loadBalancerIP : ~
++    # @schema
++    # type: [null, boolean]
++    # @schema
+     # -- Configure if node port allocation is required for LB service
+     # ref: https://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-nodeport-allocation
+     allocateLoadBalancerNodePorts: ~
+@@ -885,6 +982,9 @@ endpointStatus:
+   status: ""
+ 
+ endpointRoutes:
++  # @schema
++  # type: [boolean, string]
++  # @schema
+   # -- Enable use of per endpoint routes instead of routing via
+   # the cilium_host interface.
+   enabled: false
+@@ -964,7 +1064,7 @@ socketLB:
+   enabled: false
+ 
+   # -- Disable socket lb for non-root ns. This is used to enable Istio routing rules.
+-  # hostNamespaceOnly: false
++  hostNamespaceOnly: true
+ 
+ # -- Configure certificate generation for Hubble integration.
+ # If hubble.tls.auto.method=cronJob, these values are used
+@@ -972,11 +1072,9 @@ socketLB:
+ # (re)generate any certificates not provided manually.
+ certgen:
+   image:
+-    override: ~
++    override: ""
+     repository: "${CERTGEN_REPO}"
+     tag: "${CERTGEN_VERSION}"
+-    digest: "${CERTGEN_DIGEST}"
+-    useDigest: true
+     pullPolicy: "${PULL_POLICY}"
+   # -- Seconds after which the completed job pod will be deleted
+   ttlSecondsAfterFinished: 1800
+@@ -1020,6 +1118,9 @@ hubble:
+   # See https://docs.cilium.io/en/stable/observability/metrics/#hubble-metrics
+   # for more comprehensive documentation about Hubble metrics.
+   metrics:
++    # @schema
++    # type: [null, array]
++    # @schema
+     # -- Configures the list of metrics to collect. If empty or null, metrics
+     # are disabled.
+     # Example:
+@@ -1062,6 +1163,9 @@ hubble:
+             - __meta_kubernetes_pod_node_name
+           targetLabel: node
+           replacement: ${1}
++      # @schema
++      # type: [null, array]
++      # @schema
+       # -- Metrics relabeling configs for the ServiceMonitor hubble
+       metricRelabelings: ~
+     # -- Grafana dashboards for hubble
+@@ -1070,6 +1174,9 @@ hubble:
+     dashboards:
+       enabled: false
+       label: grafana_dashboard
++      # @schema
++      # type: [null, string]
++      # @schema
+       namespace: ~
+       labelValue: "1"
+       annotations: {}
+@@ -1158,6 +1265,9 @@ hubble:
+   listenAddress: ":4244"
+   # -- Whether Hubble should prefer to announce IPv6 or IPv4 addresses if both are available.
+   preferIpv6: false
++  # @schema
++  # type: [null, boolean]
++  # @schema
+   # -- (bool) Skip Hubble events with unknown cgroup ids
+   # @default -- `true`
+   skipUnknownCGroupIDs: ~
+@@ -1224,14 +1334,14 @@ hubble:
+ 
+   relay:
+     # -- Enable Hubble Relay (requires hubble.enabled=true)
+-    enabled: false
++    enabled: true
+ 
+     # -- Roll out Hubble Relay pods automatically when configmap is updated.
+     rollOutPods: false
+ 
+     # -- Hubble-relay container image.
+     image:
+-      override: ~
++      override: ""
+       repository: "${HUBBLE_RELAY_REPO}"
+       tag: "${CILIUM_VERSION}"
+        # hubble-relay-digest
+@@ -1276,7 +1386,8 @@ hubble:
+     annotations: {}
+ 
+     # -- Annotations to be added to hubble-relay pods
+-    podAnnotations: {}
++    podAnnotations:
++      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+ 
+     # -- Labels to be added to hubble-relay pods
+     podLabels: {}
+@@ -1286,9 +1397,15 @@ hubble:
+       # -- enable PodDisruptionBudget
+       # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+       enabled: false
++      # @schema
++      # type: [null, integer, string]
++      # @schema
+       # -- Minimum number/percentage of pods that should remain scheduled.
+       # When it's set, maxUnavailable must be disabled by `maxUnavailable: null`
+       minAvailable: null
++      # @schema
++      # type: [null, integer, string]
++      # @schema
+       # -- Maximum number/percentage of pods that may be made unavailable
+       maxUnavailable: 1
+ 
+@@ -1302,6 +1419,9 @@ hubble:
+     updateStrategy:
+       type: RollingUpdate
+       rollingUpdate:
++        # @schema
++        # type: [integer, string]
++        # @schema
+         maxUnavailable: 1
+ 
+     # -- Additional hubble-relay volumes.
+@@ -1363,22 +1483,34 @@ hubble:
+         # -- extra IP addresses added to certificate when its auto gen
+         extraIpAddresses: []
+         # DNS name used by the backend to connect to the relay
+-        # This is a simple workaround as the relay certificates are currently hardcoded to 
+-        # *.hubble-relay.cilium.io 
++        # This is a simple workaround as the relay certificates are currently hardcoded to
++        # *.hubble-relay.cilium.io
+         # See https://github.com/cilium/cilium/pull/28709#discussion_r1371792546
+         # For GKE Dataplane V2 this should be set to relay.kube-system.svc.cluster.local
+         relayName: "ui.hubble-relay.cilium.io"
+ 
++    # @schema
++    # type: [null, string]
++    # @schema
+     # -- Dial timeout to connect to the local hubble instance to receive peer information (e.g. "30s").
+     dialTimeout: ~
+ 
++    # @schema
++    # type: [null, string]
++    # @schema
+     # -- Backoff duration to retry connecting to the local hubble instance in case of failure (e.g. "30s").
+     retryTimeout: ~
+ 
++    # @schema
++    # type: [null, integer]
++    # @schema
+     # -- Max number of flows that can be buffered for sorting before being sent to the
+     # client (per request) (e.g. 100).
+     sortBufferLenMax: ~
+ 
++    # @schema
++    # type: [null, string]
++    # @schema
+     # -- When the per-request flows sort buffer is not full, a flow is drained every
+     # time this timeout is reached (only affects requests in follow-mode) (e.g. "1s").
+     sortBufferDrainTimeout: ~
+@@ -1391,7 +1523,7 @@ hubble:
+     # -- Enable prometheus metrics for hubble-relay on the configured port at
+     # /metrics
+     prometheus:
+-      enabled: false
++      enabled: true
+       port: 9966
+       serviceMonitor:
+         # -- Enable service monitors.
+@@ -1406,8 +1538,14 @@ hubble:
+         # -- Specify the Kubernetes namespace where Prometheus expects to find
+         # service monitors configured.
+         # namespace: ""
++        # @schema
++        # type: [null, array]
++        # @schema
+         # -- Relabeling configs for the ServiceMonitor hubble-relay
+         relabelings: ~
++        # @schema
++        # type: [null, array]
++        # @schema
+         # -- Metrics relabeling configs for the ServiceMonitor hubble-relay
+         metricRelabelings: ~
+ 
+@@ -1427,7 +1565,7 @@ hubble:
+ 
+   ui:
+     # -- Whether to enable the Hubble UI.
+-    enabled: false
++    enabled: true
+ 
+     standalone:
+       # -- When true, it will allow installing the Hubble UI only, without checking dependencies.
+@@ -1468,11 +1606,11 @@ hubble:
+     backend:
+       # -- Hubble-ui backend image.
+       image:
+-        override: ~
++        override: ""
+         repository: "${HUBBLE_UI_BACKEND_REPO}"
+         tag: "${HUBBLE_UI_BACKEND_VERSION}"
+         digest: "${HUBBLE_UI_BACKEND_DIGEST}"
+-        useDigest: true
++        useDigest: false
+         pullPolicy: "${PULL_POLICY}"
+ 
+       # -- Hubble-ui backend security context.
+@@ -1507,11 +1645,11 @@ hubble:
+     frontend:
+       # -- Hubble-ui frontend image.
+       image:
+-        override: ~
++        override: ""
+         repository: "${HUBBLE_UI_FRONTEND_REPO}"
+         tag: "${HUBBLE_UI_FRONTEND_VERSION}"
+         digest: "${HUBBLE_UI_FRONTEND_DIGEST}"
+-        useDigest: true
++        useDigest: false
+         pullPolicy: "${PULL_POLICY}"
+ 
+       # -- Hubble-ui frontend security context.
+@@ -1546,7 +1684,8 @@ hubble:
+     annotations: {}
+ 
+     # -- Annotations to be added to hubble-ui pods
+-    podAnnotations: {}
++    podAnnotations:
++      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+ 
+     # -- Labels to be added to hubble-ui pods
+     podLabels: {}
+@@ -1556,9 +1695,15 @@ hubble:
+       # -- enable PodDisruptionBudget
+       # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+       enabled: false
++      # @schema
++      # type: [null, integer, string]
++      # @schema
+       # -- Minimum number/percentage of pods that should remain scheduled.
+       # When it's set, maxUnavailable must be disabled by `maxUnavailable: null`
+       minAvailable: null
++      # @schema
++      # type: [null, integer, string]
++      # @schema
+       # -- Maximum number/percentage of pods that may be made unavailable
+       maxUnavailable: 1
+ 
+@@ -1587,6 +1732,9 @@ hubble:
+     updateStrategy:
+       type: RollingUpdate
+       rollingUpdate:
++        # @schema
++        # type: [integer, string]
++        # @schema
+         maxUnavailable: 1
+ 
+     # -- Security context to be added to Hubble UI pods
+@@ -1693,10 +1841,16 @@ ipam:
+   # -- Maximum rate at which the CiliumNode custom resource is updated.
+   ciliumNodeUpdateRate: "15s"
+   operator:
++    # @schema
++    # type: [array, string]
++    # @schema
+     # -- IPv4 CIDR list range to delegate to individual nodes for IPAM.
+     clusterPoolIPv4PodCIDRList: ["10.0.0.0/8"]
+     # -- IPv4 CIDR mask size to delegate to individual nodes for IPAM.
+     clusterPoolIPv4MaskSize: 24
++    # @schema
++    # type: [array, string]
++    # @schema
+     # -- IPv6 CIDR list range to delegate to individual nodes for IPAM.
+     clusterPoolIPv6PodCIDRList: ["fd00::/104"]
+     # -- IPv6 CIDR mask size to delegate to individual nodes for IPAM.
+@@ -1713,16 +1867,25 @@ ipam:
+       #     cidrs:
+       #       - fd00:100::/80
+       #     maskSize: 96
++    # @schema
++    # type: [null, integer]
++    # @schema
+     # -- The maximum burst size when rate limiting access to external APIs.
+     # Also known as the token bucket capacity.
+     # @default -- `20`
+     externalAPILimitBurstSize: ~
++    # @schema
++    # type: [null, number]
++    # @schema
+     # -- The maximum queries per second when rate limiting access to
+     # external APIs. Also known as the bucket refill rate, which is used to
+     # refill the bucket up to the burst size capacity.
+     # @default -- `4.0`
+     externalAPILimitQPS: ~
+ 
++# @schema
++# type: [null, string]
++# @schema
+ # -- The api-rate-limit option can be used to overwrite individual settings of the default configuration for rate limiting calls to the Cilium Agent API
+ apiRateLimit: ~
+ 
+@@ -1800,10 +1963,10 @@ l2NeighDiscovery:
+ l7Proxy: true
+ 
+ # -- Enable Local Redirect Policy.
+-localRedirectPolicy: false
++localRedirectPolicy: true
+ 
+ # To include or exclude matched resources from cilium identity evaluation
+-# labels: ""
++labels: "k8s:!.*/enforce k8s:!.*fluxcd.io/.* k8s:!.*kubernetes.io/managed-by.* k8s:!controller-uid k8s:!job-name"
+ 
+ # logOptions allows you to define logging options. eg:
+ # logOptions:
+@@ -1969,6 +2132,9 @@ nodePort:
+ # ref: https://docs.cilium.io/en/stable/security/policy/intro/#policy-enforcement-modes
+ policyEnforcementMode: "default"
+ 
++# @schema
++# type: [null, string, array]
++# @schema
+ # -- policyCIDRMatchMode is a list of entities that may be selected by CIDR selector.
+ # The possible value is "nodes".
+ policyCIDRMatchMode:
+@@ -1983,7 +2149,7 @@ pprof:
+ 
+ # -- Configure prometheus metrics on the configured port at /metrics
+ prometheus:
+-  enabled: false
++  enabled: true
+   port: 9962
+   serviceMonitor:
+     # -- Enable service monitors.
+@@ -2006,16 +2172,23 @@ prometheus:
+           - __meta_kubernetes_pod_node_name
+         targetLabel: node
+         replacement: ${1}
++    # @schema
++    # type: [null, array]
++    # @schema
+     # -- Metrics relabeling configs for the ServiceMonitor cilium-agent
+     metricRelabelings: ~
+     # -- Set to `true` and helm will not check for monitoring.coreos.com/v1 CRDs before deploying
+     trustCRDsExist: false
+ 
++  # @schema
++  # type: [null, array]
++  # @schema
+   # -- Metrics that should be enabled or disabled from the default metric list.
+   # The list is expected to be separated by a space. (+metric_foo to enable
+   # metric_foo , -metric_bar to disable metric_bar).
+   # ref: https://docs.cilium.io/en/stable/observability/metrics/
+-  metrics: ~
++  metrics:
++    - +cilium_bpf_map_pressure
+ 
+   # --- Enable controller group metrics for monitoring specific Cilium
+   # subsystems. The list is a list of controller group names. The special
+@@ -2032,6 +2205,9 @@ prometheus:
+ dashboards:
+   enabled: false
+   label: grafana_dashboard
++  # @schema
++  # type: [null, string]
++  # @schema
+   namespace: ~
+   labelValue: "1"
+   annotations: {}
+@@ -2042,6 +2218,9 @@ proxy:
+   prometheus:
+     # -- Deprecated in favor of envoy.prometheus.enabled
+     enabled: true
++    # @schema
++    # type: [null, integer]
++    # @schema
+     # -- Deprecated in favor of envoy.prometheus.port
+     port: ~
+   # -- Regular expression matching compatible Istio sidecar istio-proxy
+@@ -2075,7 +2254,7 @@ envoy:
+ 
+   # -- Envoy container image.
+   image:
+-    override: ~
++    override: ""
+     repository: "${CILIUM_ENVOY_REPO}"
+     tag: "${CILIUM_ENVOY_VERSION}"
+     pullPolicy: "${PULL_POLICY}"
+@@ -2117,6 +2296,9 @@ envoy:
+   updateStrategy:
+     type: RollingUpdate
+     rollingUpdate:
++      # @schema
++      # type: [integer, string]
++      # @schema
+       maxUnavailable: 2
+   # -- Roll out cilium envoy pods automatically when configmap is updated.
+   rollOutPods: false
+@@ -2224,9 +2406,15 @@ envoy:
+     #   value: "value"
+     #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+ 
++  # @schema
++  # type: [null, string]
++  # @schema
+   # -- The priority class to use for cilium-envoy.
+   priorityClassName: ~
+ 
++  # @schema
++  # type: [null, string]
++  # @schema
+   # -- DNS policy for Cilium envoy pods.
+   # Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
+   dnsPolicy: ~
+@@ -2258,6 +2446,9 @@ envoy:
+             - __meta_kubernetes_pod_node_name
+           targetLabel: node
+           replacement: ${1}
++      # @schema
++      # type: [null, array]
++      # @schema
+       # -- Metrics relabeling configs for the ServiceMonitor cilium-envoy
+       # or for cilium-agent with Envoy configured.
+       metricRelabelings: ~
+@@ -2390,11 +2581,9 @@ etcd:
+ 
+   # -- cilium-etcd-operator image.
+   image:
+-    override: ~
++    override: ""
+     repository: "${CILIUM_ETCD_OPERATOR_REPO}"
+     tag: "${CILIUM_ETCD_OPERATOR_VERSION}"
+-    digest: "${CILIUM_ETCD_OPERATOR_DIGEST}"
+-    useDigest: true
+     pullPolicy: "${PULL_POLICY}"
+ 
+   # -- The priority class to use for cilium-etcd-operator
+@@ -2446,9 +2635,15 @@ etcd:
+     # -- enable PodDisruptionBudget
+     # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+     enabled: false
++    # @schema
++    # type: [null, integer, string]
++    # @schema
+     # -- Minimum number/percentage of pods that should remain scheduled.
+     # When it's set, maxUnavailable must be disabled by `maxUnavailable: null`
+     minAvailable: null
++    # @schema
++    # type: [null, integer, string]
++    # @schema
+     # -- Maximum number/percentage of pods that may be made unavailable
+     maxUnavailable: 1
+ 
+@@ -2470,7 +2665,13 @@ etcd:
+   updateStrategy:
+     type: RollingUpdate
+     rollingUpdate:
++      # @schema
++      # type: [integer, string]
++      # @schema
+       maxSurge: 1
++      # @schema
++      # type: [integer, string]
++      # @schema
+       maxUnavailable: 1
+ 
+   # -- If etcd is behind a k8s service set this option to true so that Cilium
+@@ -2498,7 +2699,7 @@ operator:
+ 
+   # -- cilium-operator image.
+   image:
+-    override: ~
++    override: ""
+     repository: "${CILIUM_OPERATOR_BASE_REPO}"
+     tag: "${CILIUM_VERSION}"
+     # operator-generic-digest
+@@ -2527,7 +2728,13 @@ operator:
+   updateStrategy:
+     type: RollingUpdate
+     rollingUpdate:
++      # @schema
++      # type: [integer, string]
++      # @schema
+       maxSurge: 25%
++      # @schema
++      # type: [integer, string]
++      # @schema
+       maxUnavailable: 50%
+ 
+   # -- Affinity for cilium-operator
+@@ -2596,10 +2803,16 @@ operator:
+   podDisruptionBudget:
+     # -- enable PodDisruptionBudget
+     # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+-    enabled: false
++    enabled: true
++    # @schema
++    # type: [null, integer, string]
++    # @schema
+     # -- Minimum number/percentage of pods that should remain scheduled.
+     # When it's set, maxUnavailable must be disabled by `maxUnavailable: null`
+     minAvailable: null
++    # @schema
++    # type: [null, integer, string]
++    # @schema
+     # -- Maximum number/percentage of pods that may be made unavailable
+     maxUnavailable: 1
+ 
+@@ -2657,8 +2870,14 @@ operator:
+       jobLabel: ""
+       # -- Interval for scrape metrics.
+       interval: "10s"
++      # @schema
++      # type: [null, array]
++      # @schema
+       # -- Relabeling configs for the ServiceMonitor cilium-operator
+       relabelings: ~
++      # @schema
++      # type: [null, array]
++      # @schema
+       # -- Metrics relabeling configs for the ServiceMonitor cilium-operator
+       metricRelabelings: ~
+ 
+@@ -2668,6 +2887,9 @@ operator:
+   dashboards:
+     enabled: false
+     label: grafana_dashboard
++    # @schema
++    # type: [null, string]
++    # @schema
+     namespace: ~
+     labelValue: "1"
+     annotations: {}
+@@ -2679,6 +2901,9 @@ operator:
+   # pod running.
+   removeNodeTaints: true
+ 
++  # @schema
++  # type: [null, boolean]
++  # @schema
+   # -- Taint nodes where Cilium is scheduled but not running. This prevents pods
+   # from being scheduled to nodes where Cilium is not the default CNI provider.
+   # @default -- same as removeNodeTaints
+@@ -2701,7 +2926,7 @@ nodeinit:
+ 
+   # -- node-init image.
+   image:
+-    override: ~
++    override: ""
+     repository: "${CILIUM_NODEINIT_REPO}"
+     tag: "${CILIUM_NODEINIT_VERSION}"
+     digest: "${CILIUM_NODEINIT_DIGEST}"
+@@ -2799,7 +3024,7 @@ preflight:
+ 
+   # -- Cilium pre-flight image.
+   image:
+-    override: ~
++    override: ""
+     repository: "${CILIUM_REPO}"
+     tag: "${CILIUM_VERSION}"
+     # cilium-digest
+@@ -2873,9 +3098,15 @@ preflight:
+     # -- enable PodDisruptionBudget
+     # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+     enabled: false
++    # @schema
++    # type: [null, integer, string]
++    # @schema
+     # -- Minimum number/percentage of pods that should remain scheduled.
+     # When it's set, maxUnavailable must be disabled by `maxUnavailable: null`
+     minAvailable: null
++    # @schema
++    # type: [null, integer, string]
++    # @schema
+     # -- Maximum number/percentage of pods that may be made unavailable
+     maxUnavailable: 1
+ 
+@@ -2961,7 +3192,7 @@ clustermesh:
+   apiserver:
+     # -- Clustermesh API server image.
+     image:
+-      override: ~
++      override: ""
+       repository: "${CLUSTERMESH_APISERVER_REPO}"
+       tag: "${CILIUM_VERSION}"
+       # clustermesh-apiserver-digest
+@@ -3059,12 +3290,17 @@ clustermesh:
+       # For EKS LoadBalancer, use annotation service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+       annotations: {}
+ 
++      # @schema
++      # enum: [Local, Cluster]
++      # @schema
+       # -- The externalTrafficPolicy of service used for apiserver access.
+-      externalTrafficPolicy:
++      externalTrafficPolicy: Cluster
+ 
++      # @schema
++      # enum: [Local, Cluster]
++      # @schema
+       # -- The internalTrafficPolicy of service used for apiserver access.
+-      internalTrafficPolicy:
+-
++      internalTrafficPolicy: Cluster
+     # -- Number of replicas run for the clustermesh-apiserver deployment.
+     replicas: 1
+ 
+@@ -3103,9 +3339,15 @@ clustermesh:
+       # -- enable PodDisruptionBudget
+       # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+       enabled: false
++      # @schema
++      # type: [null, integer, string]
++      # @schema
+       # -- Minimum number/percentage of pods that should remain scheduled.
+       # When it's set, maxUnavailable must be disabled by `maxUnavailable: null`
+       minAvailable: null
++      # @schema
++      # type: [null, integer, string]
++      # @schema
+       # -- Maximum number/percentage of pods that may be made unavailable
+       maxUnavailable: 1
+ 
+@@ -3154,6 +3396,9 @@ clustermesh:
+     updateStrategy:
+       type: RollingUpdate
+       rollingUpdate:
++        # @schema
++        # type: [integer, string]
++        # @schema
+         maxUnavailable: 1
+ 
+     # -- The priority class to use for clustermesh-apiserver
+@@ -3276,24 +3521,42 @@ clustermesh:
+ 
+         # -- Interval for scrape metrics (apiserver metrics)
+         interval: "10s"
++        # @schema
++        # type: [null, array]
++        # @schema
+         # -- Relabeling configs for the ServiceMonitor clustermesh-apiserver (apiserver metrics)
+         relabelings: ~
++        # @schema
++        # type: [null, array]
++        # @schema
+         # -- Metrics relabeling configs for the ServiceMonitor clustermesh-apiserver (apiserver metrics)
+         metricRelabelings: ~
+ 
+         kvstoremesh:
+           # -- Interval for scrape metrics (KVStoreMesh metrics)
+           interval: "10s"
++          # @schema
++          # type: [null, array]
++          # @schema
+           # -- Relabeling configs for the ServiceMonitor clustermesh-apiserver (KVStoreMesh metrics)
+           relabelings: ~
++          # @schema
++          # type: [null, array]
++          # @schema
+           # -- Metrics relabeling configs for the ServiceMonitor clustermesh-apiserver (KVStoreMesh metrics)
+           metricRelabelings: ~
+ 
+         etcd:
+           # -- Interval for scrape metrics (etcd metrics)
+           interval: "10s"
++          # @schema
++          # type: [null, array]
++          # @schema
+           # -- Relabeling configs for the ServiceMonitor clustermesh-apiserver (etcd metrics)
+           relabelings: ~
++          # @schema
++          # type: [null, array]
++          # @schema
+           # -- Metrics relabeling configs for the ServiceMonitor clustermesh-apiserver (etcd metrics)
+           metricRelabelings: ~
+ 
+@@ -3401,7 +3664,7 @@ authentication:
+         existingNamespace: false
+         # -- init container image of SPIRE agent and server
+         initImage:
+-          override: ~
++          override: ""
+           repository: "${SPIRE_INIT_REPO}"
+           tag: "${SPIRE_INIT_VERSION}"
+           digest: "${SPIRE_INIT_DIGEST}"
+@@ -3411,7 +3674,7 @@ authentication:
+         agent:
+           # -- SPIRE agent image
+           image:
+-            override: ~
++            override: ""
+             repository: "${SPIRE_AGENT_REPO}"
+             tag: "${SPIRE_AGENT_VERSION}"
+             digest: "${SPIRE_AGENT_DIGEST}"
+@@ -3459,7 +3722,7 @@ authentication:
+         server:
+           # -- SPIRE server image
+           image:
+-            override: ~
++            override: ""
+             repository: "${SPIRE_SERVER_REPO}"
+             tag: "${SPIRE_SERVER_VERSION}"
+             digest: "${SPIRE_SERVER_DIGEST}"
+@@ -3499,6 +3762,9 @@ authentication:
+             size: 1Gi
+             # -- Access mode of the SPIRE server data storage
+             accessMode: ReadWriteOnce
++            # @schema
++            # type: [null, string]
++            # @schema
+             # -- StorageClass of the SPIRE server data storage
+             storageClass: null
+           # -- Security context to be added to spire server pods.
+@@ -3519,6 +3785,9 @@ authentication:
+               country: "US"
+               organization: "SPIRE"
+               commonName: "Cilium SPIRE CA"
++      # @schema
++      # type: [null, string]
++      # @schema
+       # -- SPIRE server address used by Cilium Operator
+       #
+       # If k8s Service DNS along with port number is used (e.g. <service-name>.<namespace>.svc(.*):<port-number> format),
+@@ -3535,3 +3804,40 @@ authentication:
+       agentSocketPath: /run/spire/sockets/agent/agent.sock
+       # -- SPIRE connection timeout
+       connectionTimeout: 30s
++eksMode: false
++
++defaultPolicies:
++  enabled: false
++  remove: false
++  # -- Node tolerations for default-policies job scheduling to nodes with taints
++  # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
++  tolerations:
++  - operator: Exists
++
++extraPolicies:
++  remove: false
++
++  allowEgressToCoreDNS:
++    enabled: false
++    namespaces:
++      - giantswarm
++      - kube-system
++
++  allowEgressToProxy:
++    enabled: false
++    httpProxy: ""
++    httpsProxy: ""
++    namespaces:
++      - giantswarm
++      - kube-system
++
++  tolerations:
++    - operator: Exists
++
++# If true, it adds an initContainer to cilium-agent pods that cleans up any legacy kube-proxy iptables rules from the node before running cilium.
++# Only makes sense when `kubeProxyReplacement` is enabled (i.e. not set to 'disabled').
++cleanupKubeProxy: false
++
++global:
++  podSecurityStandards:
++    enforced: false

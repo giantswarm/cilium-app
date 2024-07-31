@@ -2,14 +2,14 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: revert policyMapMax regression
-      sha: be852bd3578d19298691a9bc7d848486daf423b7
+      commitTitle: Prepare for release v1.15.6...
+      sha: a09e05e6b63d82dbc3a1b0de1721a3407c340e7c
       tags:
-      - 1.15.1-53-gbe852bd357
+      - 1.15.6
     path: cilium
   path: vendor
 - contents:
   - directory: {}
     path: .
-  path: helm/cilium
+  path: helm
 kind: LockConfig
