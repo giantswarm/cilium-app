@@ -157,6 +157,7 @@ name: cilium
 rollOutCiliumPods: false
 # -- Agent container image.
 image:
+  registry: gsoci.azurecr.io
   # @schema
   # type: [null, string]
   # @schema

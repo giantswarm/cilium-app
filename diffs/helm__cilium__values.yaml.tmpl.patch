@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index e46a039..cc1f678 100644
+index e46a039..f76a8af 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
 @@ -136,6 +136,16 @@ serviceAccounts:
@@ -19,7 +19,15 @@ index e46a039..cc1f678 100644
  # -- Configure termination grace period for cilium-agent DaemonSet.
  terminationGracePeriodSeconds: 1
  # -- Install the cilium agent resources.
-@@ -487,7 +497,7 @@ bpf:
+@@ -146,6 +156,7 @@ name: cilium
+ rollOutCiliumPods: false
+ # -- Agent container image.
+ image:
++  registry: gsoci.azurecr.io
+   # @schema
+   # type: [null, string]
+   # @schema
+@@ -487,7 +498,7 @@ bpf:
    # @schema
    # type: [null, integer]
    # @schema
@@ -28,7 +36,7 @@ index e46a039..cc1f678 100644
    # @schema
    # type: [null, number]
    # @schema
-@@ -1003,7 +1013,7 @@ socketLB:
+@@ -1003,7 +1014,7 @@ socketLB:
    # -- Enable socket LB
    enabled: false
    # -- Disable socket lb for non-root ns. This is used to enable Istio routing rules.
@@ -37,7 +45,7 @@ index e46a039..cc1f678 100644
    # -- Enable terminating pod connections to deleted service backends.
    # terminatePodConnections: true
  # -- Configure certificate generation for Hubble integration.
-@@ -1019,7 +1029,7 @@ certgen:
+@@ -1019,7 +1030,7 @@ certgen:
      repository: "${CERTGEN_REPO}"
      tag: "${CERTGEN_VERSION}"
      digest: "${CERTGEN_DIGEST}"
@@ -46,7 +54,7 @@ index e46a039..cc1f678 100644
      pullPolicy: "${PULL_POLICY}"
    # -- Seconds after which the completed job pod will be deleted
    ttlSecondsAfterFinished: 1800
-@@ -1296,7 +1306,7 @@ hubble:
+@@ -1296,7 +1307,7 @@ hubble:
        extraIpAddresses: []
    relay:
      # -- Enable Hubble Relay (requires hubble.enabled=true)
@@ -55,7 +63,7 @@ index e46a039..cc1f678 100644
      # -- Roll out Hubble Relay pods automatically when configmap is updated.
      rollOutPods: false
      # -- Hubble-relay container image.
-@@ -1341,7 +1351,8 @@ hubble:
+@@ -1341,7 +1352,8 @@ hubble:
      # -- Annotations to be added to all top-level hubble-relay objects (resources under templates/hubble-relay)
      annotations: {}
      # -- Annotations to be added to hubble-relay pods
@@ -65,7 +73,7 @@ index e46a039..cc1f678 100644
      # -- Labels to be added to hubble-relay pods
      podLabels: {}
      # PodDisruptionBudget settings
-@@ -1459,7 +1470,7 @@ hubble:
+@@ -1459,7 +1471,7 @@ hubble:
      # -- Enable prometheus metrics for hubble-relay on the configured port at
      # /metrics
      prometheus:
@@ -74,7 +82,7 @@ index e46a039..cc1f678 100644
        port: 9966
        serviceMonitor:
          # -- Enable service monitors.
-@@ -1498,7 +1509,7 @@ hubble:
+@@ -1498,7 +1510,7 @@ hubble:
        port: 6062
    ui:
      # -- Whether to enable the Hubble UI.
@@ -83,7 +91,7 @@ index e46a039..cc1f678 100644
      standalone:
        # -- When true, it will allow installing the Hubble UI only, without checking dependencies.
        # It is useful if a cluster already has cilium and Hubble relay installed and you just
-@@ -1541,7 +1552,7 @@ hubble:
+@@ -1541,7 +1553,7 @@ hubble:
          repository: "${HUBBLE_UI_BACKEND_REPO}"
          tag: "${HUBBLE_UI_BACKEND_VERSION}"
          digest: "${HUBBLE_UI_BACKEND_DIGEST}"
@@ -92,7 +100,7 @@ index e46a039..cc1f678 100644
          pullPolicy: "${PULL_POLICY}"
        # -- Hubble-ui backend security context.
        securityContext: {}
-@@ -1575,7 +1586,7 @@ hubble:
+@@ -1575,7 +1587,7 @@ hubble:
          repository: "${HUBBLE_UI_FRONTEND_REPO}"
          tag: "${HUBBLE_UI_FRONTEND_VERSION}"
          digest: "${HUBBLE_UI_FRONTEND_DIGEST}"
@@ -101,7 +109,7 @@ index e46a039..cc1f678 100644
          pullPolicy: "${PULL_POLICY}"
        # -- Hubble-ui frontend security context.
        securityContext: {}
-@@ -1602,7 +1613,8 @@ hubble:
+@@ -1602,7 +1614,8 @@ hubble:
      # -- Annotations to be added to all top-level hubble-ui objects (resources under templates/hubble-ui)
      annotations: {}
      # -- Annotations to be added to hubble-ui pods
@@ -111,7 +119,7 @@ index e46a039..cc1f678 100644
      # -- Labels to be added to hubble-ui pods
      podLabels: {}
      # PodDisruptionBudget settings
-@@ -1868,9 +1880,9 @@ l2NeighDiscovery:
+@@ -1868,9 +1881,9 @@ l2NeighDiscovery:
  # -- Enable Layer 7 network policy.
  l7Proxy: true
  # -- Enable Local Redirect Policy.
@@ -123,7 +131,7 @@ index e46a039..cc1f678 100644
  
  # logOptions allows you to define logging options. eg:
  # logOptions:
-@@ -2041,7 +2053,7 @@ pprof:
+@@ -2041,7 +2054,7 @@ pprof:
    port: 6060
  # -- Configure prometheus metrics on the configured port at /metrics
  prometheus:
@@ -132,7 +140,7 @@ index e46a039..cc1f678 100644
    port: 9962
    serviceMonitor:
      # -- Enable service monitors.
-@@ -2078,7 +2090,8 @@ prometheus:
+@@ -2078,7 +2091,8 @@ prometheus:
    # The list is expected to be separated by a space. (+metric_foo to enable
    # metric_foo , -metric_bar to disable metric_bar).
    # ref: https://docs.cilium.io/en/stable/observability/metrics/
@@ -142,7 +150,7 @@ index e46a039..cc1f678 100644
    # --- Enable controller group metrics for monitoring specific Cilium
    # subsystems. The list is a list of controller group names. The special
    # values of "all" and "none" are supported. The set of controller
-@@ -2105,9 +2118,7 @@ envoy:
+@@ -2105,9 +2119,7 @@ envoy:
    # type: [null, boolean]
    # @schema
    # -- Enable Envoy Proxy in standalone DaemonSet.
@@ -153,7 +161,7 @@ index e46a039..cc1f678 100644
    # -- (int)
    # Set Envoy'--base-id' to use when allocating shared memory regions.
    # Only needs to be changed if multiple Envoy instances will run on the same node and may have conflicts. Supported values: 0 - 4294967295. Defaults to '0'
-@@ -2140,7 +2151,7 @@ envoy:
+@@ -2140,7 +2152,7 @@ envoy:
      tag: "${CILIUM_ENVOY_VERSION}"
      pullPolicy: "${PULL_POLICY}"
      digest: "${CILIUM_ENVOY_DIGEST}"
@@ -162,7 +170,7 @@ index e46a039..cc1f678 100644
    # -- Additional containers added to the cilium Envoy DaemonSet.
    extraContainers: []
    # -- Additional envoy container arguments.
-@@ -2543,7 +2554,7 @@ operator:
+@@ -2543,7 +2555,7 @@ operator:
    podDisruptionBudget:
      # -- enable PodDisruptionBudget
      # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
@@ -171,7 +179,7 @@ index e46a039..cc1f678 100644
      # @schema
      # type: [null, integer, string]
      # @schema
-@@ -2656,7 +2667,7 @@ nodeinit:
+@@ -2656,7 +2668,7 @@ nodeinit:
      repository: "${CILIUM_NODEINIT_REPO}"
      tag: "${CILIUM_NODEINIT_VERSION}"
      digest: "${CILIUM_NODEINIT_DIGEST}"
@@ -180,7 +188,7 @@ index e46a039..cc1f678 100644
      pullPolicy: "${PULL_POLICY}"
    # -- The priority class to use for the nodeinit pod.
    priorityClassName: ""
-@@ -3397,7 +3408,7 @@ authentication:
+@@ -3397,7 +3409,7 @@ authentication:
            repository: "${SPIRE_INIT_REPO}"
            tag: "${SPIRE_INIT_VERSION}"
            digest: "${SPIRE_INIT_DIGEST}"
@@ -189,7 +197,7 @@ index e46a039..cc1f678 100644
            pullPolicy: "${PULL_POLICY}"
          # SPIRE agent configuration
          agent:
-@@ -3410,7 +3421,7 @@ authentication:
+@@ -3410,7 +3422,7 @@ authentication:
              repository: "${SPIRE_AGENT_REPO}"
              tag: "${SPIRE_AGENT_VERSION}"
              digest: "${SPIRE_AGENT_DIGEST}"
@@ -198,7 +206,7 @@ index e46a039..cc1f678 100644
              pullPolicy: "${PULL_POLICY}"
            # -- SPIRE agent service account
            serviceAccount:
-@@ -3461,7 +3472,7 @@ authentication:
+@@ -3461,7 +3473,7 @@ authentication:
              repository: "${SPIRE_SERVER_REPO}"
              tag: "${SPIRE_SERVER_VERSION}"
              digest: "${SPIRE_SERVER_DIGEST}"
@@ -207,7 +215,7 @@ index e46a039..cc1f678 100644
              pullPolicy: "${PULL_POLICY}"
            # -- SPIRE server service account
            serviceAccount:
-@@ -3539,3 +3550,40 @@ authentication:
+@@ -3539,3 +3551,40 @@ authentication:
        agentSocketPath: /run/spire/sockets/agent/agent.sock
        # -- SPIRE connection timeout
        connectionTimeout: 30s
