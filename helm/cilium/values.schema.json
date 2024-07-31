@@ -5127,23 +5127,6 @@
           },
           "type": "object"
         },
-        "etcd": {
-          "properties": {
-            "annotations": {
-              "type": "object"
-            },
-            "automount": {
-              "type": "boolean"
-            },
-            "create": {
-              "type": "boolean"
-            },
-            "name": {
-              "type": "string"
-            }
-          },
-          "type": "object"
-        },
         "extraPolicies": {
           "properties": {
             "annotations": {
