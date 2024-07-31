@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index e46a039..e8bb0b8 100644
+index e46a039..cc1f678 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
 @@ -136,6 +136,16 @@ serviceAccounts:
@@ -37,6 +37,15 @@ index e46a039..e8bb0b8 100644
    # -- Enable terminating pod connections to deleted service backends.
    # terminatePodConnections: true
  # -- Configure certificate generation for Hubble integration.
+@@ -1019,7 +1029,7 @@ certgen:
+     repository: "${CERTGEN_REPO}"
+     tag: "${CERTGEN_VERSION}"
+     digest: "${CERTGEN_DIGEST}"
+-    useDigest: true
++    useDigest: false
+     pullPolicy: "${PULL_POLICY}"
+   # -- Seconds after which the completed job pod will be deleted
+   ttlSecondsAfterFinished: 1800
 @@ -1296,7 +1306,7 @@ hubble:
        extraIpAddresses: []
    relay:
@@ -133,16 +142,27 @@ index e46a039..e8bb0b8 100644
    # --- Enable controller group metrics for monitoring specific Cilium
    # subsystems. The list is a list of controller group names. The special
    # values of "all" and "none" are supported. The set of controller
-@@ -2107,7 +2120,7 @@ envoy:
+@@ -2105,9 +2118,7 @@ envoy:
+   # type: [null, boolean]
+   # @schema
    # -- Enable Envoy Proxy in standalone DaemonSet.
-   # This field is enabled by default for new installation.
-   # @default -- `true` for new installation
+-  # This field is enabled by default for new installation.
+-  # @default -- `true` for new installation
 -  enabled: ~
 +  enabled: false
    # -- (int)
    # Set Envoy'--base-id' to use when allocating shared memory regions.
    # Only needs to be changed if multiple Envoy instances will run on the same node and may have conflicts. Supported values: 0 - 4294967295. Defaults to '0'
-@@ -2543,7 +2556,7 @@ operator:
+@@ -2140,7 +2151,7 @@ envoy:
+     tag: "${CILIUM_ENVOY_VERSION}"
+     pullPolicy: "${PULL_POLICY}"
+     digest: "${CILIUM_ENVOY_DIGEST}"
+-    useDigest: true
++    useDigest: false
+   # -- Additional containers added to the cilium Envoy DaemonSet.
+   extraContainers: []
+   # -- Additional envoy container arguments.
+@@ -2543,7 +2554,7 @@ operator:
    podDisruptionBudget:
      # -- enable PodDisruptionBudget
      # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
@@ -151,7 +171,43 @@ index e46a039..e8bb0b8 100644
      # @schema
      # type: [null, integer, string]
      # @schema
-@@ -3539,3 +3552,40 @@ authentication:
+@@ -2656,7 +2667,7 @@ nodeinit:
+     repository: "${CILIUM_NODEINIT_REPO}"
+     tag: "${CILIUM_NODEINIT_VERSION}"
+     digest: "${CILIUM_NODEINIT_DIGEST}"
+-    useDigest: true
++    useDigest: false
+     pullPolicy: "${PULL_POLICY}"
+   # -- The priority class to use for the nodeinit pod.
+   priorityClassName: ""
+@@ -3397,7 +3408,7 @@ authentication:
+           repository: "${SPIRE_INIT_REPO}"
+           tag: "${SPIRE_INIT_VERSION}"
+           digest: "${SPIRE_INIT_DIGEST}"
+-          useDigest: true
++          useDigest: false
+           pullPolicy: "${PULL_POLICY}"
+         # SPIRE agent configuration
+         agent:
+@@ -3410,7 +3421,7 @@ authentication:
+             repository: "${SPIRE_AGENT_REPO}"
+             tag: "${SPIRE_AGENT_VERSION}"
+             digest: "${SPIRE_AGENT_DIGEST}"
+-            useDigest: true
++            useDigest: false
+             pullPolicy: "${PULL_POLICY}"
+           # -- SPIRE agent service account
+           serviceAccount:
+@@ -3461,7 +3472,7 @@ authentication:
+             repository: "${SPIRE_SERVER_REPO}"
+             tag: "${SPIRE_SERVER_VERSION}"
+             digest: "${SPIRE_SERVER_DIGEST}"
+-            useDigest: true
++            useDigest: false
+             pullPolicy: "${PULL_POLICY}"
+           # -- SPIRE server service account
+           serviceAccount:
+@@ -3539,3 +3550,40 @@ authentication:
        agentSocketPath: /run/spire/sockets/agent/agent.sock
        # -- SPIRE connection timeout
        connectionTimeout: 30s

@@ -1023,7 +1023,7 @@ certgen:
     repository: "giantswarm/cilium-certgen"
     tag: "v0.2.0"
     digest: "sha256:169d93fd8f2f9009db3b9d5ccd37c2b753d0989e1e7cd8fe79f9160c459eef4f"
-    useDigest: true
+    useDigest: false
     pullPolicy: "IfNotPresent"
   # -- Seconds after which the completed job pod will be deleted
   ttlSecondsAfterFinished: 1800
@@ -2108,8 +2108,6 @@ envoy:
   # type: [null, boolean]
   # @schema
   # -- Enable Envoy Proxy in standalone DaemonSet.
-  # This field is enabled by default for new installation.
-  # @default -- `true` for new installation
   enabled: false
   # -- (int)
   # Set Envoy'--base-id' to use when allocating shared memory regions.
@@ -2143,7 +2141,7 @@ envoy:
     tag: "v1.29.7-39a2a56bbd5b3a591f69dbca51d3e30ef97e0e51"
     pullPolicy: "IfNotPresent"
     digest: "sha256:bd5ff8c66716080028f414ec1cb4f7dc66f40d2fb5a009fff187f4a9b90b566b"
-    useDigest: true
+    useDigest: false
   # -- Additional containers added to the cilium Envoy DaemonSet.
   extraContainers: []
   # -- Additional envoy container arguments.
@@ -2657,7 +2655,7 @@ nodeinit:
     repository: "giantswarm/cilium-startup-script"
     tag: "c54c7edeab7fde4da68e59acd319ab24af242c3f"
     digest: "sha256:8d7b41c4ca45860254b3c19e20210462ef89479bb6331d6760c4e609d651b29c"
-    useDigest: true
+    useDigest: false
     pullPolicy: "IfNotPresent"
   # -- The priority class to use for the nodeinit pod.
   priorityClassName: ""
@@ -3391,7 +3389,7 @@ authentication:
           repository: "docker.io/library/busybox"
           tag: "1.36.1"
           digest: "sha256:9ae97d36d26566ff84e8893c64a6dc4fe8ca6d1144bf5b87b2b85a32def253c7"
-          useDigest: true
+          useDigest: false
           pullPolicy: "IfNotPresent"
         # SPIRE agent configuration
         agent:
@@ -3404,7 +3402,7 @@ authentication:
             repository: "ghcr.io/spiffe/spire-agent"
             tag: "1.9.6"
             digest: "sha256:5106ac601272a88684db14daf7f54b9a45f31f77bb16a906bd5e87756ee7b97c"
-            useDigest: true
+            useDigest: false
             pullPolicy: "IfNotPresent"
           # -- SPIRE agent service account
           serviceAccount:
@@ -3455,7 +3453,7 @@ authentication:
             repository: "ghcr.io/spiffe/spire-server"
             tag: "1.9.6"
             digest: "sha256:59a0b92b39773515e25e68a46c40d3b931b9c1860bc445a79ceb45a805cab8b4"
-            useDigest: true
+            useDigest: false
             pullPolicy: "IfNotPresent"
           # -- SPIRE server service account
           serviceAccount:
