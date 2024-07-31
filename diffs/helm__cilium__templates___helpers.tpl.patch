@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/_helpers.tpl b/helm/cilium/templates/_helpers.tpl
-index 3e5429e..b96b3f8 100644
+index bf52b37..f64bf6a 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/_helpers.tpl
 +++ b/helm/cilium/templates/_helpers.tpl
 @@ -18,11 +18,20 @@ then `include "cilium.image" .Values.image`

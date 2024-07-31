@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/Makefile b/helm/Makefile
-index 42092cc..faff485 100644
+index d8f3848..d6c5669 100644
 --- a/vendor/cilium/install/kubernetes/Makefile
 +++ b/helm/Makefile
 @@ -4,7 +4,7 @@
@@ -19,12 +19,12 @@ index 42092cc..faff485 100644
 -	--volume $(CURDIR)/../..:/src \
 +	--workdir /src \
 +	--volume $(CURDIR)/:/src \
+ 	--volume $(CURDIR):$(CURDIR) \
  	--user "$(shell id -u):$(shell id -g)"
  HELM_DOCS := $(DOCKER_RUN) $(HELM_TOOLBOX_IMAGE) helm-docs
- HELM := $(DOCKER_RUN) $(HELM_TOOLBOX_IMAGE) helm
-@@ -57,7 +57,7 @@ cilium/values.yaml: $(CILIUM_CHARTS)/$(VALUES_TMPL_FILE_NAME) $(ROOT_DIR)/VERSIO
+@@ -67,7 +67,7 @@ cilium/values.schema.json: cilium/values.yaml
  	$(ECHO_GEN)$@
- 	$(call generate_values_yaml,$(CILIUM_CHARTS)/$(VALUES_TMPL_FILE_NAME),$@)
+ 	$(HELM_SCHEMA_GEN) -c cilium --skip-auto-generation title,description,required,default,additionalProperties
  
 -update-versions: update-chart cilium/values.yaml # Update the Helm values file to point to the current version.
 +update-versions: cilium/values.yaml # Update the Helm values file to point to the current version.
