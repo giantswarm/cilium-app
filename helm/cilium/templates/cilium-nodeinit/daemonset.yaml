@@ -58,7 +58,7 @@ spec:
       {{- end }}
       containers:
         - name: node-init
-          image: {{ include "cilium.image" (list $ .Values.nodeinit.image) | quote }}
+          image: {{ include "cilium.image" .Values.nodeinit.image | quote }}
           imagePullPolicy: {{ .Values.nodeinit.image.pullPolicy }}
           lifecycle:
             {{- if .Values.nodeinit.revertReconfigureKubelet }}
@@ -114,7 +114,6 @@ spec:
       hostNetwork: true
       priorityClassName: {{ include "cilium.priorityClass" (list $ .Values.nodeinit.priorityClassName "system-node-critical") }}
       {{- if .Values.serviceAccounts.nodeinit.enabled }}
-      serviceAccount: {{ .Values.serviceAccounts.nodeinit.name | quote }}
       serviceAccountName: {{ .Values.serviceAccounts.nodeinit.name | quote }}
       automountServiceAccountToken: {{ .Values.serviceAccounts.nodeinit.automount }}
       {{- end }}

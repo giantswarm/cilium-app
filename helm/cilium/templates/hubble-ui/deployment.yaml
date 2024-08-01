@@ -44,7 +44,6 @@ spec:
         {{- omit . "enabled" | toYaml | nindent 8 }}
       {{- end }}
       priorityClassName: {{ .Values.hubble.ui.priorityClassName }}
-      serviceAccount: {{ .Values.serviceAccounts.ui.name | quote }}
       serviceAccountName: {{ .Values.serviceAccounts.ui.name | quote }}
       automountServiceAccountToken: {{ .Values.serviceAccounts.ui.automount }}
       {{- with .Values.imagePullSecrets }}
@@ -53,7 +52,7 @@ spec:
       {{- end }}
       containers:
       - name: frontend
-        image: {{ include "cilium.image" (list $ .Values.hubble.ui.frontend.image) | quote }}
+        image: {{ include "cilium.image" .Values.hubble.ui.frontend.image | quote }}
         imagePullPolicy: {{ .Values.hubble.ui.frontend.image.pullPolicy }}
         ports:
         - name: http
@@ -89,7 +88,7 @@ spec:
           {{- toYaml . | trim | nindent 10 }}
         {{- end }}
       - name: backend
-        image: {{ include "cilium.image" (list $ .Values.hubble.ui.backend.image) | quote }}
+        image: {{ include "cilium.image" .Values.hubble.ui.backend.image | quote }}
         imagePullPolicy: {{ .Values.hubble.ui.backend.image.pullPolicy }}
         env:
         - name: EVENTS_SERVER_PORT
