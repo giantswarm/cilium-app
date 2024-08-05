@@ -12,10 +12,10 @@ export RELEASE := yes
 
 ifeq ($(RELEASE),yes)
     export PULL_POLICY:=IfNotPresent
-    export CILIUM_REPO:=giantswarm/cilium
-    export CILIUM_OPERATOR_BASE_REPO:=giantswarm/cilium-operator
-    export CLUSTERMESH_APISERVER_REPO:=giantswarm/cilium-clustermesh-apiserver
-    export HUBBLE_RELAY_REPO:=giantswarm/hubble-relay
+    export CILIUM_REPO:=${RELEASE_REGISTRY}/${RELEASE_ORG}/cilium
+    export CILIUM_OPERATOR_BASE_REPO:=${RELEASE_REGISTRY}/${RELEASE_ORG}/operator
+    export CLUSTERMESH_APISERVER_REPO:=${RELEASE_REGISTRY}/${RELEASE_ORG}/clustermesh-apiserver
+    export HUBBLE_RELAY_REPO:=${RELEASE_REGISTRY}/${RELEASE_ORG}/hubble-relay
 else
     export PULL_POLICY:=Always
     export CILIUM_REPO:=${CI_REGISTRY}/${CI_ORG}/cilium-ci
@@ -27,26 +27,26 @@ else
 endif
 
 # renovate: datasource=docker
-export CERTGEN_REPO:=giantswarm/cilium-certgen
+export CERTGEN_REPO:=quay.io/cilium/certgen
 export CERTGEN_VERSION:=v0.2.0
 export CERTGEN_DIGEST:=sha256:169d93fd8f2f9009db3b9d5ccd37c2b753d0989e1e7cd8fe79f9160c459eef4f
 
 # renovate: datasource=docker
-export CILIUM_NODEINIT_REPO:=giantswarm/cilium-startup-script
+export CILIUM_NODEINIT_REPO:=quay.io/cilium/startup-script
 export CILIUM_NODEINIT_VERSION:=c54c7edeab7fde4da68e59acd319ab24af242c3f
 export CILIUM_NODEINIT_DIGEST:=sha256:8d7b41c4ca45860254b3c19e20210462ef89479bb6331d6760c4e609d651b29c
 
 # renovate: datasource=docker
-export CILIUM_ENVOY_REPO:=giantswarm/cilium-envoy
+export CILIUM_ENVOY_REPO:=quay.io/cilium/cilium-envoy
 export CILIUM_ENVOY_VERSION:=v1.29.7-39a2a56bbd5b3a591f69dbca51d3e30ef97e0e51
 export CILIUM_ENVOY_DIGEST:=sha256:bd5ff8c66716080028f414ec1cb4f7dc66f40d2fb5a009fff187f4a9b90b566b
 
 # renovate: datasource=docker
-export HUBBLE_UI_BACKEND_REPO:=giantswarm/hubble-ui-backend
+export HUBBLE_UI_BACKEND_REPO:=quay.io/cilium/hubble-ui-backend
 export HUBBLE_UI_BACKEND_VERSION:=v0.13.1
 export HUBBLE_UI_BACKEND_DIGEST:=sha256:0e0eed917653441fded4e7cdb096b7be6a3bddded5a2dd10812a27b1fc6ed95b
 # renovate: datasource=docker
-export HUBBLE_UI_FRONTEND_REPO:=giantswarm/hubble-ui
+export HUBBLE_UI_FRONTEND_REPO:=quay.io/cilium/hubble-ui
 export HUBBLE_UI_FRONTEND_VERSION:=v0.13.1
 export HUBBLE_UI_FRONTEND_DIGEST:=sha256:e2e9313eb7caf64b0061d9da0efbdad59c6c461f6ca1752768942bfeda0796c6
 

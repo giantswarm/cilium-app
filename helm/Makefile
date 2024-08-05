@@ -3,6 +3,7 @@
 
 MAKEFILE_VALUES?=Makefile.values
 include $(MAKEFILE_VALUES)
+include Makefile.giantswarm
 
 include Makefile.defs
 
