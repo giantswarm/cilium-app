@@ -1348,7 +1348,9 @@ hubble:
     # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
     tolerations: []
     # -- Additional hubble-relay environment variables.
-    extraEnv: []
+    extraEnv:
+      - name: GOPS_CONFIG_DIR
+        value: /tmp
     # -- Annotations to be added to all top-level hubble-relay objects (resources under templates/hubble-relay)
     annotations: {}
     # -- Annotations to be added to hubble-relay pods
@@ -1385,15 +1387,19 @@ hubble:
         # @schema
         maxUnavailable: 1
     # -- Additional hubble-relay volumes.
-    extraVolumes: []
+    extraVolumes:
+      - emptyDir: {}
+        name: tmp-dir
     # -- Additional hubble-relay volumeMounts.
-    extraVolumeMounts: []
+    extraVolumeMounts:
+      - name: tmp-dir
+        mountPath: /tmp
     # -- hubble-relay pod security context
     podSecurityContext:
       fsGroup: 65532
     # -- hubble-relay container security context
     securityContext:
-      # readOnlyRootFilesystem: true
+      readOnlyRootFilesystem: true
       runAsNonRoot: true
       runAsUser: 65532
       runAsGroup: 65532
