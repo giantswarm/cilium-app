@@ -1,0 +1,13 @@
+diff --git a/helm/cilium/README.md.gotmpl b/helm/cilium/README.md.gotmpl
+index db2d81b..e9354dc 100644
+--- a/helm/cilium/README.md.gotmpl
++++ b/helm/cilium/README.md.gotmpl
+@@ -2,7 +2,7 @@
+ 
+ {{ template "chart.deprecationWarning" . }}
+ 
+-{{ template "chart.versionBadge" . }}{{ template "chart.typeBadge" . }}{{ template "chart.appVersionBadge" . }}
++{{ template "chart.typeBadge" . }}{{ template "chart.appVersionBadge" . }}
+ 
+ Cilium is open source software for providing and transparently securing
+ network connectivity and loadbalancing between application workloads such as
