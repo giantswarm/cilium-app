@@ -2557,7 +2557,9 @@ operator:
   # -- Additional cilium-operator container arguments.
   extraArgs: []
   # -- Additional cilium-operator environment variables.
-  extraEnv: []
+  extraEnv:
+    - name: GOPS_CONFIG_DIR
+      value: /tmp
   # -- Additional cilium-operator hostPath mounts.
   extraHostPathMounts: []
   # - name: host-mnt-data
@@ -2568,15 +2570,22 @@ operator:
   #   mountPropagation: HostToContainer
 
   # -- Additional cilium-operator volumes.
-  extraVolumes: []
+  extraVolumes:
+    - emptyDir: {}
+      name: tmp-dir
   # -- Additional cilium-operator volumeMounts.
-  extraVolumeMounts: []
+  extraVolumeMounts:
+    - name: tmp-dir
+      mountPath: /tmp
   # -- Annotations to be added to all top-level cilium-operator objects (resources under templates/cilium-operator)
   annotations: {}
   # -- HostNetwork setting
   hostNetwork: true
   # -- Security context to be added to cilium-operator pods
-  podSecurityContext: {}
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
   # -- Annotations to be added to cilium-operator pods
   podAnnotations: {}
   # -- Labels to be added to cilium-operator pods
@@ -2608,8 +2617,17 @@ operator:
   #     memory: 128Mi
 
   # -- Security context to be added to cilium-operator pods
-  securityContext: {}
-  # runAsUser: 0
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsGroup: 65532
+    runAsNonRoot: true
+    runAsUser: 65532
+    seccompProfile:
+      type: RuntimeDefault
 
   # -- Interval for endpoint garbage collection.
   endpointGCInterval: "5m0s"
