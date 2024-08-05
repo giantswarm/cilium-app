@@ -14,9 +14,10 @@ vendir sync
 
 # Patches
 ./sync/patches/cleanup_kube_proxy/patch.sh
-./sync/patches/values/patch.sh
 ./sync/patches/eni/patch.sh
 ./sync/patches/image_registries/patch.sh
+./sync/patches/readme/patch.sh
+./sync/patches/values/patch.sh
 
 # Store diffs
 rm -f ./diffs/*
