@@ -1562,7 +1562,17 @@ hubble:
         useDigest: false
         pullPolicy: "${PULL_POLICY}"
       # -- Hubble-ui backend security context.
-      securityContext: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsGroup: 65532
+        runAsNonRoot: true
+        runAsUser: 65532
+        seccompProfile:
+          type: RuntimeDefault
       # -- Additional hubble-ui backend environment variables.
       extraEnv: []
       # -- Additional hubble-ui backend volumes.
@@ -1596,7 +1606,17 @@ hubble:
         useDigest: false
         pullPolicy: "${PULL_POLICY}"
       # -- Hubble-ui frontend security context.
-      securityContext: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsGroup: 101
+        runAsNonRoot: true
+        runAsUser: 101
+        seccompProfile:
+          type: RuntimeDefault
       # -- Additional hubble-ui frontend environment variables.
       extraEnv: []
       # -- Additional hubble-ui frontend volumes.
@@ -1667,9 +1687,13 @@ hubble:
         maxUnavailable: 1
     # -- Security context to be added to Hubble UI pods
     securityContext:
+      enabled: true
+      fsGroup: 1001
       runAsUser: 1001
       runAsGroup: 1001
-      fsGroup: 1001
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
     # -- hubble-ui service configuration.
     service:
       # -- Annotations to be added for the Hubble UI service
