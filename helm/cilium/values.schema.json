@@ -3076,6 +3076,9 @@
             },
             "securityContext": {
               "properties": {
+                "allowPrivilegeEscalation": {
+                  "type": "boolean"
+                },
                 "capabilities": {
                   "properties": {
                     "drop": {
@@ -3102,6 +3105,14 @@
                 },
                 "runAsUser": {
                   "type": "integer"
+                },
+                "seccompProfile": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
                 }
               },
               "type": "object"

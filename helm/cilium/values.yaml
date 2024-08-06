@@ -1393,13 +1393,16 @@ hubble:
       fsGroup: 65532
     # -- hubble-relay container security context
     securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
       readOnlyRootFilesystem: true
       runAsNonRoot: true
       runAsUser: 65532
       runAsGroup: 65532
-      capabilities:
-        drop:
-          - ALL
+      seccompProfile:
+        type: RuntimeDefault
     # -- hubble-relay service configuration.
     service:
       # --- The type of service used for Hubble Relay access, either ClusterIP or NodePort.

@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index e46a039..9550834 100644
+index e46a039..8a51df5 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
 @@ -136,6 +136,16 @@ serviceAccounts:
@@ -80,7 +80,7 @@ index e46a039..9550834 100644
      # -- Labels to be added to hubble-relay pods
      podLabels: {}
      # PodDisruptionBudget settings
-@@ -1373,15 +1387,19 @@ hubble:
+@@ -1373,21 +1387,28 @@ hubble:
          # @schema
          maxUnavailable: 1
      # -- Additional hubble-relay volumes.
@@ -99,11 +99,23 @@ index e46a039..9550834 100644
      # -- hubble-relay container security context
      securityContext:
 -      # readOnlyRootFilesystem: true
+-      runAsNonRoot: true
+-      runAsUser: 65532
+-      runAsGroup: 65532
++      allowPrivilegeEscalation: false
+       capabilities:
+         drop:
+           - ALL
 +      readOnlyRootFilesystem: true
-       runAsNonRoot: true
-       runAsUser: 65532
-       runAsGroup: 65532
-@@ -1459,7 +1477,7 @@ hubble:
++      runAsNonRoot: true
++      runAsUser: 65532
++      runAsGroup: 65532
++      seccompProfile:
++        type: RuntimeDefault
+     # -- hubble-relay service configuration.
+     service:
+       # --- The type of service used for Hubble Relay access, either ClusterIP or NodePort.
+@@ -1459,7 +1480,7 @@ hubble:
      # -- Enable prometheus metrics for hubble-relay on the configured port at
      # /metrics
      prometheus:
@@ -112,7 +124,7 @@ index e46a039..9550834 100644
        port: 9966
        serviceMonitor:
          # -- Enable service monitors.
-@@ -1498,7 +1516,7 @@ hubble:
+@@ -1498,7 +1519,7 @@ hubble:
        port: 6062
    ui:
      # -- Whether to enable the Hubble UI.
@@ -121,7 +133,7 @@ index e46a039..9550834 100644
      standalone:
        # -- When true, it will allow installing the Hubble UI only, without checking dependencies.
        # It is useful if a cluster already has cilium and Hubble relay installed and you just
-@@ -1541,10 +1559,20 @@ hubble:
+@@ -1541,10 +1562,20 @@ hubble:
          repository: "${HUBBLE_UI_BACKEND_REPO}"
          tag: "${HUBBLE_UI_BACKEND_VERSION}"
          digest: "${HUBBLE_UI_BACKEND_DIGEST}"
@@ -144,7 +156,7 @@ index e46a039..9550834 100644
        # -- Additional hubble-ui backend environment variables.
        extraEnv: []
        # -- Additional hubble-ui backend volumes.
-@@ -1575,10 +1603,20 @@ hubble:
+@@ -1575,10 +1606,20 @@ hubble:
          repository: "${HUBBLE_UI_FRONTEND_REPO}"
          tag: "${HUBBLE_UI_FRONTEND_VERSION}"
          digest: "${HUBBLE_UI_FRONTEND_DIGEST}"
@@ -167,7 +179,7 @@ index e46a039..9550834 100644
        # -- Additional hubble-ui frontend environment variables.
        extraEnv: []
        # -- Additional hubble-ui frontend volumes.
-@@ -1602,7 +1640,8 @@ hubble:
+@@ -1602,7 +1643,8 @@ hubble:
      # -- Annotations to be added to all top-level hubble-ui objects (resources under templates/hubble-ui)
      annotations: {}
      # -- Annotations to be added to hubble-ui pods
@@ -177,7 +189,7 @@ index e46a039..9550834 100644
      # -- Labels to be added to hubble-ui pods
      podLabels: {}
      # PodDisruptionBudget settings
-@@ -1648,9 +1687,13 @@ hubble:
+@@ -1648,9 +1690,13 @@ hubble:
          maxUnavailable: 1
      # -- Security context to be added to Hubble UI pods
      securityContext:
@@ -192,7 +204,7 @@ index e46a039..9550834 100644
      # -- hubble-ui service configuration.
      service:
        # -- Annotations to be added for the Hubble UI service
-@@ -1868,9 +1911,9 @@ l2NeighDiscovery:
+@@ -1868,9 +1914,9 @@ l2NeighDiscovery:
  # -- Enable Layer 7 network policy.
  l7Proxy: true
  # -- Enable Local Redirect Policy.
@@ -204,7 +216,7 @@ index e46a039..9550834 100644
  
  # logOptions allows you to define logging options. eg:
  # logOptions:
-@@ -2041,7 +2084,7 @@ pprof:
+@@ -2041,7 +2087,7 @@ pprof:
    port: 6060
  # -- Configure prometheus metrics on the configured port at /metrics
  prometheus:
@@ -213,7 +225,7 @@ index e46a039..9550834 100644
    port: 9962
    serviceMonitor:
      # -- Enable service monitors.
-@@ -2078,7 +2121,8 @@ prometheus:
+@@ -2078,7 +2124,8 @@ prometheus:
    # The list is expected to be separated by a space. (+metric_foo to enable
    # metric_foo , -metric_bar to disable metric_bar).
    # ref: https://docs.cilium.io/en/stable/observability/metrics/
@@ -223,7 +235,7 @@ index e46a039..9550834 100644
    # --- Enable controller group metrics for monitoring specific Cilium
    # subsystems. The list is a list of controller group names. The special
    # values of "all" and "none" are supported. The set of controller
-@@ -2105,9 +2149,7 @@ envoy:
+@@ -2105,9 +2152,7 @@ envoy:
    # type: [null, boolean]
    # @schema
    # -- Enable Envoy Proxy in standalone DaemonSet.
@@ -234,7 +246,7 @@ index e46a039..9550834 100644
    # -- (int)
    # Set Envoy'--base-id' to use when allocating shared memory regions.
    # Only needs to be changed if multiple Envoy instances will run on the same node and may have conflicts. Supported values: 0 - 4294967295. Defaults to '0'
-@@ -2140,7 +2182,7 @@ envoy:
+@@ -2140,7 +2185,7 @@ envoy:
      tag: "${CILIUM_ENVOY_VERSION}"
      pullPolicy: "${PULL_POLICY}"
      digest: "${CILIUM_ENVOY_DIGEST}"
@@ -243,7 +255,7 @@ index e46a039..9550834 100644
    # -- Additional containers added to the cilium Envoy DaemonSet.
    extraContainers: []
    # -- Additional envoy container arguments.
-@@ -2515,7 +2557,9 @@ operator:
+@@ -2515,7 +2560,9 @@ operator:
    # -- Additional cilium-operator container arguments.
    extraArgs: []
    # -- Additional cilium-operator environment variables.
@@ -254,7 +266,7 @@ index e46a039..9550834 100644
    # -- Additional cilium-operator hostPath mounts.
    extraHostPathMounts: []
    # - name: host-mnt-data
-@@ -2526,15 +2570,22 @@ operator:
+@@ -2526,15 +2573,22 @@ operator:
    #   mountPropagation: HostToContainer
  
    # -- Additional cilium-operator volumes.
@@ -280,7 +292,7 @@ index e46a039..9550834 100644
    # -- Annotations to be added to cilium-operator pods
    podAnnotations: {}
    # -- Labels to be added to cilium-operator pods
-@@ -2543,7 +2594,7 @@ operator:
+@@ -2543,7 +2597,7 @@ operator:
    podDisruptionBudget:
      # -- enable PodDisruptionBudget
      # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
@@ -289,7 +301,7 @@ index e46a039..9550834 100644
      # @schema
      # type: [null, integer, string]
      # @schema
-@@ -2566,8 +2617,17 @@ operator:
+@@ -2566,8 +2620,17 @@ operator:
    #     memory: 128Mi
  
    # -- Security context to be added to cilium-operator pods
@@ -309,7 +321,7 @@ index e46a039..9550834 100644
  
    # -- Interval for endpoint garbage collection.
    endpointGCInterval: "5m0s"
-@@ -2656,7 +2716,7 @@ nodeinit:
+@@ -2656,7 +2719,7 @@ nodeinit:
      repository: "${CILIUM_NODEINIT_REPO}"
      tag: "${CILIUM_NODEINIT_VERSION}"
      digest: "${CILIUM_NODEINIT_DIGEST}"
@@ -318,7 +330,7 @@ index e46a039..9550834 100644
      pullPolicy: "${PULL_POLICY}"
    # -- The priority class to use for the nodeinit pod.
    priorityClassName: ""
-@@ -3397,7 +3457,7 @@ authentication:
+@@ -3397,7 +3460,7 @@ authentication:
            repository: "${SPIRE_INIT_REPO}"
            tag: "${SPIRE_INIT_VERSION}"
            digest: "${SPIRE_INIT_DIGEST}"
@@ -327,7 +339,7 @@ index e46a039..9550834 100644
            pullPolicy: "${PULL_POLICY}"
          # SPIRE agent configuration
          agent:
-@@ -3410,7 +3470,7 @@ authentication:
+@@ -3410,7 +3473,7 @@ authentication:
              repository: "${SPIRE_AGENT_REPO}"
              tag: "${SPIRE_AGENT_VERSION}"
              digest: "${SPIRE_AGENT_DIGEST}"
@@ -336,7 +348,7 @@ index e46a039..9550834 100644
              pullPolicy: "${PULL_POLICY}"
            # -- SPIRE agent service account
            serviceAccount:
-@@ -3461,7 +3521,7 @@ authentication:
+@@ -3461,7 +3524,7 @@ authentication:
              repository: "${SPIRE_SERVER_REPO}"
              tag: "${SPIRE_SERVER_VERSION}"
              digest: "${SPIRE_SERVER_DIGEST}"
@@ -345,7 +357,7 @@ index e46a039..9550834 100644
              pullPolicy: "${PULL_POLICY}"
            # -- SPIRE server service account
            serviceAccount:
-@@ -3539,3 +3599,40 @@ authentication:
+@@ -3539,3 +3602,40 @@ authentication:
        agentSocketPath: /run/spire/sockets/agent/agent.sock
        # -- SPIRE connection timeout
        connectionTimeout: 30s
