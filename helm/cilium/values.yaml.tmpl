@@ -136,16 +136,6 @@ serviceAccounts:
     name: hubble-generate-certs
     automount: true
     annotations: {}
-  defaultPolicies:
-    create: true
-    name: cilium-default-policies
-    automount: true
-    annotations: {}
-  extraPolicies:
-    create: true
-    name: cilium-extra-policies
-    annotations: {}
-
 # -- Configure termination grace period for cilium-agent DaemonSet.
 terminationGracePeriodSeconds: 1
 # -- Install the cilium agent resources.
@@ -156,7 +146,6 @@ name: cilium
 rollOutCiliumPods: false
 # -- Agent container image.
 image:
-  registry: gsoci.azurecr.io
   # @schema
   # type: [null, string]
   # @schema
@@ -498,7 +487,7 @@ bpf:
   # @schema
   # type: [null, integer]
   # @schema
-  policyMapMax: 65536
+  policyMapMax: 16384
   # @schema
   # type: [null, number]
   # @schema
@@ -1014,7 +1003,7 @@ socketLB:
   # -- Enable socket LB
   enabled: false
   # -- Disable socket lb for non-root ns. This is used to enable Istio routing rules.
-  hostNamespaceOnly: true
+  # hostNamespaceOnly: false
   # -- Enable terminating pod connections to deleted service backends.
   # terminatePodConnections: true
 # -- Configure certificate generation for Hubble integration.
@@ -1030,7 +1019,7 @@ certgen:
     repository: "${CERTGEN_REPO}"
     tag: "${CERTGEN_VERSION}"
     digest: "${CERTGEN_DIGEST}"
-    useDigest: false
+    useDigest: true
     pullPolicy: "${PULL_POLICY}"
   # -- Seconds after which the completed job pod will be deleted
   ttlSecondsAfterFinished: 1800
@@ -1097,9 +1086,14 @@ hubble:
       enabled: false
       # Configure hubble metrics server TLS.
       server:
-        # -- base64 encoded PEM values for the Hubble metrics server certificate.
+        # -- Name of the Secret containing the certificate and key for the Hubble metrics server.
+        # If specified, cert and key are ignored.
+        existingSecret: ""
+        # -- base64 encoded PEM values for the Hubble metrics server certificate (deprecated).
+        # Use existingSecret instead.
         cert: ""
-        # -- base64 encoded PEM values for the Hubble metrics server key.
+        # -- base64 encoded PEM values for the Hubble metrics server key (deprecated).
+        # Use existingSecret instead.
         key: ""
         # -- Extra DNS names added to certificate when it's auto generated
         extraDnsNames: []
@@ -1297,9 +1291,16 @@ hubble:
       #   name: ca-issuer
       # -- certmanager issuer used when hubble.tls.auto.method=certmanager.
       certManagerIssuerRef: {}
-    # -- base64 encoded PEM values for the Hubble server certificate and private key
+    # -- The Hubble server certificate and private key
     server:
+      # -- Name of the Secret containing the certificate and key for the Hubble server.
+      # If specified, cert and key are ignored.
+      existingSecret: ""
+      # -- base64 encoded PEM values for the Hubble server certificate (deprecated).
+      # Use existingSecret instead.
       cert: ""
+      # -- base64 encoded PEM values for the Hubble server key (deprecated).
+      # Use existingSecret instead.
       key: ""
       # -- Extra DNS names added to certificate when it's auto generated
       extraDnsNames: []
@@ -1307,7 +1308,7 @@ hubble:
       extraIpAddresses: []
   relay:
     # -- Enable Hubble Relay (requires hubble.enabled=true)
-    enabled: true
+    enabled: false
     # -- Roll out Hubble Relay pods automatically when configmap is updated.
     rollOutPods: false
     # -- Hubble-relay container image.
@@ -1348,14 +1349,11 @@ hubble:
     # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
     tolerations: []
     # -- Additional hubble-relay environment variables.
-    extraEnv:
-      - name: GOPS_CONFIG_DIR
-        value: /tmp
+    extraEnv: []
     # -- Annotations to be added to all top-level hubble-relay objects (resources under templates/hubble-relay)
     annotations: {}
     # -- Annotations to be added to hubble-relay pods
-    podAnnotations:
-      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+    podAnnotations: {}
     # -- Labels to be added to hubble-relay pods
     podLabels: {}
     # PodDisruptionBudget settings
@@ -1387,28 +1385,21 @@ hubble:
         # @schema
         maxUnavailable: 1
     # -- Additional hubble-relay volumes.
-    extraVolumes:
-      - emptyDir: {}
-        name: tmp-dir
+    extraVolumes: []
     # -- Additional hubble-relay volumeMounts.
-    extraVolumeMounts:
-      - name: tmp-dir
-        mountPath: /tmp
+    extraVolumeMounts: []
     # -- hubble-relay pod security context
     podSecurityContext:
       fsGroup: 65532
     # -- hubble-relay container security context
     securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
-      readOnlyRootFilesystem: true
+      # readOnlyRootFilesystem: true
       runAsNonRoot: true
       runAsUser: 65532
       runAsGroup: 65532
-      seccompProfile:
-        type: RuntimeDefault
+      capabilities:
+        drop:
+          - ALL
     # -- hubble-relay service configuration.
     service:
       # --- The type of service used for Hubble Relay access, either ClusterIP or NodePort.
@@ -1421,14 +1412,21 @@ hubble:
     listenPort: "4245"
     # -- TLS configuration for Hubble Relay
     tls:
-      # -- base64 encoded PEM values for the hubble-relay client certificate and private key
+      # -- The hubble-relay client certificate and private key.
       # This keypair is presented to Hubble server instances for mTLS
       # authentication and is required when hubble.tls.enabled is true.
       # These values need to be set manually if hubble.tls.auto.enabled is false.
       client:
+        # -- Name of the Secret containing the certificate and key for the Hubble metrics server.
+        # If specified, cert and key are ignored.
+        existingSecret: ""
+        # -- base64 encoded PEM values for the Hubble relay client certificate (deprecated).
+        # Use existingSecret instead.
         cert: ""
+        # -- base64 encoded PEM values for the Hubble relay client key (deprecated).
+        # Use existingSecret instead.
         key: ""
-      # -- base64 encoded PEM values for the hubble-relay server certificate and private key
+      # -- The hubble-relay server certificate and private key
       server:
         # When set to true, enable TLS on for Hubble Relay server
         # (ie: for clients connecting to the Hubble Relay API).
@@ -1437,8 +1435,14 @@ hubble:
         # False allow non-mutual TLS connections.
         # This option has no effect when TLS is disabled.
         mtls: false
-        # These values need to be set manually if hubble.tls.auto.enabled is false.
+        # -- Name of the Secret containing the certificate and key for the Hubble relay server.
+        # If specified, cert and key are ignored.
+        existingSecret: ""
+        # -- base64 encoded PEM values for the Hubble relay server certificate (deprecated).
+        # Use existingSecret instead.
         cert: ""
+        # -- base64 encoded PEM values for the Hubble relay server key (deprecated).
+        # Use existingSecret instead.
         key: ""
         # -- extra DNS names added to certificate when its auto gen
         extraDnsNames: []
@@ -1480,7 +1484,7 @@ hubble:
     # -- Enable prometheus metrics for hubble-relay on the configured port at
     # /metrics
     prometheus:
-      enabled: true
+      enabled: false
       port: 9966
       serviceMonitor:
         # -- Enable service monitors.
@@ -1519,7 +1523,7 @@ hubble:
       port: 6062
   ui:
     # -- Whether to enable the Hubble UI.
-    enabled: true
+    enabled: false
     standalone:
       # -- When true, it will allow installing the Hubble UI only, without checking dependencies.
       # It is useful if a cluster already has cilium and Hubble relay installed and you just
@@ -1545,12 +1549,15 @@ hubble:
     # -- Roll out Hubble-ui pods automatically when configmap is updated.
     rollOutPods: false
     tls:
-      # -- base64 encoded PEM values used to connect to hubble-relay
-      # This keypair is presented to Hubble Relay instances for mTLS
-      # authentication and is required when hubble.relay.tls.server.enabled is true.
-      # These values need to be set manually if hubble.tls.auto.enabled is false.
       client:
+        # -- Name of the Secret containing the client certificate and key for Hubble UI
+        # If specified, cert and key are ignored.
+        existingSecret: ""
+        # -- base64 encoded PEM values for the Hubble UI client certificate (deprecated).
+        # Use existingSecret instead.
         cert: ""
+        # -- base64 encoded PEM values for the Hubble UI client key (deprecated).
+        # Use existingSecret instead.
         key: ""
     backend:
       # -- Hubble-ui backend image.
@@ -1562,20 +1569,10 @@ hubble:
         repository: "${HUBBLE_UI_BACKEND_REPO}"
         tag: "${HUBBLE_UI_BACKEND_VERSION}"
         digest: "${HUBBLE_UI_BACKEND_DIGEST}"
-        useDigest: false
+        useDigest: true
         pullPolicy: "${PULL_POLICY}"
       # -- Hubble-ui backend security context.
-      securityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop:
-            - ALL
-        readOnlyRootFilesystem: true
-        runAsGroup: 65532
-        runAsNonRoot: true
-        runAsUser: 65532
-        seccompProfile:
-          type: RuntimeDefault
+      securityContext: {}
       # -- Additional hubble-ui backend environment variables.
       extraEnv: []
       # -- Additional hubble-ui backend volumes.
@@ -1606,20 +1603,10 @@ hubble:
         repository: "${HUBBLE_UI_FRONTEND_REPO}"
         tag: "${HUBBLE_UI_FRONTEND_VERSION}"
         digest: "${HUBBLE_UI_FRONTEND_DIGEST}"
-        useDigest: false
+        useDigest: true
         pullPolicy: "${PULL_POLICY}"
       # -- Hubble-ui frontend security context.
-      securityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop:
-            - ALL
-        readOnlyRootFilesystem: true
-        runAsGroup: 101
-        runAsNonRoot: true
-        runAsUser: 101
-        seccompProfile:
-          type: RuntimeDefault
+      securityContext: {}
       # -- Additional hubble-ui frontend environment variables.
       extraEnv: []
       # -- Additional hubble-ui frontend volumes.
@@ -1643,8 +1630,7 @@ hubble:
     # -- Annotations to be added to all top-level hubble-ui objects (resources under templates/hubble-ui)
     annotations: {}
     # -- Annotations to be added to hubble-ui pods
-    podAnnotations:
-      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+    podAnnotations: {}
     # -- Labels to be added to hubble-ui pods
     podLabels: {}
     # PodDisruptionBudget settings
@@ -1690,13 +1676,9 @@ hubble:
         maxUnavailable: 1
     # -- Security context to be added to Hubble UI pods
     securityContext:
-      enabled: true
-      fsGroup: 1001
       runAsUser: 1001
       runAsGroup: 1001
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
+      fsGroup: 1001
     # -- hubble-ui service configuration.
     service:
       # -- Annotations to be added for the Hubble UI service
@@ -1914,9 +1896,9 @@ l2NeighDiscovery:
 # -- Enable Layer 7 network policy.
 l7Proxy: true
 # -- Enable Local Redirect Policy.
-localRedirectPolicy: true
+localRedirectPolicy: false
 # To include or exclude matched resources from cilium identity evaluation
-labels: "k8s:!.*/enforce k8s:!.*fluxcd.io/.* k8s:!.*kubernetes.io/managed-by.* k8s:!controller-uid k8s:!job-name"
+# labels: ""
 
 # logOptions allows you to define logging options. eg:
 # logOptions:
@@ -1943,6 +1925,13 @@ enableMasqueradeRouteSource: false
 enableIPv4BIGTCP: false
 # -- Enables IPv6 BIG TCP support which increases maximum IPv6 GSO/GRO limits for nodes and pods
 enableIPv6BIGTCP: false
+
+nat:
+  # -- Number of the top-k SNAT map connections to track in Cilium statedb.
+  mapStatsEntries: 32
+  # -- Interval between how often SNAT map is counted for stats.
+  mapStatsInterval: 30s
+
 egressGateway:
   # -- Enables egress gateway to redirect and SNAT the traffic that leaves the
   # cluster.
@@ -2087,7 +2076,7 @@ pprof:
   port: 6060
 # -- Configure prometheus metrics on the configured port at /metrics
 prometheus:
-  enabled: true
+  enabled: false
   port: 9962
   serviceMonitor:
     # -- Enable service monitors.
@@ -2124,8 +2113,7 @@ prometheus:
   # The list is expected to be separated by a space. (+metric_foo to enable
   # metric_foo , -metric_bar to disable metric_bar).
   # ref: https://docs.cilium.io/en/stable/observability/metrics/
-  metrics:
-    - +cilium_bpf_map_pressure
+  metrics: ~
   # --- Enable controller group metrics for monitoring specific Cilium
   # subsystems. The list is a list of controller group names. The special
   # values of "all" and "none" are supported. The set of controller
@@ -2152,7 +2140,9 @@ envoy:
   # type: [null, boolean]
   # @schema
   # -- Enable Envoy Proxy in standalone DaemonSet.
-  enabled: false
+  # This field is enabled by default for new installation.
+  # @default -- `true` for new installation
+  enabled: ~
   # -- (int)
   # Set Envoy'--base-id' to use when allocating shared memory regions.
   # Only needs to be changed if multiple Envoy instances will run on the same node and may have conflicts. Supported values: 0 - 4294967295. Defaults to '0'
@@ -2185,7 +2175,7 @@ envoy:
     tag: "${CILIUM_ENVOY_VERSION}"
     pullPolicy: "${PULL_POLICY}"
     digest: "${CILIUM_ENVOY_DIGEST}"
-    useDigest: false
+    useDigest: true
   # -- Additional containers added to the cilium Envoy DaemonSet.
   extraContainers: []
   # -- Additional envoy container arguments.
@@ -2560,9 +2550,7 @@ operator:
   # -- Additional cilium-operator container arguments.
   extraArgs: []
   # -- Additional cilium-operator environment variables.
-  extraEnv:
-    - name: GOPS_CONFIG_DIR
-      value: /tmp
+  extraEnv: []
   # -- Additional cilium-operator hostPath mounts.
   extraHostPathMounts: []
   # - name: host-mnt-data
@@ -2573,22 +2561,15 @@ operator:
   #   mountPropagation: HostToContainer
 
   # -- Additional cilium-operator volumes.
-  extraVolumes:
-    - emptyDir: {}
-      name: tmp-dir
+  extraVolumes: []
   # -- Additional cilium-operator volumeMounts.
-  extraVolumeMounts:
-    - name: tmp-dir
-      mountPath: /tmp
+  extraVolumeMounts: []
   # -- Annotations to be added to all top-level cilium-operator objects (resources under templates/cilium-operator)
   annotations: {}
   # -- HostNetwork setting
   hostNetwork: true
   # -- Security context to be added to cilium-operator pods
-  podSecurityContext:
-    runAsNonRoot: true
-    seccompProfile:
-      type: RuntimeDefault
+  podSecurityContext: {}
   # -- Annotations to be added to cilium-operator pods
   podAnnotations: {}
   # -- Labels to be added to cilium-operator pods
@@ -2597,7 +2578,7 @@ operator:
   podDisruptionBudget:
     # -- enable PodDisruptionBudget
     # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
-    enabled: true
+    enabled: false
     # @schema
     # type: [null, integer, string]
     # @schema
@@ -2620,17 +2601,8 @@ operator:
   #     memory: 128Mi
 
   # -- Security context to be added to cilium-operator pods
-  securityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-      - ALL
-    readOnlyRootFilesystem: true
-    runAsGroup: 65532
-    runAsNonRoot: true
-    runAsUser: 65532
-    seccompProfile:
-      type: RuntimeDefault
+  securityContext: {}
+  # runAsUser: 0
 
   # -- Interval for endpoint garbage collection.
   endpointGCInterval: "5m0s"
@@ -2719,7 +2691,7 @@ nodeinit:
     repository: "${CILIUM_NODEINIT_REPO}"
     tag: "${CILIUM_NODEINIT_VERSION}"
     digest: "${CILIUM_NODEINIT_DIGEST}"
-    useDigest: false
+    useDigest: true
     pullPolicy: "${PULL_POLICY}"
   # -- The priority class to use for the nodeinit pod.
   priorityClassName: ""
@@ -3460,7 +3432,7 @@ authentication:
           repository: "${SPIRE_INIT_REPO}"
           tag: "${SPIRE_INIT_VERSION}"
           digest: "${SPIRE_INIT_DIGEST}"
-          useDigest: false
+          useDigest: true
           pullPolicy: "${PULL_POLICY}"
         # SPIRE agent configuration
         agent:
@@ -3473,7 +3445,7 @@ authentication:
             repository: "${SPIRE_AGENT_REPO}"
             tag: "${SPIRE_AGENT_VERSION}"
             digest: "${SPIRE_AGENT_DIGEST}"
-            useDigest: false
+            useDigest: true
             pullPolicy: "${PULL_POLICY}"
           # -- SPIRE agent service account
           serviceAccount:
@@ -3524,7 +3496,7 @@ authentication:
             repository: "${SPIRE_SERVER_REPO}"
             tag: "${SPIRE_SERVER_VERSION}"
             digest: "${SPIRE_SERVER_DIGEST}"
-            useDigest: false
+            useDigest: true
             pullPolicy: "${PULL_POLICY}"
           # -- SPIRE server service account
           serviceAccount:
@@ -3602,40 +3574,3 @@ authentication:
       agentSocketPath: /run/spire/sockets/agent/agent.sock
       # -- SPIRE connection timeout
       connectionTimeout: 30s
-eksMode: false
-
-defaultPolicies:
-  enabled: false
-  remove: false
-  # -- Node tolerations for default-policies job scheduling to nodes with taints
-  # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-  tolerations:
-  - operator: Exists
-
-extraPolicies:
-  remove: false
-
-  allowEgressToCoreDNS:
-    enabled: false
-    namespaces:
-      - giantswarm
-      - kube-system
-
-  allowEgressToProxy:
-    enabled: false
-    httpProxy: ""
-    httpsProxy: ""
-    namespaces:
-      - giantswarm
-      - kube-system
-
-  tolerations:
-    - operator: Exists
-
-# If true, it adds an initContainer to cilium-agent pods that cleans up any legacy kube-proxy iptables rules from the node before running cilium.
-# Only makes sense when `kubeProxyReplacement` is enabled (i.e. not set to 'disabled').
-cleanupKubeProxy: false
-
-global:
-  podSecurityStandards:
-    enforced: false

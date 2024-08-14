@@ -39,9 +39,13 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       initContainers:
         - name: init
-          image: {{ include "cilium.image" (list $ .Values.authentication.mutual.spire.install.initImage) | quote }}
+          image: {{ include "cilium.image" .Values.authentication.mutual.spire.install.initImage | quote }}
           imagePullPolicy: {{ .Values.authentication.mutual.spire.install.initImage.pullPolicy }}
           command:
             - /bin/sh
@@ -53,7 +57,7 @@ spec:
           {{- if eq (typeOf .Values.authentication.mutual.spire.install.agent.image) "string" }}
           image: {{ .Values.authentication.mutual.spire.install.agent.image }}
           {{- else }}
-          image: {{ include "cilium.image" (list $ .Values.authentication.mutual.spire.install.agent.image) | quote }}
+          image: {{ include "cilium.image" .Values.authentication.mutual.spire.install.agent.image | quote }}
           imagePullPolicy: {{ .Values.authentication.mutual.spire.install.agent.image.pullPolicy }}
           {{- end }}
           args: ["-config", "/run/spire/config/agent.conf"]

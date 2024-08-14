@@ -71,7 +71,7 @@ spec:
       {{- end }}
       containers:
       - name: cilium-operator
-        image: {{ include "cilium.operator.image" (list $ .) | quote }}
+        image: {{ include "cilium.operator.image" . | quote }}
         imagePullPolicy: {{ .Values.operator.image.pullPolicy }}
         command:
         - cilium-operator-{{ include "cilium.operator.cloud" . }}

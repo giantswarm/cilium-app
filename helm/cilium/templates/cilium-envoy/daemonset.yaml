@@ -69,7 +69,7 @@ spec:
       {{- end }}
       containers:
       - name: cilium-envoy
-        image: {{ include "cilium.image" (list $ .Values.envoy.image) | quote }}
+        image: {{ include "cilium.image" .Values.envoy.image | quote }}
         imagePullPolicy: {{ .Values.envoy.image.pullPolicy }}
         command:
         - /usr/bin/cilium-envoy-starter

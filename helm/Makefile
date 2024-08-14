@@ -3,9 +3,8 @@
 
 MAKEFILE_VALUES?=Makefile.values
 include $(MAKEFILE_VALUES)
-include Makefile.giantswarm
 
-include Makefile.defs
+include ../../Makefile.defs
 
 ifeq ($(CILIUM_VERSION),)
 export CILIUM_VERSION:=v$(VERSION)
@@ -24,8 +23,8 @@ VERSION_REGEX := '[0-9]\+\.[0-9]\+\.[0-9]\+.*'
 CILIUM_CHART_REGEX := '\([vV]ersion:\) '$(VERSION_REGEX)
 
 DOCKER_RUN := $(CONTAINER_ENGINE) container run --rm \
-	--workdir /src \
-	--volume $(CURDIR)/:/src \
+	--workdir /src/install/kubernetes \
+	--volume $(CURDIR)/../..:/src \
 	--volume $(CURDIR):$(CURDIR) \
 	--user "$(shell id -u):$(shell id -g)"
 HELM_DOCS := $(DOCKER_RUN) $(HELM_TOOLBOX_IMAGE) helm-docs
@@ -68,7 +67,7 @@ cilium/values.schema.json: cilium/values.yaml
 	$(ECHO_GEN)$@
 	$(HELM_SCHEMA_GEN) -c cilium --skip-auto-generation title,description,required,default,additionalProperties
 
-update-versions: cilium/values.yaml # Update the Helm values file to point to the current version.
+update-versions: update-chart cilium/values.yaml # Update the Helm values file to point to the current version.
 
 CRD_FILES := $(shell find $(ROOT_DIR)/examples/crds/*/ -type f)
 CRDS := $(foreach path,$(patsubst %.yaml,%,$(CRD_FILES)),$(shell basename $(path)))
