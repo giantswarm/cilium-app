@@ -2717,6 +2717,9 @@
                     "cert": {
                       "type": "string"
                     },
+                    "existingSecret": {
+                      "type": "string"
+                    },
                     "extraDnsNames": {
                       "items": {},
                       "type": "array"
@@ -3150,6 +3153,9 @@
                     "cert": {
                       "type": "string"
                     },
+                    "existingSecret": {
+                      "type": "string"
+                    },
                     "key": {
                       "type": "string"
                     }
@@ -3163,6 +3169,9 @@
                     },
                     "enabled": {
                       "type": "boolean"
+                    },
+                    "existingSecret": {
+                      "type": "string"
                     },
                     "extraDnsNames": {
                       "items": {},
@@ -3254,6 +3263,9 @@
             "server": {
               "properties": {
                 "cert": {
+                  "type": "string"
+                },
+                "existingSecret": {
                   "type": "string"
                 },
                 "extraDnsNames": {
@@ -3638,6 +3650,9 @@
                 "client": {
                   "properties": {
                     "cert": {
+                      "type": "string"
+                    },
+                    "existingSecret": {
                       "type": "string"
                     },
                     "key": {
@@ -4103,6 +4118,17 @@
     },
     "name": {
       "type": "string"
+    },
+    "nat": {
+      "properties": {
+        "mapStatsEntries": {
+          "type": "integer"
+        },
+        "mapStatsInterval": {
+          "type": "string"
+        }
+      },
+      "type": "object"
     },
     "nat46x64Gateway": {
       "properties": {
