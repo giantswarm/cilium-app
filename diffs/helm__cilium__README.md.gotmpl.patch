@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/README.md.gotmpl b/helm/cilium/README.md.gotmpl
-index db2d81b..e9354dc 100644
+index 4aa7da8..43579a4 100644
 --- a/vendor/cilium/install/kubernetes/cilium/README.md.gotmpl
 +++ b/helm/cilium/README.md.gotmpl
 @@ -2,7 +2,7 @@
