@@ -713,6 +713,10 @@
       },
       "type": "object"
     },
+    "cilium-giantswarm-cni-customconf": {
+      "title": "cilium-giantswarm-cni-customconf",
+      "type": "object"
+    },
     "ciliumEndpointSlice": {
       "properties": {
         "enabled": {
