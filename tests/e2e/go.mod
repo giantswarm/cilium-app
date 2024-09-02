@@ -48,7 +48,7 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.7.0 // indirect
 	github.com/giantswarm/apiextensions-application v0.6.2 // indirect
-	github.com/giantswarm/cluster-standup-teardown v1.18.1 // indirect
+	github.com/giantswarm/cluster-standup-teardown v1.19.0 // indirect
 	github.com/giantswarm/clustertest v1.18.0 // indirect
 	github.com/giantswarm/k8smetadata v0.25.0 // indirect
 	github.com/giantswarm/kubectl-gs/v2 v2.57.0 // indirect
