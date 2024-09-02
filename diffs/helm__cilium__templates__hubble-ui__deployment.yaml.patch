@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/hubble-ui/deployment.yaml b/helm/cilium/templates/hubble-ui/deployment.yaml
-index 105907a..3292482 100644
+index 66f3b08..dd489da 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/hubble-ui/deployment.yaml
 +++ b/helm/cilium/templates/hubble-ui/deployment.yaml
 @@ -52,7 +52,7 @@ spec:
