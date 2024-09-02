@@ -1,0 +1,28 @@
+{{- $eniConf := dict "first-interface-index" .Values.cniCustomConfig.eni.firstInterfaceIndex -}}
+{{- with .Values.cniCustomConfig.eni.excludeInterfaceTags -}}
+{{- $_ := set $eniConf "exclude-interface-tags" . -}}
+{{- end -}}
+{{- with .Values.cniCustomConfig.eni.securityGroupTags -}}
+{{- $_ := set $eniConf "security-group-tags" . -}}
+{{- end -}}
+{{- with .Values.cniCustomConfig.eni.subnetTags -}}
+{{- $_ := set $eniConf "subnet-tags" . -}}
+{{- end -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cilium-cni-configuration
+  namespace: {{ .Release.Namespace }}
+data:
+  cni-config: |-
+      {
+        "cniVersion":"0.3.1",
+        "name":"cilium",
+        "plugins": [
+          {
+            "cniVersion":"0.3.1",
+            "type":"cilium-cni",
+            "eni": {{ mustToJson $eniConf }}
+          }
+        ]
+      }
