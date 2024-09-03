@@ -1,11 +1,11 @@
-{{- $eniConf := dict "first-interface-index" .Values.cniCustomConfig.eni.firstInterfaceIndex -}}
-{{- with .Values.cniCustomConfig.eni.excludeInterfaceTags -}}
+{{- $eniConf := dict "first-interface-index" .Values.eni.firstInterfaceIndex -}}
+{{- with .Values.eni.excludeInterfaceTags -}}
 {{- $_ := set $eniConf "exclude-interface-tags" . -}}
 {{- end -}}
-{{- with .Values.cniCustomConfig.eni.securityGroupTags -}}
+{{- with .Values.eni.securityGroupTags -}}
 {{- $_ := set $eniConf "security-group-tags" . -}}
 {{- end -}}
-{{- with .Values.cniCustomConfig.eni.subnetTags -}}
+{{- with .Values.eni.subnetTags -}}
 {{- $_ := set $eniConf "subnet-tags" . -}}
 {{- end -}}
 apiVersion: v1

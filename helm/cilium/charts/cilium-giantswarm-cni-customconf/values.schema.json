@@ -1,30 +1,25 @@
 {
   "properties": {
-    "cniCustomConfig": {
+    "eni": {
       "properties": {
-        "eni": {
-          "properties": {
-            "excludeInterfaceTags": {
-              "additionalProperties": {
-                "type": "string"
-              },
-              "type": "object"
-            },
-            "firstInterfaceIndex": {
-              "minimum": 0
-            },
-            "securityGroupTags": {
-              "additionalProperties": {
-                "type": "string"
-              },
-              "type": "object"
-            },
-            "subnetTags": {
-              "additionalProperties": {
-                "type": "string"
-              },
-              "type": "object"
-            }
+        "excludeInterfaceTags": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "firstInterfaceIndex": {
+          "minimum": 0
+        },
+        "securityGroupTags": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "subnetTags": {
+          "additionalProperties": {
+            "type": "string"
           },
           "type": "object"
         }
