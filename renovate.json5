@@ -3,6 +3,8 @@
     // Base config - https://github.com/giantswarm/renovate-presets/blob/main/default.json5
     "github>giantswarm/renovate-presets:default.json5",
     "github>giantswarm/renovate-presets:disable-vendir.json5",
+    // Go specific config - https://github.com/giantswarm/renovate-presets/blob/main/lang-go.json5
+    "github>giantswarm/renovate-presets:lang-go.json5",
   ],
   "ignorePaths": [
     ".github/workflows/zz_generated.*",
