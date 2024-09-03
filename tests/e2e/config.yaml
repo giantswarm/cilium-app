@@ -1,0 +1,5 @@
+appName: cilium
+repoName: cilium-app
+appCatalog: default
+providers:
+- capa
