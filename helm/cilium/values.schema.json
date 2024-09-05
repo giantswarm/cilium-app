@@ -713,6 +713,41 @@
       },
       "type": "object"
     },
+    "cilium-giantswarm-cni-customconf": {
+      "properties": {
+        "eni": {
+          "properties": {
+            "excludeInterfaceTags": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "firstInterfaceIndex": {
+              "minimum": 0
+            },
+            "securityGroupTags": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "subnetTags": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "global": {
+          "type": "object"
+        }
+      },
+      "title": "cilium-giantswarm-cni-customconf",
+      "type": "object"
+    },
     "ciliumEndpointSlice": {
       "properties": {
         "enabled": {
@@ -1610,9 +1645,6 @@
         }
       },
       "type": "object"
-    },
-    "eksMode": {
-      "type": "boolean"
     },
     "enableCiliumEndpointSlice": {
       "type": "boolean"

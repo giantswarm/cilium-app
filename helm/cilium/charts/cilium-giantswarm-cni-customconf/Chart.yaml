@@ -1,0 +1,5 @@
+apiVersion: v2
+name: cilium-giantswarm-cni-customconf
+version: 0.1.0
+annotations:
+  application.giantswarm.io/team: "cabbage"

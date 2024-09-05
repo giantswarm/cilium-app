@@ -20,10 +20,13 @@ directories:
           path: vendor/cilium/install/kubernetes
         ignorePaths:
           - cilium/Chart.yaml
+          - cilium/Chart.lock
           - cilium/files/policies/*
           - cilium/templates/default-policies/*
           - cilium/templates/extra-policies/*
           - cilium/templates/**/networkpolicy.yaml
           - cilium/templates/**/podsecuritypolicy.yaml
-          - cilium/templates/cilium-cni-configmap.yaml
-
+          - cilium/charts/cilium-giantswarm-cni-customconf/*.yaml
+          - cilium/charts/cilium-giantswarm-cni-customconf/README.md
+          - cilium/charts/cilium-giantswarm-cni-customconf/values.schema.json
+          - cilium/charts/cilium-giantswarm-cni-customconf/templates/cilium-cni-configmap.yaml

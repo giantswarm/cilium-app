@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index 5c57d16..cb9abfb 100644
+index 5c57d16..d4be75e 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
 @@ -136,6 +136,16 @@ serviceAccounts:
@@ -357,11 +357,10 @@ index 5c57d16..cb9abfb 100644
              pullPolicy: "${PULL_POLICY}"
            # -- SPIRE server service account
            serviceAccount:
-@@ -3574,3 +3637,40 @@ authentication:
+@@ -3574,3 +3637,39 @@ authentication:
        agentSocketPath: /run/spire/sockets/agent/agent.sock
        # -- SPIRE connection timeout
        connectionTimeout: 30s
-+eksMode: false
 +
 +defaultPolicies:
 +  enabled: false

@@ -1,0 +1,28 @@
+eni:
+  # @schema
+  # minimum: 0
+  # @schema
+  # -- The index of the first ENI to use for IP allocation. (spec.eni.first-interface-index)
+  # See https://docs.cilium.io/en/stable/network/concepts/ipam/eni/#eni-allocation-parameters
+  firstInterfaceIndex: 1
+  # @schema
+  # type: object
+  # additionalProperties: {"type": "string"}
+  # @schema
+  # -- The tags used to exclude interfaces from IP allocation. (spec.eni.exclude-interface-tags)
+  # See https://docs.cilium.io/en/stable/network/concepts/ipam/eni/#eni-allocation-parameters
+  excludeInterfaceTags: {}
+  # @schema
+  # type: object
+  # additionalProperties: {"type": "string"}
+  # @schema
+  # -- The list tags which will be used to filter the security groups to attach to any ENI that is created and attached to the instance. (spec.eni.security-group-tags)
+  # See https://docs.cilium.io/en/stable/network/concepts/ipam/eni/#eni-allocation-parameters
+  securityGroupTags: {}
+  # @schema
+  # type: object
+  # additionalProperties: {"type": "string"}
+  # @schema
+  # -- The tags used to select the AWS subnets for IP allocation. (spec.eni.subnet-tags)
+  # See https://docs.cilium.io/en/stable/network/concepts/ipam/eni/#eni-allocation-parameters
+  subnetTags: {}

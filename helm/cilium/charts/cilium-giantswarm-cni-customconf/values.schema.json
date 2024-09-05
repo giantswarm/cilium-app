@@ -1,0 +1,35 @@
+{
+  "properties": {
+    "eni": {
+      "properties": {
+        "excludeInterfaceTags": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "firstInterfaceIndex": {
+          "minimum": 0
+        },
+        "securityGroupTags": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "subnetTags": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "global": {
+      "type": "object"
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object"
+}

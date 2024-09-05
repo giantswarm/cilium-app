@@ -1,0 +1,6 @@
+dependencies:
+- name: cilium-giantswarm-cni-customconf
+  repository: ""
+  version: 0.1.0
+digest: sha256:a474bf3b9a9785309ea71fb6e9d535169084f3b3b41ebe9813f88d477a8c1766
+generated: "2024-08-27T18:05:38.236370551+02:00"

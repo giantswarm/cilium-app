@@ -23,3 +23,8 @@ links:
     url: https://ebpf.io/
 annotations:
   application.giantswarm.io/team: "cabbage"
+dependencies:
+  - name: cilium-giantswarm-cni-customconf
+    version: 0.1.0
+    alias: cniCustomConf
+    condition: cni.customConf
