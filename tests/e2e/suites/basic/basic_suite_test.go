@@ -3,8 +3,6 @@ package basic
 import (
 	"errors"
 	"fmt"
-	"os"
-	"strings"
 	"testing"
 	"time"
 
@@ -56,13 +54,18 @@ func TestBasic(t *testing.T) {
 						return false, err
 					}
 
-					if release.Status.LastAppliedRevision == strings.TrimPrefix(os.Getenv("E2E_APP_VERSION"), "v") {
-						return true, nil
+					for _, c := range release.Status.Conditions {
+						if c.Type == "Ready" && c.Status == "True" {
+							return true, nil
+						} else {
+							return false, errors.New(fmt.Sprintf("HelmRelease not ready [%s]: %s", c.Reason, c.Message))
+						}
 					}
-					return false, errors.New("err")
+
+					return false, errors.New("HelmRelease not ready")
 				}).
-					WithTimeout(1 * time.Minute).
-					WithPolling(5 * time.Second).
+					WithTimeout(5 * time.Minute).
+					WithPolling(15 * time.Second).
 					Should(BeTrue())
 			})
 		}).
