@@ -55,10 +55,12 @@ func TestBasic(t *testing.T) {
 					}
 
 					for _, c := range release.Status.Conditions {
-						if c.Type == "Ready" && c.Status == "True" {
-							return true, nil
-						} else {
-							return false, errors.New(fmt.Sprintf("HelmRelease not ready [%s]: %s", c.Reason, c.Message))
+						if c.Type == "Ready" {
+							if c.Status == "True" {
+								return true, nil
+							} else {
+								return false, errors.New(fmt.Sprintf("HelmRelease not ready [%s]: %s", c.Reason, c.Message))
+							}
 						}
 					}
 
