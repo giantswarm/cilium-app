@@ -1,13 +1,18 @@
 <!--
-This app is generated from the contents on [our cilium fork](https://github.com/giantswarm/cilium-upstream).
-Manual changes to this repo will be lost the next time the app is generated from the fork.
-If you need to change something, please do it on the fork, and then re-generate the app.
+@team-cabbage will automatically be requested for review once this PR has been submitted.
 -->
 
 This PR:
 
-- adds/changes/removes etc
+- _Adds/changes/fixes/removes ..._
 
-### Checklist
+---
 
-- [ ] Update changelog in CHANGELOG.md.
+## Checklist
+
+- [ ] I added a CHANGELOG entry
+- [ ] I ran E2E tests in the CI pipelines
+
+Add the following comment to trigger the E2E tests:
+
+`/run app-test-suites`
