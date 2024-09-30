@@ -284,9 +284,6 @@ contributors across the globe, there is almost always someone available to help.
 | dashboards | object | `{"annotations":{},"enabled":false,"label":"grafana_dashboard","labelValue":"1","namespace":null}` | Grafana dashboards for cilium-agent grafana can import dashboards based on the label and value ref: https://github.com/grafana/helm-charts/tree/main/charts/grafana#sidecar-for-dashboards |
 | debug.enabled | bool | `false` | Enable debug logging |
 | debug.verbose | string | `nil` | Configure verbosity levels for debug logging This option is used to enable debug messages for operations related to such sub-system such as (e.g. kvstore, envoy, datapath or policy), and flow is for enabling debug messages emitted per request, message and connection. Multiple values can be set via a space-separated string (e.g. "datapath envoy").  Applicable values: - flow - kvstore - envoy - datapath - policy |
-| defaultPolicies.enabled | bool | `false` |  |
-| defaultPolicies.remove | bool | `false` |  |
-| defaultPolicies.tolerations | list | `[{"operator":"Exists"}]` | Node tolerations for default-policies job scheduling to nodes with taints ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ |
 | directRoutingSkipUnreachable | bool | `false` | Enable skipping of PodCIDR routes between worker nodes if the worker nodes are in a different L2 network segment. |
 | disableEndpointCRD | bool | `false` | Disable the usage of CiliumEndpoint CRD. |
 | dnsPolicy | string | `""` | DNS policy for Cilium agent pods. Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy |
@@ -412,16 +409,6 @@ contributors across the globe, there is almost always someone available to help.
 | extraEnv | list | `[]` | Additional agent container environment variables. |
 | extraHostPathMounts | list | `[]` | Additional agent hostPath mounts. |
 | extraInitContainers | list | `[]` | Additional initContainers added to the cilium Daemonset. |
-| extraPolicies.allowEgressToCoreDNS.enabled | bool | `false` |  |
-| extraPolicies.allowEgressToCoreDNS.namespaces[0] | string | `"giantswarm"` |  |
-| extraPolicies.allowEgressToCoreDNS.namespaces[1] | string | `"kube-system"` |  |
-| extraPolicies.allowEgressToProxy.enabled | bool | `false` |  |
-| extraPolicies.allowEgressToProxy.httpProxy | string | `""` |  |
-| extraPolicies.allowEgressToProxy.httpsProxy | string | `""` |  |
-| extraPolicies.allowEgressToProxy.namespaces[0] | string | `"giantswarm"` |  |
-| extraPolicies.allowEgressToProxy.namespaces[1] | string | `"kube-system"` |  |
-| extraPolicies.remove | bool | `false` |  |
-| extraPolicies.tolerations[0].operator | string | `"Exists"` |  |
 | extraVolumeMounts | list | `[]` | Additional agent volumeMounts. |
 | extraVolumes | list | `[]` | Additional agent volumes. |
 | forceDeviceDetection | bool | `false` | Forces the auto-detection of devices, even if specific devices are explicitly listed |
