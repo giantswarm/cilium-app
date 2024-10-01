@@ -7,9 +7,9 @@ replace github.com/imdario/mergo => github.com/imdario/mergo v0.3.16
 replace github.com/alessio/shellescape => al.essio.dev/pkg/shellescape v1.4.2
 
 require (
-	github.com/fluxcd/helm-controller/api v1.0.1
+	github.com/fluxcd/helm-controller/api v1.1.0
 	github.com/giantswarm/apptest-framework v1.10.1
-	github.com/giantswarm/clustertest v1.24.1
+	github.com/giantswarm/clustertest v1.26.1
 	github.com/onsi/ginkgo/v2 v2.20.2
 	github.com/onsi/gomega v1.34.2
 	k8s.io/apimachinery v0.31.1
@@ -110,7 +110,7 @@ require (
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
-	github.com/mittwald/go-helm-client v0.12.13 // indirect
+	github.com/mittwald/go-helm-client v0.12.14 // indirect
 	github.com/moby/locker v1.0.1 // indirect
 	github.com/moby/spdystream v0.5.0 // indirect
 	github.com/moby/term v0.5.0 // indirect
