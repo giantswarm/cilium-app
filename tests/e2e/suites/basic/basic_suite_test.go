@@ -106,7 +106,7 @@ func TestBasic(t *testing.T) {
 
 				By("Running connectivity tests")
 				ciliumNamespace := "kube-system"
-				params := buildTestParams()
+				params := buildConnectivityTestParams()
 				hooks := &api.NopHooks{}
 				tmpKubeconfig := fmt.Sprintf("/tmp/kubeconfig-%s", wcName)
 

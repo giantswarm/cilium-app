@@ -11,8 +11,37 @@ import (
 	"github.com/cilium/cilium/cilium-cli/sysdump"
 )
 
-func buildTestParams() check.Parameters {
+func buildConnectivityTestParams() check.Parameters {
 
+	params := defaultConnectivityTestParams()
+
+	// Custom settings for E2E tests:
+	params.Hubble = false
+	params.TestNamespace = "cilium-test-1"
+
+	// Use this regex to filter which tests to run.
+	rgx, _ := regexp.Compile("no-policies")
+	params.RunTests = append(params.RunTests, rgx)
+
+	return params
+}
+
+func newConnectivityTests(client *k8s.Client, p check.Parameters, logger *check.ConcurrentLogger) ([]*check.ConnectivityTest, error) {
+	hooks := &api.NopHooks{}
+	cc, err := check.NewConnectivityTest(client, p, hooks, logger)
+	if err != nil {
+		return nil, err
+	}
+
+	connTests := make([]*check.ConnectivityTest, 0, p.TestConcurrency)
+	connTests = append(connTests, cc)
+	return connTests, nil
+}
+
+func defaultConnectivityTestParams() check.Parameters {
+
+	// parameters taken from https://github.com/cilium/cilium/blob/main/cilium-cli/cli/connectivity.go#L101
+	// Defaults - Do not replace them here. Add an override in the buildConnectivityTestParam function.
 	var params = check.Parameters{
 		AgentDaemonSetName:            defaults.AgentDaemonSetName,
 		AgentPodSelector:              defaults.AgentPodSelector,
@@ -70,7 +99,6 @@ func buildTestParams() check.Parameters {
 		SkipIPCacheCheck:              true,
 		TestConcurrency:               1,
 		TestConnDisruptImage:          defaults.ConnectivityTestConnDisruptImage,
-		TestNamespace:                 "cilium-test-1",
 		TestNamespaceIndex:            0,
 		Timeout:                       defaults.ConnectivityTestSuiteTimeout,
 		Timestamp:                     false,
@@ -83,22 +111,5 @@ func buildTestParams() check.Parameters {
 		},
 	}
 
-	// Use this regex to filter which tests to run.
-	rgx, _ := regexp.Compile("no-policies")
-	params.RunTests = append(params.RunTests, rgx)
-
 	return params
-
-}
-
-func newConnectivityTests(client *k8s.Client, p check.Parameters, logger *check.ConcurrentLogger) ([]*check.ConnectivityTest, error) {
-	hooks := &api.NopHooks{}
-	cc, err := check.NewConnectivityTest(client, p, hooks, logger)
-	if err != nil {
-		return nil, err
-	}
-
-	connTests := make([]*check.ConnectivityTest, 0, p.TestConcurrency)
-	connTests = append(connTests, cc)
-	return connTests, nil
 }
