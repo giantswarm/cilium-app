@@ -124,7 +124,7 @@ Convert a map to a comma-separated string: key1=value1,key2=value2
 Enable automatic lookup of k8sServiceHost from the cluster-info ConfigMap (kubeadm-based clusters only)
 */}}
 {{- define "k8sServiceHost" }}
-  {{- if eq .Values.k8sServiceHost "auto" }}
+  {{- if and (eq .Values.k8sServiceHost "auto") (lookup "v1" "ConfigMap" "kube-public" "cluster-info") }}
     {{- $configmap := (lookup "v1" "ConfigMap" "kube-public" "cluster-info") }}
     {{- $kubeconfig := get $configmap.data "kubeconfig" }}
     {{- $k8sServer := get ($kubeconfig | fromYaml) "clusters" | mustFirst | dig "cluster" "server" "" }}
@@ -139,7 +139,7 @@ Enable automatic lookup of k8sServiceHost from the cluster-info ConfigMap (kubea
 Enable automatic lookup of k8sServicePort from the cluster-info ConfigMap (kubeadm-based clusters only)
 */}}
 {{- define "k8sServicePort" }}
-  {{- if eq .Values.k8sServiceHost "auto" }}
+  {{- if and (eq .Values.k8sServiceHost "auto") (lookup "v1" "ConfigMap" "kube-public" "cluster-info") }}
     {{- $configmap := (lookup "v1" "ConfigMap" "kube-public" "cluster-info") }}
     {{- $kubeconfig := get $configmap.data "kubeconfig" }}
     {{- $k8sServer := get ($kubeconfig | fromYaml) "clusters" | mustFirst | dig "cluster" "server" "" }}

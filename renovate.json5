@@ -5,6 +5,8 @@
     "github>giantswarm/renovate-presets:disable-vendir.json5",
     // Go specific config - https://github.com/giantswarm/renovate-presets/blob/main/lang-go.json5
     "github>giantswarm/renovate-presets:lang-go.json5",
+    // e2e app test specific config - https://github.com/giantswarm/renovate-presets/blob/main/tests-e2e-app.json5
+    "github>giantswarm/renovate-presets:tests-e2e-app.json5",
   ],
   "ignorePaths": [
     ".github/workflows/zz_generated.*",
