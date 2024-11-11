@@ -163,7 +163,7 @@ image:
   # @schema
   override: ~
   repository: "giantswarm/cilium"
-  tag: "v1.16.1"
+  tag: "v1.16.3"
   pullPolicy: "IfNotPresent"
   # cilium-digest
   digest: ""
@@ -1323,7 +1323,7 @@ hubble:
       # @schema
       override: ~
       repository: "giantswarm/hubble-relay"
-      tag: "v1.16.1"
+      tag: "v1.16.3"
       # hubble-relay-digest
       digest: ""
       useDigest: false
@@ -2205,9 +2205,9 @@ envoy:
     # @schema
     override: ~
     repository: "giantswarm/cilium-envoy"
-    tag: "v1.29.7-39a2a56bbd5b3a591f69dbca51d3e30ef97e0e51"
+    tag: "v1.29.9-1728346947-0d05e48bfbb8c4737ec40d5781d970a550ed2bbd"
     pullPolicy: "IfNotPresent"
-    digest: "sha256:bd5ff8c66716080028f414ec1cb4f7dc66f40d2fb5a009fff187f4a9b90b566b"
+    digest: "sha256:42614a44e508f70d03a04470df5f61e3cffd22462471a0be0544cf116f2c50ba"
     useDigest: false
   # -- Additional containers added to the cilium Envoy DaemonSet.
   extraContainers: []
@@ -2521,7 +2521,7 @@ operator:
     # @schema
     override: ~
     repository: "giantswarm/cilium-operator"
-    tag: "v1.16.1"
+    tag: "v1.16.3"
     # operator-generic-digest
     genericDigest: ""
     # operator-azure-digest
@@ -2822,7 +2822,7 @@ preflight:
     # @schema
     override: ~
     repository: "giantswarm/cilium"
-    tag: "v1.16.1"
+    tag: "v1.16.3"
     # cilium-digest
     digest: ""
     useDigest: false
@@ -2971,7 +2971,7 @@ clustermesh:
       # @schema
       override: ~
       repository: "giantswarm/cilium-clustermesh-apiserver"
-      tag: "v1.16.1"
+      tag: "v1.16.3"
       # clustermesh-apiserver-digest
       digest: ""
       useDigest: false
@@ -3472,7 +3472,7 @@ authentication:
           override: ~
           repository: "docker.io/library/busybox"
           tag: "1.36.1"
-          digest: "sha256:9ae97d36d26566ff84e8893c64a6dc4fe8ca6d1144bf5b87b2b85a32def253c7"
+          digest: "sha256:c230832bd3b0be59a6c47ed64294f9ce71e91b327957920b6929a0caa8353140"
           useDigest: false
           pullPolicy: "IfNotPresent"
         # SPIRE agent configuration
