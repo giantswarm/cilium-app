@@ -21,9 +21,6 @@ directories:
         ignorePaths:
           - cilium/Chart.yaml
           - cilium/Chart.lock
-          - cilium/files/policies/*
-          - cilium/templates/default-policies/*
-          - cilium/templates/extra-policies/*
           - cilium/templates/**/networkpolicy.yaml
           - cilium/templates/**/podsecuritypolicy.yaml
           - cilium/charts/cilium-giantswarm-cni-customconf/*.yaml
