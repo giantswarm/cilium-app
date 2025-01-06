@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-configmap.yaml b/helm/cilium/templates/cilium-configmap.yaml
-index 6dfc531..313e627 100644
+index 761f36f..57fb8bb 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-configmap.yaml
 +++ b/helm/cilium/templates/cilium-configmap.yaml
-@@ -829,10 +829,7 @@ data:
+@@ -833,10 +833,7 @@ data:
  {{- end }}
  {{- if .Values.cni.configMap }}
    read-cni-conf: {{ .Values.cni.confFileMountPath }}/{{ .Values.cni.configMapKey }}
