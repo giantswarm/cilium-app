@@ -7,15 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Delete defaultPolicies and extraPolicies templates.
+
 ## [0.29.0] - 2024-11-12
 
 ### Changed
 
 - Upgrade Cilium to [v1.16.3](https://github.com/cilium/cilium/releases/tag/v1.16.3).
-
-### Removed
-
-- Delete defaultPolicies and extraPolicies templates.
 
 ## [0.28.0] - 2024-09-09
 
