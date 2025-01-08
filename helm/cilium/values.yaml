@@ -154,7 +154,7 @@ image:
   # @schema
   override: ~
   repository: "giantswarm/cilium"
-  tag: "v1.16.3"
+  tag: "v1.16.5"
   pullPolicy: "IfNotPresent"
   # cilium-digest
   digest: ""
@@ -1314,7 +1314,7 @@ hubble:
       # @schema
       override: ~
       repository: "giantswarm/hubble-relay"
-      tag: "v1.16.3"
+      tag: "v1.16.5"
       # hubble-relay-digest
       digest: ""
       useDigest: false
@@ -2178,6 +2178,8 @@ envoy:
     path: ""
   # -- Time in seconds after which a TCP connection attempt times out
   connectTimeoutSeconds: 2
+  # -- Time in seconds after which the initial fetch on an xDS stream is considered timed out
+  initialFetchTimeoutSeconds: 30
   # -- ProxyMaxRequestsPerConnection specifies the max_requests_per_connection setting for Envoy
   maxRequestsPerConnection: 0
   # -- Set Envoy HTTP option max_connection_duration seconds. Default 0 (disable)
@@ -2196,9 +2198,9 @@ envoy:
     # @schema
     override: ~
     repository: "giantswarm/cilium-envoy"
-    tag: "v1.29.9-1728346947-0d05e48bfbb8c4737ec40d5781d970a550ed2bbd"
+    tag: "v1.30.8-1733837904-eaae5aca0fb988583e5617170a65ac5aa51c0aa8"
     pullPolicy: "IfNotPresent"
-    digest: "sha256:42614a44e508f70d03a04470df5f61e3cffd22462471a0be0544cf116f2c50ba"
+    digest: "sha256:709c08ade3d17d52da4ca2af33f431360ec26268d288d9a6cd1d98acc9a1dced"
     useDigest: false
   # -- Additional containers added to the cilium Envoy DaemonSet.
   extraContainers: []
@@ -2512,7 +2514,7 @@ operator:
     # @schema
     override: ~
     repository: "giantswarm/cilium-operator"
-    tag: "v1.16.3"
+    tag: "v1.16.5"
     # operator-generic-digest
     genericDigest: ""
     # operator-azure-digest
@@ -2813,7 +2815,7 @@ preflight:
     # @schema
     override: ~
     repository: "giantswarm/cilium"
-    tag: "v1.16.3"
+    tag: "v1.16.5"
     # cilium-digest
     digest: ""
     useDigest: false
@@ -2962,7 +2964,7 @@ clustermesh:
       # @schema
       override: ~
       repository: "giantswarm/cilium-clustermesh-apiserver"
-      tag: "v1.16.3"
+      tag: "v1.16.5"
       # clustermesh-apiserver-digest
       digest: ""
       useDigest: false
@@ -3463,7 +3465,7 @@ authentication:
           override: ~
           repository: "docker.io/library/busybox"
           tag: "1.36.1"
-          digest: "sha256:c230832bd3b0be59a6c47ed64294f9ce71e91b327957920b6929a0caa8353140"
+          digest: "sha256:d75b758a4fea99ffff4db799e16f853bbde8643671b5b72464a8ba94cbe3dbe3"
           useDigest: false
           pullPolicy: "IfNotPresent"
         # SPIRE agent configuration

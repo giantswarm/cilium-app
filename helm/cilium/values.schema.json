@@ -1991,6 +1991,9 @@
           },
           "type": "object"
         },
+        "initialFetchTimeoutSeconds": {
+          "type": "integer"
+        },
         "livenessProbe": {
           "properties": {
             "failureThreshold": {
