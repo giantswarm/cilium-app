@@ -136,7 +136,6 @@ serviceAccounts:
     name: hubble-generate-certs
     automount: true
     annotations: {}
-
 # -- Configure termination grace period for cilium-agent DaemonSet.
 terminationGracePeriodSeconds: 1
 # -- Install the cilium agent resources.
@@ -1008,6 +1007,8 @@ socketLB:
   hostNamespaceOnly: true
   # -- Enable terminating pod connections to deleted service backends.
   # terminatePodConnections: true
+  # -- Enables tracing for socket-based load balancing.
+  # tracing: true
 # -- Configure certificate generation for Hubble integration.
 # If hubble.tls.auto.method=cronJob, these values are used
 # for the Kubernetes CronJob which will be scheduled regularly to
@@ -1021,7 +1022,7 @@ certgen:
     repository: "${CERTGEN_REPO}"
     tag: "${CERTGEN_VERSION}"
     digest: "${CERTGEN_DIGEST}"
-    useDigest: false
+    useDigest: true
     pullPolicy: "${PULL_POLICY}"
   # -- Seconds after which the completed job pod will be deleted
   ttlSecondsAfterFinished: 1800
@@ -1277,7 +1278,10 @@ hubble:
       # - certmanager:  This method use cert-manager to generate & rotate certificates.
       method: helm
       # -- Generated certificates validity duration in days.
-      certValidityDuration: 1095
+      #
+      # Defaults to 365 days (1 year) because MacOS does not accept
+      # self-signed certificates with expirations > 825 days.
+      certValidityDuration: 365
       # -- Schedule for certificates regeneration (regardless of their expiration date).
       # Only used if method is "cronJob". If nil, then no recurring job will be created.
       # Instead, only the one-shot job is deployed to generate the certificates at
@@ -1581,7 +1585,7 @@ hubble:
         repository: "${HUBBLE_UI_BACKEND_REPO}"
         tag: "${HUBBLE_UI_BACKEND_VERSION}"
         digest: "${HUBBLE_UI_BACKEND_DIGEST}"
-        useDigest: false
+        useDigest: true
         pullPolicy: "${PULL_POLICY}"
       # -- Hubble-ui backend security context.
       securityContext:
@@ -1625,7 +1629,7 @@ hubble:
         repository: "${HUBBLE_UI_FRONTEND_REPO}"
         tag: "${HUBBLE_UI_FRONTEND_VERSION}"
         digest: "${HUBBLE_UI_FRONTEND_DIGEST}"
-        useDigest: false
+        useDigest: true
         pullPolicy: "${PULL_POLICY}"
       # -- Hubble-ui frontend security context.
       securityContext:
@@ -2213,7 +2217,7 @@ envoy:
     tag: "${CILIUM_ENVOY_VERSION}"
     pullPolicy: "${PULL_POLICY}"
     digest: "${CILIUM_ENVOY_DIGEST}"
-    useDigest: false
+    useDigest: true
   # -- Additional containers added to the cilium Envoy DaemonSet.
   extraContainers: []
   # -- Additional envoy container arguments.
@@ -2493,7 +2497,6 @@ routingMode: ""
 # @default -- Port 8472 for VXLAN, Port 6081 for Geneve
 tunnelPort: 0
 # -- Configure what the response should be to traffic for a service without backends.
-# "reject" only works on kernels >= 5.10, on lower kernels we fallback to "drop".
 # Possible values:
 #  - reject (default)
 #  - drop
@@ -2747,7 +2750,7 @@ nodeinit:
     repository: "${CILIUM_NODEINIT_REPO}"
     tag: "${CILIUM_NODEINIT_VERSION}"
     digest: "${CILIUM_NODEINIT_DIGEST}"
-    useDigest: false
+    useDigest: true
     pullPolicy: "${PULL_POLICY}"
   # -- The priority class to use for the nodeinit pod.
   priorityClassName: ""
@@ -3488,7 +3491,7 @@ authentication:
           repository: "${SPIRE_INIT_REPO}"
           tag: "${SPIRE_INIT_VERSION}"
           digest: "${SPIRE_INIT_DIGEST}"
-          useDigest: false
+          useDigest: true
           pullPolicy: "${PULL_POLICY}"
         # SPIRE agent configuration
         agent:
@@ -3501,7 +3504,7 @@ authentication:
             repository: "${SPIRE_AGENT_REPO}"
             tag: "${SPIRE_AGENT_VERSION}"
             digest: "${SPIRE_AGENT_DIGEST}"
-            useDigest: false
+            useDigest: true
             pullPolicy: "${PULL_POLICY}"
           # -- SPIRE agent service account
           serviceAccount:
@@ -3552,7 +3555,7 @@ authentication:
             repository: "${SPIRE_SERVER_REPO}"
             tag: "${SPIRE_SERVER_VERSION}"
             digest: "${SPIRE_SERVER_DIGEST}"
-            useDigest: false
+            useDigest: true
             pullPolicy: "${PULL_POLICY}"
           # -- SPIRE server service account
           serviceAccount:

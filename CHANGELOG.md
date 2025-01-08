@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Upgrade Cilium to [v1.16.5](https://github.com/cilium/cilium/releases/tag/v1.16.5).
+- Revert back to upstream default of using image digests for container images.
 
 ### Removed
 

@@ -1002,6 +1002,8 @@ socketLB:
   hostNamespaceOnly: true
   # -- Enable terminating pod connections to deleted service backends.
   # terminatePodConnections: true
+  # -- Enables tracing for socket-based load balancing.
+  # tracing: true
 # -- Configure certificate generation for Hubble integration.
 # If hubble.tls.auto.method=cronJob, these values are used
 # for the Kubernetes CronJob which will be scheduled regularly to
@@ -1015,7 +1017,7 @@ certgen:
     repository: "giantswarm/cilium-certgen"
     tag: "v0.2.0"
     digest: "sha256:169d93fd8f2f9009db3b9d5ccd37c2b753d0989e1e7cd8fe79f9160c459eef4f"
-    useDigest: false
+    useDigest: true
     pullPolicy: "IfNotPresent"
   # -- Seconds after which the completed job pod will be deleted
   ttlSecondsAfterFinished: 1800
@@ -1271,7 +1273,10 @@ hubble:
       # - certmanager:  This method use cert-manager to generate & rotate certificates.
       method: helm
       # -- Generated certificates validity duration in days.
-      certValidityDuration: 1095
+      #
+      # Defaults to 365 days (1 year) because MacOS does not accept
+      # self-signed certificates with expirations > 825 days.
+      certValidityDuration: 365
       # -- Schedule for certificates regeneration (regardless of their expiration date).
       # Only used if method is "cronJob". If nil, then no recurring job will be created.
       # Instead, only the one-shot job is deployed to generate the certificates at
@@ -1575,7 +1580,7 @@ hubble:
         repository: "giantswarm/hubble-ui-backend"
         tag: "v0.13.1"
         digest: "sha256:0e0eed917653441fded4e7cdb096b7be6a3bddded5a2dd10812a27b1fc6ed95b"
-        useDigest: false
+        useDigest: true
         pullPolicy: "IfNotPresent"
       # -- Hubble-ui backend security context.
       securityContext:
@@ -1619,7 +1624,7 @@ hubble:
         repository: "giantswarm/hubble-ui"
         tag: "v0.13.1"
         digest: "sha256:e2e9313eb7caf64b0061d9da0efbdad59c6c461f6ca1752768942bfeda0796c6"
-        useDigest: false
+        useDigest: true
         pullPolicy: "IfNotPresent"
       # -- Hubble-ui frontend security context.
       securityContext:
@@ -2201,7 +2206,7 @@ envoy:
     tag: "v1.30.8-1733837904-eaae5aca0fb988583e5617170a65ac5aa51c0aa8"
     pullPolicy: "IfNotPresent"
     digest: "sha256:709c08ade3d17d52da4ca2af33f431360ec26268d288d9a6cd1d98acc9a1dced"
-    useDigest: false
+    useDigest: true
   # -- Additional containers added to the cilium Envoy DaemonSet.
   extraContainers: []
   # -- Additional envoy container arguments.
@@ -2479,7 +2484,6 @@ routingMode: ""
 # @default -- Port 8472 for VXLAN, Port 6081 for Geneve
 tunnelPort: 0
 # -- Configure what the response should be to traffic for a service without backends.
-# "reject" only works on kernels >= 5.10, on lower kernels we fallback to "drop".
 # Possible values:
 #  - reject (default)
 #  - drop
@@ -2732,7 +2736,7 @@ nodeinit:
     repository: "giantswarm/cilium-startup-script"
     tag: "c54c7edeab7fde4da68e59acd319ab24af242c3f"
     digest: "sha256:8d7b41c4ca45860254b3c19e20210462ef89479bb6331d6760c4e609d651b29c"
-    useDigest: false
+    useDigest: true
     pullPolicy: "IfNotPresent"
   # -- The priority class to use for the nodeinit pod.
   priorityClassName: ""
@@ -3466,7 +3470,7 @@ authentication:
           repository: "docker.io/library/busybox"
           tag: "1.36.1"
           digest: "sha256:d75b758a4fea99ffff4db799e16f853bbde8643671b5b72464a8ba94cbe3dbe3"
-          useDigest: false
+          useDigest: true
           pullPolicy: "IfNotPresent"
         # SPIRE agent configuration
         agent:
@@ -3479,7 +3483,7 @@ authentication:
             repository: "ghcr.io/spiffe/spire-agent"
             tag: "1.9.6"
             digest: "sha256:5106ac601272a88684db14daf7f54b9a45f31f77bb16a906bd5e87756ee7b97c"
-            useDigest: false
+            useDigest: true
             pullPolicy: "IfNotPresent"
           # -- SPIRE agent service account
           serviceAccount:
@@ -3530,7 +3534,7 @@ authentication:
             repository: "ghcr.io/spiffe/spire-server"
             tag: "1.9.6"
             digest: "sha256:59a0b92b39773515e25e68a46c40d3b931b9c1860bc445a79ceb45a805cab8b4"
-            useDigest: false
+            useDigest: true
             pullPolicy: "IfNotPresent"
           # -- SPIRE server service account
           serviceAccount:
