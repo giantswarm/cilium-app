@@ -1566,31 +1566,6 @@
       },
       "type": "object"
     },
-    "defaultPolicies": {
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
-        "remove": {
-          "type": "boolean"
-        },
-        "tolerations": {
-          "items": {
-            "anyOf": [
-              {
-                "properties": {
-                  "operator": {
-                    "type": "string"
-                  }
-                }
-              }
-            ]
-          },
-          "type": "array"
-        }
-      },
-      "type": "object"
-    },
     "directRoutingSkipUnreachable": {
       "type": "boolean"
     },
@@ -2332,76 +2307,6 @@
     "extraInitContainers": {
       "items": {},
       "type": "array"
-    },
-    "extraPolicies": {
-      "properties": {
-        "allowEgressToCoreDNS": {
-          "properties": {
-            "enabled": {
-              "type": "boolean"
-            },
-            "namespaces": {
-              "items": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
-              },
-              "type": "array"
-            }
-          },
-          "type": "object"
-        },
-        "allowEgressToProxy": {
-          "properties": {
-            "enabled": {
-              "type": "boolean"
-            },
-            "httpProxy": {
-              "type": "string"
-            },
-            "httpsProxy": {
-              "type": "string"
-            },
-            "namespaces": {
-              "items": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
-              },
-              "type": "array"
-            }
-          },
-          "type": "object"
-        },
-        "remove": {
-          "type": "boolean"
-        },
-        "tolerations": {
-          "items": {
-            "anyOf": [
-              {
-                "properties": {
-                  "operator": {
-                    "type": "string"
-                  }
-                }
-              }
-            ]
-          },
-          "type": "array"
-        }
-      },
-      "type": "object"
     },
     "extraVolumeMounts": {
       "items": {},
@@ -5393,23 +5298,6 @@
           },
           "type": "object"
         },
-        "defaultPolicies": {
-          "properties": {
-            "annotations": {
-              "type": "object"
-            },
-            "automount": {
-              "type": "boolean"
-            },
-            "create": {
-              "type": "boolean"
-            },
-            "name": {
-              "type": "string"
-            }
-          },
-          "type": "object"
-        },
         "envoy": {
           "properties": {
             "annotations": {
@@ -5417,20 +5305,6 @@
             },
             "automount": {
               "type": "boolean"
-            },
-            "create": {
-              "type": "boolean"
-            },
-            "name": {
-              "type": "string"
-            }
-          },
-          "type": "object"
-        },
-        "extraPolicies": {
-          "properties": {
-            "annotations": {
-              "type": "object"
             },
             "create": {
               "type": "boolean"
