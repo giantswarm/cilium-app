@@ -7,12 +7,21 @@ directories:
         git:
           depth: 1
           url: https://github.com/cilium/cilium
-          ref: "v1.16.5"
+          ref: &version "v1.16.5"
         includePaths:
           - install/kubernetes/**/*
           - Makefile.defs
           - Makefile.quiet
           - VERSION
+      # fetch chart for final release digests from values.yaml
+      - path: cilium-chart
+        helmChart:
+          name: cilium
+          version: *version
+          repository:
+            url: https://helm.cilium.io/
+        includePaths:
+          - values.yaml
   - path: helm
     contents:
       - path: .
