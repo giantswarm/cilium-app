@@ -7,6 +7,10 @@ directories:
       tags:
       - v1.16.5
     path: cilium
+  - helmChart:
+      appVersion: 1.16.5
+      version: 1.16.5
+    path: cilium-chart
   path: vendor
 - contents:
   - directory: {}
