@@ -13,7 +13,7 @@ readonly script_dir_rel=".${script_dir#"${repo_dir}"}"
 
 set -x
 cp "${script_dir_rel}/values.yaml.tmpl" "./helm/cilium/values.yaml.tmpl"
-cp "${script_dir_rel}/Makefile.values" "./helm/Makefile.values"
+cp "${script_dir_rel}/Makefile.giantswarm" "./helm/Makefile.giantswarm"
 
 # We need to copy some Makefile dependencies and edit the Makefile (removing
 # "../.."), because we don't have that deep file structure inside ./helm
@@ -30,6 +30,10 @@ sed -i 's#\(--volume .*\)\.\./\.\.:/src#\1:/src#g' ./helm/Makefile
 # The regexp makes sure the target starts with a letter so it doesn't match
 # .PHONY.
 sed -i 's/\(^[-_a-z]\+:.*\) update-chart/\1/g' ./helm/Makefile
+
+# We also need to include our own Makefile.giantswarm into the main Makefile 
+# to override image names
+sed -i '/include $(MAKEFILE_VALUES)/a include Makefile.giantswarm' ./helm/Makefile
 
 cd ./helm && make ; cd -
 

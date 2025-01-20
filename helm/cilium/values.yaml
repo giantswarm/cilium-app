@@ -1077,7 +1077,7 @@ certgen:
   image:
     override: ""
     repository: "giantswarm/cilium-certgen"
-    tag: "v0.1.12"
+    tag: "v0.1.15"
     pullPolicy: "IfNotPresent"
   # -- Seconds after which the completed job pod will be deleted
   ttlSecondsAfterFinished: 1800
@@ -1611,8 +1611,8 @@ hubble:
       image:
         override: ""
         repository: "giantswarm/hubble-ui-backend"
-        tag: "v0.13.0"
-        digest: "sha256:1e7657d997c5a48253bb8dc91ecee75b63018d16ff5e5797e5af367336bc8803"
+        tag: "v0.13.1"
+        digest: "sha256:0e0eed917653441fded4e7cdb096b7be6a3bddded5a2dd10812a27b1fc6ed95b"
         useDigest: false
         pullPolicy: "IfNotPresent"
 
@@ -1650,8 +1650,8 @@ hubble:
       image:
         override: ""
         repository: "giantswarm/hubble-ui"
-        tag: "v0.13.0"
-        digest: "sha256:7d663dc16538dd6e29061abd1047013a645e6e69c115e008bee9ea9fef9a6666"
+        tag: "v0.13.1"
+        digest: "sha256:e2e9313eb7caf64b0061d9da0efbdad59c6c461f6ca1752768942bfeda0796c6"
         useDigest: false
         pullPolicy: "IfNotPresent"
 
@@ -2259,9 +2259,9 @@ envoy:
   image:
     override: ""
     repository: "giantswarm/cilium-envoy"
-    tag: "v1.28.4-b35188ffa1bbe54d1720d2e392779f7a48e58f6b"
+    tag: "v1.30.8-1733837904-eaae5aca0fb988583e5617170a65ac5aa51c0aa8"
     pullPolicy: "IfNotPresent"
-    digest: "sha256:b528b291561e459024f66414ac3325b88cdd8f9f4854828a155a11e5b10b78a3"
+    digest: "sha256:709c08ade3d17d52da4ca2af33f431360ec26268d288d9a6cd1d98acc9a1dced"
     useDigest: true
 
   # -- Additional containers added to the cilium Envoy DaemonSet.
@@ -2585,8 +2585,8 @@ etcd:
   # -- cilium-etcd-operator image.
   image:
     override: ""
-    repository: "giantswarm/cilium-etcd-operator"
-    tag: "v2.0.7@sha256:04b8327f7f992693c2cb483b999041ed8f92efc8e14f2a5f3ab95574a65ea2dc"
+    repository: "quay.io/cilium/cilium-etcd-operator"
+    tag: "v2.0.7"
     pullPolicy: "IfNotPresent"
 
   # -- The priority class to use for cilium-etcd-operator
@@ -2931,8 +2931,8 @@ nodeinit:
   image:
     override: ""
     repository: "giantswarm/cilium-startup-script"
-    tag: "19fb149fb3d5c7a37d3edfaf10a2be3ab7386661"
-    digest: "sha256:820155cb3b7f00c8d61c1cffa68c44440906cb046bdbad8ff544f5deb1103456"
+    tag: "c54c7edeab7fde4da68e59acd319ab24af242c3f"
+    digest: "sha256:8d7b41c4ca45860254b3c19e20210462ef89479bb6331d6760c4e609d651b29c"
     useDigest: true
     pullPolicy: "IfNotPresent"
 
@@ -3688,7 +3688,7 @@ authentication:
           override: ""
           repository: "docker.io/library/busybox"
           tag: "1.36.1"
-          digest: "sha256:223ae047b1065bd069aac01ae3ac8088b3ca4a527827e283b85112f29385fb1b"
+          digest: "sha256:d75b758a4fea99ffff4db799e16f853bbde8643671b5b72464a8ba94cbe3dbe3"
           useDigest: true
           pullPolicy: "IfNotPresent"
         # SPIRE agent configuration
