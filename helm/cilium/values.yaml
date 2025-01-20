@@ -1383,8 +1383,9 @@ hubble:
     tolerations: []
 
     # -- Additional hubble-relay environment variables.
-    extraEnv: []
-
+    extraEnv:
+      - name: GOPS_CONFIG_DIR
+        value: /tmp
     # -- Annotations to be added to all top-level hubble-relay objects (resources under templates/hubble-relay)
     annotations: {}
 
@@ -1428,25 +1429,29 @@ hubble:
         maxUnavailable: 1
 
     # -- Additional hubble-relay volumes.
-    extraVolumes: []
-
+    extraVolumes:
+      - emptyDir: {}
+        name: tmp-dir
     # -- Additional hubble-relay volumeMounts.
-    extraVolumeMounts: []
-
+    extraVolumeMounts:
+      - name: tmp-dir
+        mountPath: /tmp
     # -- hubble-relay pod security context
     podSecurityContext:
       fsGroup: 65532
 
     # -- hubble-relay container security context
     securityContext:
-      # readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      readOnlyRootFilesystem: true
       runAsNonRoot: true
       runAsUser: 65532
       runAsGroup: 65532
-      capabilities:
-        drop:
-        - ALL
-
+      seccompProfile:
+        type: RuntimeDefault
     # -- hubble-relay service configuration.
     service:
       # --- The type of service used for Hubble Relay access, either ClusterIP or NodePort.
@@ -1617,8 +1622,17 @@ hubble:
         pullPolicy: "IfNotPresent"
 
       # -- Hubble-ui backend security context.
-      securityContext: {}
-
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsGroup: 65532
+        runAsNonRoot: true
+        runAsUser: 65532
+        seccompProfile:
+          type: RuntimeDefault
       # -- Additional hubble-ui backend environment variables.
       extraEnv: []
 
@@ -1656,8 +1670,17 @@ hubble:
         pullPolicy: "IfNotPresent"
 
       # -- Hubble-ui frontend security context.
-      securityContext: {}
-
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsGroup: 101
+        runAsNonRoot: true
+        runAsUser: 101
+        seccompProfile:
+          type: RuntimeDefault
       # -- Additional hubble-ui frontend environment variables.
       extraEnv: []
 
@@ -1742,10 +1765,13 @@ hubble:
 
     # -- Security context to be added to Hubble UI pods
     securityContext:
+      enabled: true
+      fsGroup: 1001
       runAsUser: 1001
       runAsGroup: 1001
-      fsGroup: 1001
-
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
     # -- hubble-ui service configuration.
     service:
       # -- Annotations to be added for the Hubble UI service
@@ -2773,8 +2799,9 @@ operator:
   extraArgs: []
 
   # -- Additional cilium-operator environment variables.
-  extraEnv: []
-
+  extraEnv:
+    - name: GOPS_CONFIG_DIR
+      value: /tmp
   # -- Additional cilium-operator hostPath mounts.
   extraHostPathMounts: []
     # - name: host-mnt-data
@@ -2785,17 +2812,21 @@ operator:
     #   mountPropagation: HostToContainer
 
   # -- Additional cilium-operator volumes.
-  extraVolumes: []
-
+  extraVolumes:
+    - emptyDir: {}
+      name: tmp-dir
   # -- Additional cilium-operator volumeMounts.
-  extraVolumeMounts: []
-
+  extraVolumeMounts:
+    - name: tmp-dir
+      mountPath: /tmp
   # -- Annotations to be added to all top-level cilium-operator objects (resources under templates/cilium-operator)
   annotations: {}
 
   # -- Security context to be added to cilium-operator pods
-  podSecurityContext: {}
-
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
   # -- Annotations to be added to cilium-operator pods
   podAnnotations: {}
 
@@ -2830,8 +2861,17 @@ operator:
     #   memory: 128Mi
 
   # -- Security context to be added to cilium-operator pods
-  securityContext: {}
-    # runAsUser: 0
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsGroup: 65532
+    runAsNonRoot: true
+    runAsUser: 65532
+    seccompProfile:
+      type: RuntimeDefault
 
   # -- Interval for endpoint garbage collection.
   endpointGCInterval: "5m0s"

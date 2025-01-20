@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index d130050..1ad0115 100644
+index d130050..457af59 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
 @@ -8,6 +8,9 @@
@@ -372,7 +372,16 @@ index d130050..1ad0115 100644
        repository: "${HUBBLE_RELAY_REPO}"
        tag: "${CILIUM_VERSION}"
         # hubble-relay-digest
-@@ -1276,7 +1386,8 @@ hubble:
+@@ -1270,13 +1380,15 @@ hubble:
+     tolerations: []
+ 
+     # -- Additional hubble-relay environment variables.
+-    extraEnv: []
+-
++    extraEnv:
++      - name: GOPS_CONFIG_DIR
++        value: /tmp
+     # -- Annotations to be added to all top-level hubble-relay objects (resources under templates/hubble-relay)
      annotations: {}
  
      # -- Annotations to be added to hubble-relay pods
@@ -382,7 +391,7 @@ index d130050..1ad0115 100644
  
      # -- Labels to be added to hubble-relay pods
      podLabels: {}
-@@ -1286,9 +1397,15 @@ hubble:
+@@ -1286,9 +1398,15 @@ hubble:
        # -- enable PodDisruptionBudget
        # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
        enabled: false
@@ -398,7 +407,7 @@ index d130050..1ad0115 100644
        # -- Maximum number/percentage of pods that may be made unavailable
        maxUnavailable: 1
  
-@@ -1302,6 +1419,9 @@ hubble:
+@@ -1302,28 +1420,35 @@ hubble:
      updateStrategy:
        type: RollingUpdate
        rollingUpdate:
@@ -408,7 +417,42 @@ index d130050..1ad0115 100644
          maxUnavailable: 1
  
      # -- Additional hubble-relay volumes.
-@@ -1363,22 +1483,34 @@ hubble:
+-    extraVolumes: []
+-
++    extraVolumes:
++      - emptyDir: {}
++        name: tmp-dir
+     # -- Additional hubble-relay volumeMounts.
+-    extraVolumeMounts: []
+-
++    extraVolumeMounts:
++      - name: tmp-dir
++        mountPath: /tmp
+     # -- hubble-relay pod security context
+     podSecurityContext:
+       fsGroup: 65532
+ 
+     # -- hubble-relay container security context
+     securityContext:
+-      # readOnlyRootFilesystem: true
++      allowPrivilegeEscalation: false
++      capabilities:
++        drop:
++          - ALL
++      readOnlyRootFilesystem: true
+       runAsNonRoot: true
+       runAsUser: 65532
+       runAsGroup: 65532
+-      capabilities:
+-        drop:
+-        - ALL
+-
++      seccompProfile:
++        type: RuntimeDefault
+     # -- hubble-relay service configuration.
+     service:
+       # --- The type of service used for Hubble Relay access, either ClusterIP or NodePort.
+@@ -1363,22 +1488,34 @@ hubble:
          # -- extra IP addresses added to certificate when its auto gen
          extraIpAddresses: []
          # DNS name used by the backend to connect to the relay
@@ -445,7 +489,7 @@ index d130050..1ad0115 100644
      # -- When the per-request flows sort buffer is not full, a flow is drained every
      # time this timeout is reached (only affects requests in follow-mode) (e.g. "1s").
      sortBufferDrainTimeout: ~
-@@ -1391,7 +1523,7 @@ hubble:
+@@ -1391,7 +1528,7 @@ hubble:
      # -- Enable prometheus metrics for hubble-relay on the configured port at
      # /metrics
      prometheus:
@@ -454,7 +498,7 @@ index d130050..1ad0115 100644
        port: 9966
        serviceMonitor:
          # -- Enable service monitors.
-@@ -1406,8 +1538,14 @@ hubble:
+@@ -1406,8 +1543,14 @@ hubble:
          # -- Specify the Kubernetes namespace where Prometheus expects to find
          # service monitors configured.
          # namespace: ""
@@ -469,7 +513,7 @@ index d130050..1ad0115 100644
          # -- Metrics relabeling configs for the ServiceMonitor hubble-relay
          metricRelabelings: ~
  
-@@ -1427,7 +1565,7 @@ hubble:
+@@ -1427,7 +1570,7 @@ hubble:
  
    ui:
      # -- Whether to enable the Hubble UI.
@@ -478,7 +522,7 @@ index d130050..1ad0115 100644
  
      standalone:
        # -- When true, it will allow installing the Hubble UI only, without checking dependencies.
-@@ -1468,11 +1606,11 @@ hubble:
+@@ -1468,16 +1611,25 @@ hubble:
      backend:
        # -- Hubble-ui backend image.
        image:
@@ -492,7 +536,23 @@ index d130050..1ad0115 100644
          pullPolicy: "${PULL_POLICY}"
  
        # -- Hubble-ui backend security context.
-@@ -1507,11 +1645,11 @@ hubble:
+-      securityContext: {}
+-
++      securityContext:
++        allowPrivilegeEscalation: false
++        capabilities:
++          drop:
++            - ALL
++        readOnlyRootFilesystem: true
++        runAsGroup: 65532
++        runAsNonRoot: true
++        runAsUser: 65532
++        seccompProfile:
++          type: RuntimeDefault
+       # -- Additional hubble-ui backend environment variables.
+       extraEnv: []
+ 
+@@ -1507,16 +1659,25 @@ hubble:
      frontend:
        # -- Hubble-ui frontend image.
        image:
@@ -506,7 +566,23 @@ index d130050..1ad0115 100644
          pullPolicy: "${PULL_POLICY}"
  
        # -- Hubble-ui frontend security context.
-@@ -1546,7 +1684,8 @@ hubble:
+-      securityContext: {}
+-
++      securityContext:
++        allowPrivilegeEscalation: false
++        capabilities:
++          drop:
++            - ALL
++        readOnlyRootFilesystem: true
++        runAsGroup: 101
++        runAsNonRoot: true
++        runAsUser: 101
++        seccompProfile:
++          type: RuntimeDefault
+       # -- Additional hubble-ui frontend environment variables.
+       extraEnv: []
+ 
+@@ -1546,7 +1707,8 @@ hubble:
      annotations: {}
  
      # -- Annotations to be added to hubble-ui pods
@@ -516,7 +592,7 @@ index d130050..1ad0115 100644
  
      # -- Labels to be added to hubble-ui pods
      podLabels: {}
-@@ -1556,9 +1695,15 @@ hubble:
+@@ -1556,9 +1718,15 @@ hubble:
        # -- enable PodDisruptionBudget
        # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
        enabled: false
@@ -532,7 +608,7 @@ index d130050..1ad0115 100644
        # -- Maximum number/percentage of pods that may be made unavailable
        maxUnavailable: 1
  
-@@ -1587,6 +1732,9 @@ hubble:
+@@ -1587,14 +1755,20 @@ hubble:
      updateStrategy:
        type: RollingUpdate
        rollingUpdate:
@@ -542,7 +618,20 @@ index d130050..1ad0115 100644
          maxUnavailable: 1
  
      # -- Security context to be added to Hubble UI pods
-@@ -1693,10 +1841,16 @@ ipam:
+     securityContext:
++      enabled: true
++      fsGroup: 1001
+       runAsUser: 1001
+       runAsGroup: 1001
+-      fsGroup: 1001
+-
++      runAsNonRoot: true
++      seccompProfile:
++        type: RuntimeDefault
+     # -- hubble-ui service configuration.
+     service:
+       # -- Annotations to be added for the Hubble UI service
+@@ -1693,10 +1867,16 @@ ipam:
    # -- Maximum rate at which the CiliumNode custom resource is updated.
    ciliumNodeUpdateRate: "15s"
    operator:
@@ -559,7 +648,7 @@ index d130050..1ad0115 100644
      # -- IPv6 CIDR list range to delegate to individual nodes for IPAM.
      clusterPoolIPv6PodCIDRList: ["fd00::/104"]
      # -- IPv6 CIDR mask size to delegate to individual nodes for IPAM.
-@@ -1713,16 +1867,25 @@ ipam:
+@@ -1713,16 +1893,25 @@ ipam:
        #     cidrs:
        #       - fd00:100::/80
        #     maskSize: 96
@@ -585,7 +674,7 @@ index d130050..1ad0115 100644
  # -- The api-rate-limit option can be used to overwrite individual settings of the default configuration for rate limiting calls to the Cilium Agent API
  apiRateLimit: ~
  
-@@ -1800,10 +1963,10 @@ l2NeighDiscovery:
+@@ -1800,10 +1989,10 @@ l2NeighDiscovery:
  l7Proxy: true
  
  # -- Enable Local Redirect Policy.
@@ -598,7 +687,7 @@ index d130050..1ad0115 100644
  
  # logOptions allows you to define logging options. eg:
  # logOptions:
-@@ -1969,6 +2132,9 @@ nodePort:
+@@ -1969,6 +2158,9 @@ nodePort:
  # ref: https://docs.cilium.io/en/stable/security/policy/intro/#policy-enforcement-modes
  policyEnforcementMode: "default"
  
@@ -608,7 +697,7 @@ index d130050..1ad0115 100644
  # -- policyCIDRMatchMode is a list of entities that may be selected by CIDR selector.
  # The possible value is "nodes".
  policyCIDRMatchMode:
-@@ -1983,7 +2149,7 @@ pprof:
+@@ -1983,7 +2175,7 @@ pprof:
  
  # -- Configure prometheus metrics on the configured port at /metrics
  prometheus:
@@ -617,7 +706,7 @@ index d130050..1ad0115 100644
    port: 9962
    serviceMonitor:
      # -- Enable service monitors.
-@@ -2006,16 +2172,23 @@ prometheus:
+@@ -2006,16 +2198,23 @@ prometheus:
            - __meta_kubernetes_pod_node_name
          targetLabel: node
          replacement: ${1}
@@ -642,7 +731,7 @@ index d130050..1ad0115 100644
  
    # --- Enable controller group metrics for monitoring specific Cilium
    # subsystems. The list is a list of controller group names. The special
-@@ -2032,6 +2205,9 @@ prometheus:
+@@ -2032,6 +2231,9 @@ prometheus:
  dashboards:
    enabled: false
    label: grafana_dashboard
@@ -652,7 +741,7 @@ index d130050..1ad0115 100644
    namespace: ~
    labelValue: "1"
    annotations: {}
-@@ -2042,6 +2218,9 @@ proxy:
+@@ -2042,6 +2244,9 @@ proxy:
    prometheus:
      # -- Deprecated in favor of envoy.prometheus.enabled
      enabled: true
@@ -662,7 +751,7 @@ index d130050..1ad0115 100644
      # -- Deprecated in favor of envoy.prometheus.port
      port: ~
    # -- Regular expression matching compatible Istio sidecar istio-proxy
-@@ -2075,7 +2254,7 @@ envoy:
+@@ -2075,7 +2280,7 @@ envoy:
  
    # -- Envoy container image.
    image:
@@ -671,7 +760,7 @@ index d130050..1ad0115 100644
      repository: "${CILIUM_ENVOY_REPO}"
      tag: "${CILIUM_ENVOY_VERSION}"
      pullPolicy: "${PULL_POLICY}"
-@@ -2117,6 +2296,9 @@ envoy:
+@@ -2117,6 +2322,9 @@ envoy:
    updateStrategy:
      type: RollingUpdate
      rollingUpdate:
@@ -681,7 +770,7 @@ index d130050..1ad0115 100644
        maxUnavailable: 2
    # -- Roll out cilium envoy pods automatically when configmap is updated.
    rollOutPods: false
-@@ -2224,9 +2406,15 @@ envoy:
+@@ -2224,9 +2432,15 @@ envoy:
      #   value: "value"
      #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
  
@@ -697,7 +786,7 @@ index d130050..1ad0115 100644
    # -- DNS policy for Cilium envoy pods.
    # Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
    dnsPolicy: ~
-@@ -2258,6 +2446,9 @@ envoy:
+@@ -2258,6 +2472,9 @@ envoy:
              - __meta_kubernetes_pod_node_name
            targetLabel: node
            replacement: ${1}
@@ -707,7 +796,7 @@ index d130050..1ad0115 100644
        # -- Metrics relabeling configs for the ServiceMonitor cilium-envoy
        # or for cilium-agent with Envoy configured.
        metricRelabelings: ~
-@@ -2390,11 +2581,9 @@ etcd:
+@@ -2390,11 +2607,9 @@ etcd:
  
    # -- cilium-etcd-operator image.
    image:
@@ -720,7 +809,7 @@ index d130050..1ad0115 100644
      pullPolicy: "${PULL_POLICY}"
  
    # -- The priority class to use for cilium-etcd-operator
-@@ -2446,9 +2635,15 @@ etcd:
+@@ -2446,9 +2661,15 @@ etcd:
      # -- enable PodDisruptionBudget
      # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
      enabled: false
@@ -736,7 +825,7 @@ index d130050..1ad0115 100644
      # -- Maximum number/percentage of pods that may be made unavailable
      maxUnavailable: 1
  
-@@ -2470,7 +2665,13 @@ etcd:
+@@ -2470,7 +2691,13 @@ etcd:
    updateStrategy:
      type: RollingUpdate
      rollingUpdate:
@@ -750,7 +839,7 @@ index d130050..1ad0115 100644
        maxUnavailable: 1
  
    # -- If etcd is behind a k8s service set this option to true so that Cilium
-@@ -2498,7 +2699,7 @@ operator:
+@@ -2498,7 +2725,7 @@ operator:
  
    # -- cilium-operator image.
    image:
@@ -759,7 +848,7 @@ index d130050..1ad0115 100644
      repository: "${CILIUM_OPERATOR_BASE_REPO}"
      tag: "${CILIUM_VERSION}"
      # operator-generic-digest
-@@ -2527,7 +2728,13 @@ operator:
+@@ -2527,7 +2754,13 @@ operator:
    updateStrategy:
      type: RollingUpdate
      rollingUpdate:
@@ -773,7 +862,47 @@ index d130050..1ad0115 100644
        maxUnavailable: 50%
  
    # -- Affinity for cilium-operator
-@@ -2596,10 +2803,16 @@ operator:
+@@ -2563,8 +2796,9 @@ operator:
+   extraArgs: []
+ 
+   # -- Additional cilium-operator environment variables.
+-  extraEnv: []
+-
++  extraEnv:
++    - name: GOPS_CONFIG_DIR
++      value: /tmp
+   # -- Additional cilium-operator hostPath mounts.
+   extraHostPathMounts: []
+     # - name: host-mnt-data
+@@ -2575,17 +2809,21 @@ operator:
+     #   mountPropagation: HostToContainer
+ 
+   # -- Additional cilium-operator volumes.
+-  extraVolumes: []
+-
++  extraVolumes:
++    - emptyDir: {}
++      name: tmp-dir
+   # -- Additional cilium-operator volumeMounts.
+-  extraVolumeMounts: []
+-
++  extraVolumeMounts:
++    - name: tmp-dir
++      mountPath: /tmp
+   # -- Annotations to be added to all top-level cilium-operator objects (resources under templates/cilium-operator)
+   annotations: {}
+ 
+   # -- Security context to be added to cilium-operator pods
+-  podSecurityContext: {}
+-
++  podSecurityContext:
++    runAsNonRoot: true
++    seccompProfile:
++      type: RuntimeDefault
+   # -- Annotations to be added to cilium-operator pods
+   podAnnotations: {}
+ 
+@@ -2596,10 +2834,16 @@ operator:
    podDisruptionBudget:
      # -- enable PodDisruptionBudget
      # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
@@ -791,7 +920,27 @@ index d130050..1ad0115 100644
      # -- Maximum number/percentage of pods that may be made unavailable
      maxUnavailable: 1
  
-@@ -2657,8 +2870,14 @@ operator:
+@@ -2614,8 +2858,17 @@ operator:
+     #   memory: 128Mi
+ 
+   # -- Security context to be added to cilium-operator pods
+-  securityContext: {}
+-    # runAsUser: 0
++  securityContext:
++    allowPrivilegeEscalation: false
++    capabilities:
++      drop:
++      - ALL
++    readOnlyRootFilesystem: true
++    runAsGroup: 65532
++    runAsNonRoot: true
++    runAsUser: 65532
++    seccompProfile:
++      type: RuntimeDefault
+ 
+   # -- Interval for endpoint garbage collection.
+   endpointGCInterval: "5m0s"
+@@ -2657,8 +2910,14 @@ operator:
        jobLabel: ""
        # -- Interval for scrape metrics.
        interval: "10s"
@@ -806,7 +955,7 @@ index d130050..1ad0115 100644
        # -- Metrics relabeling configs for the ServiceMonitor cilium-operator
        metricRelabelings: ~
  
-@@ -2668,6 +2887,9 @@ operator:
+@@ -2668,6 +2927,9 @@ operator:
    dashboards:
      enabled: false
      label: grafana_dashboard
@@ -816,7 +965,7 @@ index d130050..1ad0115 100644
      namespace: ~
      labelValue: "1"
      annotations: {}
-@@ -2679,6 +2901,9 @@ operator:
+@@ -2679,6 +2941,9 @@ operator:
    # pod running.
    removeNodeTaints: true
  
@@ -826,7 +975,7 @@ index d130050..1ad0115 100644
    # -- Taint nodes where Cilium is scheduled but not running. This prevents pods
    # from being scheduled to nodes where Cilium is not the default CNI provider.
    # @default -- same as removeNodeTaints
-@@ -2701,7 +2926,7 @@ nodeinit:
+@@ -2701,7 +2966,7 @@ nodeinit:
  
    # -- node-init image.
    image:
@@ -835,7 +984,7 @@ index d130050..1ad0115 100644
      repository: "${CILIUM_NODEINIT_REPO}"
      tag: "${CILIUM_NODEINIT_VERSION}"
      digest: "${CILIUM_NODEINIT_DIGEST}"
-@@ -2799,7 +3024,7 @@ preflight:
+@@ -2799,7 +3064,7 @@ preflight:
  
    # -- Cilium pre-flight image.
    image:
@@ -844,7 +993,7 @@ index d130050..1ad0115 100644
      repository: "${CILIUM_REPO}"
      tag: "${CILIUM_VERSION}"
      # cilium-digest
-@@ -2873,9 +3098,15 @@ preflight:
+@@ -2873,9 +3138,15 @@ preflight:
      # -- enable PodDisruptionBudget
      # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
      enabled: false
@@ -860,7 +1009,7 @@ index d130050..1ad0115 100644
      # -- Maximum number/percentage of pods that may be made unavailable
      maxUnavailable: 1
  
-@@ -2961,7 +3192,7 @@ clustermesh:
+@@ -2961,7 +3232,7 @@ clustermesh:
    apiserver:
      # -- Clustermesh API server image.
      image:
@@ -869,7 +1018,7 @@ index d130050..1ad0115 100644
        repository: "${CLUSTERMESH_APISERVER_REPO}"
        tag: "${CILIUM_VERSION}"
        # clustermesh-apiserver-digest
-@@ -3056,11 +3287,17 @@ clustermesh:
+@@ -3056,11 +3327,17 @@ clustermesh:
        # For EKS LoadBalancer, use annotation service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
        annotations: {}
  
@@ -889,7 +1038,7 @@ index d130050..1ad0115 100644
  
        # @schema
        # type: [null, string]
-@@ -3115,9 +3352,15 @@ clustermesh:
+@@ -3115,9 +3392,15 @@ clustermesh:
        # -- enable PodDisruptionBudget
        # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
        enabled: false
@@ -905,7 +1054,7 @@ index d130050..1ad0115 100644
        # -- Maximum number/percentage of pods that may be made unavailable
        maxUnavailable: 1
  
-@@ -3166,6 +3409,9 @@ clustermesh:
+@@ -3166,6 +3449,9 @@ clustermesh:
      updateStrategy:
        type: RollingUpdate
        rollingUpdate:
@@ -915,7 +1064,7 @@ index d130050..1ad0115 100644
          maxUnavailable: 1
  
      # -- The priority class to use for clustermesh-apiserver
-@@ -3288,24 +3534,42 @@ clustermesh:
+@@ -3288,24 +3574,42 @@ clustermesh:
  
          # -- Interval for scrape metrics (apiserver metrics)
          interval: "10s"
@@ -958,7 +1107,7 @@ index d130050..1ad0115 100644
            # -- Metrics relabeling configs for the ServiceMonitor clustermesh-apiserver (etcd metrics)
            metricRelabelings: ~
  
-@@ -3418,7 +3682,7 @@ authentication:
+@@ -3418,7 +3722,7 @@ authentication:
          existingNamespace: false
          # -- init container image of SPIRE agent and server
          initImage:
@@ -967,7 +1116,7 @@ index d130050..1ad0115 100644
            repository: "${SPIRE_INIT_REPO}"
            tag: "${SPIRE_INIT_VERSION}"
            digest: "${SPIRE_INIT_DIGEST}"
-@@ -3428,7 +3692,7 @@ authentication:
+@@ -3428,7 +3732,7 @@ authentication:
          agent:
            # -- SPIRE agent image
            image:
@@ -976,7 +1125,7 @@ index d130050..1ad0115 100644
              repository: "${SPIRE_AGENT_REPO}"
              tag: "${SPIRE_AGENT_VERSION}"
              digest: "${SPIRE_AGENT_DIGEST}"
-@@ -3476,7 +3740,7 @@ authentication:
+@@ -3476,7 +3780,7 @@ authentication:
          server:
            # -- SPIRE server image
            image:
@@ -985,7 +1134,7 @@ index d130050..1ad0115 100644
              repository: "${SPIRE_SERVER_REPO}"
              tag: "${SPIRE_SERVER_VERSION}"
              digest: "${SPIRE_SERVER_DIGEST}"
-@@ -3516,6 +3780,9 @@ authentication:
+@@ -3516,6 +3820,9 @@ authentication:
              size: 1Gi
              # -- Access mode of the SPIRE server data storage
              accessMode: ReadWriteOnce
@@ -995,7 +1144,7 @@ index d130050..1ad0115 100644
              # -- StorageClass of the SPIRE server data storage
              storageClass: null
            # -- Security context to be added to spire server pods.
-@@ -3536,6 +3803,9 @@ authentication:
+@@ -3536,6 +3843,9 @@ authentication:
                country: "US"
                organization: "SPIRE"
                commonName: "Cilium SPIRE CA"
@@ -1005,7 +1154,7 @@ index d130050..1ad0115 100644
        # -- SPIRE server address used by Cilium Operator
        #
        # If k8s Service DNS along with port number is used (e.g. <service-name>.<namespace>.svc(.*):<port-number> format),
-@@ -3552,3 +3822,40 @@ authentication:
+@@ -3552,3 +3862,40 @@ authentication:
        agentSocketPath: /run/spire/sockets/agent/agent.sock
        # -- SPIRE connection timeout
        connectionTimeout: 30s
