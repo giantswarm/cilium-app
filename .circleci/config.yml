@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  architect: giantswarm/architect@5.4.0
+  architect: giantswarm/architect@5.11.4
 
 workflows:
   package-and-push-chart-on-tag:
@@ -15,3 +15,7 @@ workflows:
           filters:
             tags:
               only: /^v.*/
+            branches:
+              ignore:
+              - main
+              - master
