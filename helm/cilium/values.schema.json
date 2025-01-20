@@ -1015,6 +1015,18 @@
                     "Cluster"
                   ]
                 },
+                "loadBalancerClass": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "loadBalancerIP": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
                 "nodePort": {
                   "type": "integer"
                 },
@@ -1368,6 +1380,9 @@
         },
         "proxyResponseMaxDelay": {
           "type": "string"
+        },
+        "socketLingerTimeout": {
+          "type": "integer"
         }
       },
       "type": "object"
@@ -5063,6 +5078,14 @@
     },
     "synchronizeK8sNodes": {
       "type": "boolean"
+    },
+    "sysctlfix": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
     },
     "terminationGracePeriodSeconds": {
       "type": "integer"

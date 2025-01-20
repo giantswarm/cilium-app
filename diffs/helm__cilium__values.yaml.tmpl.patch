@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index 679b4ca..1ba50fc 100644
+index d130050..1ad0115 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
 @@ -8,6 +8,9 @@
@@ -869,7 +869,7 @@ index 679b4ca..1ba50fc 100644
        repository: "${CLUSTERMESH_APISERVER_REPO}"
        tag: "${CILIUM_VERSION}"
        # clustermesh-apiserver-digest
-@@ -3059,12 +3290,17 @@ clustermesh:
+@@ -3056,11 +3287,17 @@ clustermesh:
        # For EKS LoadBalancer, use annotation service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
        annotations: {}
  
@@ -885,12 +885,11 @@ index 679b4ca..1ba50fc 100644
 +      # @schema
        # -- The internalTrafficPolicy of service used for apiserver access.
 -      internalTrafficPolicy:
--
 +      internalTrafficPolicy: Cluster
-     # -- Number of replicas run for the clustermesh-apiserver deployment.
-     replicas: 1
  
-@@ -3103,9 +3339,15 @@ clustermesh:
+       # @schema
+       # type: [null, string]
+@@ -3115,9 +3352,15 @@ clustermesh:
        # -- enable PodDisruptionBudget
        # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
        enabled: false
@@ -906,7 +905,7 @@ index 679b4ca..1ba50fc 100644
        # -- Maximum number/percentage of pods that may be made unavailable
        maxUnavailable: 1
  
-@@ -3154,6 +3396,9 @@ clustermesh:
+@@ -3166,6 +3409,9 @@ clustermesh:
      updateStrategy:
        type: RollingUpdate
        rollingUpdate:
@@ -916,7 +915,7 @@ index 679b4ca..1ba50fc 100644
          maxUnavailable: 1
  
      # -- The priority class to use for clustermesh-apiserver
-@@ -3276,24 +3521,42 @@ clustermesh:
+@@ -3288,24 +3534,42 @@ clustermesh:
  
          # -- Interval for scrape metrics (apiserver metrics)
          interval: "10s"
@@ -959,7 +958,7 @@ index 679b4ca..1ba50fc 100644
            # -- Metrics relabeling configs for the ServiceMonitor clustermesh-apiserver (etcd metrics)
            metricRelabelings: ~
  
-@@ -3401,7 +3664,7 @@ authentication:
+@@ -3418,7 +3682,7 @@ authentication:
          existingNamespace: false
          # -- init container image of SPIRE agent and server
          initImage:
@@ -968,7 +967,7 @@ index 679b4ca..1ba50fc 100644
            repository: "${SPIRE_INIT_REPO}"
            tag: "${SPIRE_INIT_VERSION}"
            digest: "${SPIRE_INIT_DIGEST}"
-@@ -3411,7 +3674,7 @@ authentication:
+@@ -3428,7 +3692,7 @@ authentication:
          agent:
            # -- SPIRE agent image
            image:
@@ -977,7 +976,7 @@ index 679b4ca..1ba50fc 100644
              repository: "${SPIRE_AGENT_REPO}"
              tag: "${SPIRE_AGENT_VERSION}"
              digest: "${SPIRE_AGENT_DIGEST}"
-@@ -3459,7 +3722,7 @@ authentication:
+@@ -3476,7 +3740,7 @@ authentication:
          server:
            # -- SPIRE server image
            image:
@@ -986,7 +985,7 @@ index 679b4ca..1ba50fc 100644
              repository: "${SPIRE_SERVER_REPO}"
              tag: "${SPIRE_SERVER_VERSION}"
              digest: "${SPIRE_SERVER_DIGEST}"
-@@ -3499,6 +3762,9 @@ authentication:
+@@ -3516,6 +3780,9 @@ authentication:
              size: 1Gi
              # -- Access mode of the SPIRE server data storage
              accessMode: ReadWriteOnce
@@ -996,7 +995,7 @@ index 679b4ca..1ba50fc 100644
              # -- StorageClass of the SPIRE server data storage
              storageClass: null
            # -- Security context to be added to spire server pods.
-@@ -3519,6 +3785,9 @@ authentication:
+@@ -3536,6 +3803,9 @@ authentication:
                country: "US"
                organization: "SPIRE"
                commonName: "Cilium SPIRE CA"
@@ -1006,7 +1005,7 @@ index 679b4ca..1ba50fc 100644
        # -- SPIRE server address used by Cilium Operator
        #
        # If k8s Service DNS along with port number is used (e.g. <service-name>.<namespace>.svc(.*):<port-number> format),
-@@ -3535,3 +3804,40 @@ authentication:
+@@ -3552,3 +3822,40 @@ authentication:
        agentSocketPath: /run/spire/sockets/agent/agent.sock
        # -- SPIRE connection timeout
        connectionTimeout: 30s
