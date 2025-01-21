@@ -9,12 +9,12 @@ replace github.com/alessio/shellescape => al.essio.dev/pkg/shellescape v1.5.1
 require (
 	github.com/cilium/cilium v1.17.0-rc.1
 	github.com/fluxcd/helm-controller/api v1.1.0
-	github.com/giantswarm/apptest-framework v1.10.2
+	github.com/giantswarm/apptest-framework v1.11.0
 	github.com/giantswarm/clustertest v1.32.1
 	github.com/onsi/ginkgo/v2 v2.22.2
 	github.com/onsi/gomega v1.36.2
 	k8s.io/api v0.32.0
-	k8s.io/apimachinery v0.32.0
+	k8s.io/apimachinery v0.32.1
 )
 
 require (
@@ -72,7 +72,7 @@ require (
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.7.0 // indirect
 	github.com/giantswarm/apiextensions-application v0.6.2 // indirect
-	github.com/giantswarm/cluster-standup-teardown v1.25.5 // indirect
+	github.com/giantswarm/cluster-standup-teardown v1.28.0 // indirect
 	github.com/giantswarm/k8smetadata v0.25.0 // indirect
 	github.com/giantswarm/kubectl-gs/v2 v2.57.0 // indirect
 	github.com/giantswarm/microerror v0.4.1 // indirect
@@ -236,7 +236,7 @@ require (
 	k8s.io/utils v0.0.0-20241210054802-24370beab758 // indirect
 	oras.land/oras-go v1.2.6 // indirect
 	sigs.k8s.io/cluster-api v1.9.3 // indirect
-	sigs.k8s.io/controller-runtime v0.19.4 // indirect
+	sigs.k8s.io/controller-runtime v0.20.0 // indirect
 	sigs.k8s.io/e2e-framework v0.5.0 // indirect
 	sigs.k8s.io/gateway-api v1.2.1 // indirect
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 // indirect
