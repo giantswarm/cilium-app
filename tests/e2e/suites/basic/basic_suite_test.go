@@ -114,7 +114,7 @@ func TestBasic(t *testing.T) {
 				err = os.WriteFile(tmpKubeconfig, []byte(kubeconfig), 0644)
 				Expect(err).ShouldNot(HaveOccurred())
 
-				k8sClient, err := k8s.NewClient("", tmpKubeconfig, ciliumNamespace)
+				k8sClient, err := k8s.NewClient("", tmpKubeconfig, ciliumNamespace, "", nil)
 				Expect(err).ShouldNot(HaveOccurred())
 				ctx := api.SetNamespaceContextValue(context.Background(), ciliumNamespace)
 				ctx = api.SetK8sClientContextValue(ctx, k8sClient)
