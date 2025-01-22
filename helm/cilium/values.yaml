@@ -2611,7 +2611,7 @@ etcd:
   # -- cilium-etcd-operator image.
   image:
     override: ""
-    repository: "quay.io/cilium/cilium-etcd-operator"
+    repository: "giantswarm/cilium-etcd-operator"
     tag: "v2.0.7"
     pullPolicy: "IfNotPresent"
 

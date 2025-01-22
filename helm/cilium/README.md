@@ -390,7 +390,7 @@ contributors across the globe, there is almost always someone available to help.
 | etcd.extraArgs | list | `[]` | Additional cilium-etcd-operator container arguments. |
 | etcd.extraVolumeMounts | list | `[]` | Additional cilium-etcd-operator volumeMounts. |
 | etcd.extraVolumes | list | `[]` | Additional cilium-etcd-operator volumes. |
-| etcd.image | object | `{"override":"","pullPolicy":"IfNotPresent","repository":"quay.io/cilium/cilium-etcd-operator","tag":"v2.0.7"}` | cilium-etcd-operator image. |
+| etcd.image | object | `{"override":"","pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-etcd-operator","tag":"v2.0.7"}` | cilium-etcd-operator image. |
 | etcd.k8sService | bool | `false` | If etcd is behind a k8s service set this option to true so that Cilium does the service translation automatically without requiring a DNS to be running. |
 | etcd.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for cilium-etcd-operator pod assignment ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
 | etcd.podAnnotations | object | `{}` | Annotations to be added to cilium-etcd-operator pods |
