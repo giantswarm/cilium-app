@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/clustermesh-apiserver/deployment.yaml b/helm/cilium/templates/clustermesh-apiserver/deployment.yaml
-index 6c5e6c3..332c655 100644
+index f0d551b..a91d4fb 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/clustermesh-apiserver/deployment.yaml
 +++ b/helm/cilium/templates/clustermesh-apiserver/deployment.yaml
 @@ -48,7 +48,7 @@ spec:

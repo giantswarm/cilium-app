@@ -1,0 +1,13 @@
+export CILIUM_REPO:=giantswarm/cilium
+export CILIUM_OPERATOR_BASE_REPO:=giantswarm/cilium-operator
+export CLUSTERMESH_APISERVER_REPO:=giantswarm/cilium-clustermesh-apiserver
+export HUBBLE_RELAY_REPO:=giantswarm/hubble-relay
+export CERTGEN_REPO:=giantswarm/cilium-certgen
+export CILIUM_NODEINIT_REPO:=giantswarm/cilium-startup-script
+export CILIUM_ENVOY_REPO:=giantswarm/cilium-envoy
+export CILIUM_ETCD_OPERATOR_REPO:=giantswarm/cilium-etcd-operator
+export HUBBLE_UI_BACKEND_REPO:=giantswarm/hubble-ui-backend
+export HUBBLE_UI_FRONTEND_REPO:=giantswarm/hubble-ui
+export SPIRE_INIT_REPO:=docker.io/library/busybox
+export SPIRE_SERVER_REPO:=ghcr.io/spiffe/spire-server
+export SPIRE_AGENT_REPO:=ghcr.io/spiffe/spire-agent

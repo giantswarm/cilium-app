@@ -1380,8 +1380,9 @@ hubble:
     tolerations: []
 
     # -- Additional hubble-relay environment variables.
-    extraEnv: []
-
+    extraEnv:
+      - name: GOPS_CONFIG_DIR
+        value: /tmp
     # -- Annotations to be added to all top-level hubble-relay objects (resources under templates/hubble-relay)
     annotations: {}
 
@@ -1425,25 +1426,29 @@ hubble:
         maxUnavailable: 1
 
     # -- Additional hubble-relay volumes.
-    extraVolumes: []
-
+    extraVolumes:
+      - emptyDir: {}
+        name: tmp-dir
     # -- Additional hubble-relay volumeMounts.
-    extraVolumeMounts: []
-
+    extraVolumeMounts:
+      - name: tmp-dir
+        mountPath: /tmp
     # -- hubble-relay pod security context
     podSecurityContext:
       fsGroup: 65532
 
     # -- hubble-relay container security context
     securityContext:
-      # readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      readOnlyRootFilesystem: true
       runAsNonRoot: true
       runAsUser: 65532
       runAsGroup: 65532
-      capabilities:
-        drop:
-        - ALL
-
+      seccompProfile:
+        type: RuntimeDefault
     # -- hubble-relay service configuration.
     service:
       # --- The type of service used for Hubble Relay access, either ClusterIP or NodePort.
@@ -1614,8 +1619,17 @@ hubble:
         pullPolicy: "${PULL_POLICY}"
 
       # -- Hubble-ui backend security context.
-      securityContext: {}
-
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsGroup: 65532
+        runAsNonRoot: true
+        runAsUser: 65532
+        seccompProfile:
+          type: RuntimeDefault
       # -- Additional hubble-ui backend environment variables.
       extraEnv: []
 
@@ -1653,8 +1667,17 @@ hubble:
         pullPolicy: "${PULL_POLICY}"
 
       # -- Hubble-ui frontend security context.
-      securityContext: {}
-
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsGroup: 101
+        runAsNonRoot: true
+        runAsUser: 101
+        seccompProfile:
+          type: RuntimeDefault
       # -- Additional hubble-ui frontend environment variables.
       extraEnv: []
 
@@ -1739,10 +1762,13 @@ hubble:
 
     # -- Security context to be added to Hubble UI pods
     securityContext:
+      enabled: true
+      fsGroup: 1001
       runAsUser: 1001
       runAsGroup: 1001
-      fsGroup: 1001
-
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
     # -- hubble-ui service configuration.
     service:
       # -- Annotations to be added for the Hubble UI service
@@ -2770,8 +2796,9 @@ operator:
   extraArgs: []
 
   # -- Additional cilium-operator environment variables.
-  extraEnv: []
-
+  extraEnv:
+    - name: GOPS_CONFIG_DIR
+      value: /tmp
   # -- Additional cilium-operator hostPath mounts.
   extraHostPathMounts: []
     # - name: host-mnt-data
@@ -2782,17 +2809,21 @@ operator:
     #   mountPropagation: HostToContainer
 
   # -- Additional cilium-operator volumes.
-  extraVolumes: []
-
+  extraVolumes:
+    - emptyDir: {}
+      name: tmp-dir
   # -- Additional cilium-operator volumeMounts.
-  extraVolumeMounts: []
-
+  extraVolumeMounts:
+    - name: tmp-dir
+      mountPath: /tmp
   # -- Annotations to be added to all top-level cilium-operator objects (resources under templates/cilium-operator)
   annotations: {}
 
   # -- Security context to be added to cilium-operator pods
-  podSecurityContext: {}
-
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
   # -- Annotations to be added to cilium-operator pods
   podAnnotations: {}
 
@@ -2827,8 +2858,17 @@ operator:
     #   memory: 128Mi
 
   # -- Security context to be added to cilium-operator pods
-  securityContext: {}
-    # runAsUser: 0
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsGroup: 65532
+    runAsNonRoot: true
+    runAsUser: 65532
+    seccompProfile:
+      type: RuntimeDefault
 
   # -- Interval for endpoint garbage collection.
   endpointGCInterval: "5m0s"
@@ -3282,9 +3322,6 @@ clustermesh:
       # NodePort will be redirected to a local backend, regardless of whether the
       # destination node belongs to the local or the remote cluster.
       nodePort: 32379
-      # -- Optional loadBalancer IP address to use with type LoadBalancer.
-      # loadBalancerIP:
-
       # -- Annotations for the clustermesh-apiserver
       # For GKE LoadBalancer, use annotation cloud.google.com/load-balancer-type: "Internal"
       # For EKS LoadBalancer, use annotation service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
@@ -3301,6 +3338,22 @@ clustermesh:
       # @schema
       # -- The internalTrafficPolicy of service used for apiserver access.
       internalTrafficPolicy: Cluster
+
+      # @schema
+      # type: [null, string]
+      # @schema
+      # -- Configure a loadBalancerClass.
+      # Allows to configure the loadBalancerClass on the clustermesh-apiserver
+      # LB service in case the Service type is set to LoadBalancer
+      # (requires Kubernetes 1.24+).
+      loadBalancerClass: ~
+      # @schema
+      # type: [null, string]
+      # @schema
+      # -- Configure a specific loadBalancerIP.
+      # Allows to configure a specific loadBalancerIP on the clustermesh-apiserver
+      # LB service in case the Service type is set to LoadBalancer.
+      loadBalancerIP: ~
     # -- Number of replicas run for the clustermesh-apiserver deployment.
     replicas: 1
 
@@ -3585,7 +3638,10 @@ cgroup:
       #   memory: 128Mi
   # -- Configure cgroup root where cgroup2 filesystem is mounted on the host (see also: `cgroup.autoMount`)
   hostRoot: /run/cilium/cgroupv2
-
+# -- Configure sysctl override described in #20072.
+sysctlfix:
+  # -- Enable the sysctl override. When enabled, the init container will mount the /proc of the host so that the `sysctlfix` utility can execute.
+  enabled: true
 # -- Configure whether to enable auto detect of terminating state for endpoints
 # in order to support graceful termination.
 enableK8sTerminatingEndpoint: true
@@ -3598,6 +3654,8 @@ enableK8sTerminatingEndpoint: true
 agentNotReadyTaintKey: "node.cilium.io/agent-not-ready"
 
 dnsProxy:
+  # -- Timeout (in seconds) when closing the connection between the DNS proxy and the upstream server. If set to 0, the connection is closed immediately (with TCP RST). If set to -1, the connection is closed asynchronously in the background.
+  socketLingerTimeout: 10
   # -- DNS response code for rejecting DNS requests, available options are '[nameError refused]'.
   dnsRejectResponseCode: refused
   # -- Allow the DNS proxy to compress responses to endpoints that are larger than 512 Bytes or the EDNS0 option, if present.

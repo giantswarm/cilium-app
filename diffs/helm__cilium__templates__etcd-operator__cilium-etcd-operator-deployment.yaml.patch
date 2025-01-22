@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/etcd-operator/cilium-etcd-operator-deployment.yaml b/helm/cilium/templates/etcd-operator/cilium-etcd-operator-deployment.yaml
-index 5946219..e5b730b 100644
+index 7aefc0d..9802aed 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/etcd-operator/cilium-etcd-operator-deployment.yaml
 +++ b/helm/cilium/templates/etcd-operator/cilium-etcd-operator-deployment.yaml
 @@ -94,7 +94,7 @@ spec:

@@ -57,11 +57,10 @@ ifeq ($(DOCKER_IMAGE_TAG),)
     DOCKER_IMAGE_TAG=latest
 endif
 
-ifeq ($(shell uname -m),aarch64)
-    ETCD_IMAGE=quay.io/coreos/etcd:v3.3.20-arm64
-else
-    ETCD_IMAGE=quay.io/coreos/etcd:v3.3.20
-endif
+# renovate: datasource=docker depName=gcr.io/etcd-development/etcd
+ETCD_IMAGE_VERSION = v3.5.17
+ETCD_IMAGE_SHA = sha256:15b1882f07aeaf357a48fbbcf35a566ae3ea110395704711488ea263fa86838d
+ETCD_IMAGE=gcr.io/etcd-development/etcd:$(ETCD_IMAGE_VERSION)@$(ETCD_IMAGE_SHA)
 
 CONSUL_IMAGE=consul:1.7.2
 
@@ -70,8 +69,10 @@ CILIUM_BUILDER_IMAGE=$(shell cat $(ROOT_DIR)/images/cilium/Dockerfile | grep "AR
 export CILIUM_CLI ?= cilium
 export KUBECTL ?= kubectl
 
+# renovate: datasource=docker depName=quay.io/goswagger/swagger
 SWAGGER_VERSION := v0.30.3
-SWAGGER := $(CONTAINER_ENGINE) run -u $(shell id -u):$(shell id -g) --rm -v $(ROOT_DIR):$(ROOT_DIR) -w $(ROOT_DIR) --entrypoint swagger quay.io/goswagger/swagger:$(SWAGGER_VERSION)
+SWAGGER_IMAGE_SHA = sha256:3118f9292ba3eb6c9d434932fbae2ef07137b3043c23196bcddcb688a7029526
+SWAGGER := $(CONTAINER_ENGINE) run -u $(shell id -u):$(shell id -g) --rm -v $(ROOT_DIR):$(ROOT_DIR) -w $(ROOT_DIR) --entrypoint swagger quay.io/goswagger/swagger:$(SWAGGER_VERSION)@$(SWAGGER_IMAGE_SHA)
 
 # go build/test/clean flags
 # these are declared here so they are treated explicitly
