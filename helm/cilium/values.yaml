@@ -168,7 +168,7 @@ image:
   registry: gsoci.azurecr.io
   override: ""
   repository: "giantswarm/cilium"
-  tag: "v1.15.12"
+  tag: "v1.15.13"
   pullPolicy: "IfNotPresent"
   # cilium-digest
   digest: ""
@@ -1077,7 +1077,7 @@ certgen:
   image:
     override: ""
     repository: "giantswarm/cilium-certgen"
-    tag: "v0.1.15"
+    tag: "v0.1.16"
     pullPolicy: "IfNotPresent"
   # -- Seconds after which the completed job pod will be deleted
   ttlSecondsAfterFinished: 1800
@@ -1346,7 +1346,7 @@ hubble:
     image:
       override: ""
       repository: "giantswarm/hubble-relay"
-      tag: "v1.15.12"
+      tag: "v1.15.13"
        # hubble-relay-digest
       digest: ""
       useDigest: false
@@ -2285,9 +2285,9 @@ envoy:
   image:
     override: ""
     repository: "giantswarm/cilium-envoy"
-    tag: "v1.30.8-1733837904-eaae5aca0fb988583e5617170a65ac5aa51c0aa8"
+    tag: "v1.30.9-1734953328-6db0e437ba7ed2169f032ceec25922dd06e0b12b"
     pullPolicy: "IfNotPresent"
-    digest: "sha256:709c08ade3d17d52da4ca2af33f431360ec26268d288d9a6cd1d98acc9a1dced"
+    digest: "sha256:5c6d21a908235b697e41951d7aa59cc250642b5b54827e8d13e1bdd345a139f9"
     useDigest: true
 
   # -- Additional containers added to the cilium Envoy DaemonSet.
@@ -2730,7 +2730,7 @@ operator:
   image:
     override: ""
     repository: "giantswarm/cilium-operator"
-    tag: "v1.15.12"
+    tag: "v1.15.13"
     # operator-generic-digest
     genericDigest: ""
     # operator-azure-digest
@@ -3069,7 +3069,7 @@ preflight:
   image:
     override: ""
     repository: "giantswarm/cilium"
-    tag: "v1.15.12"
+    tag: "v1.15.13"
     # cilium-digest
     digest: ""
     useDigest: false
@@ -3237,7 +3237,7 @@ clustermesh:
     image:
       override: ""
       repository: "giantswarm/cilium-clustermesh-apiserver"
-      tag: "v1.15.12"
+      tag: "v1.15.13"
       # clustermesh-apiserver-digest
       digest: ""
       useDigest: false
@@ -3728,7 +3728,7 @@ authentication:
           override: ""
           repository: "docker.io/library/busybox"
           tag: "1.36.1"
-          digest: "sha256:d75b758a4fea99ffff4db799e16f853bbde8643671b5b72464a8ba94cbe3dbe3"
+          digest: "sha256:7c3c3cea5d4d6133d6a694d23382f6a7b32652f23855abdba3eb039ca5995447"
           useDigest: true
           pullPolicy: "IfNotPresent"
         # SPIRE agent configuration
