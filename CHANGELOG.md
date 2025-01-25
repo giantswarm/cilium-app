@@ -51,6 +51,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Hubble Relay
   - Cilium Operator
 
+## [0.25.2] - 2025-01-22
+
+### Changed
+
+- Upgrade cilium to [v1.15.13](https://github.com/cilium/cilium/releases/tag/v1.15.13).
+
 ## [0.25.1] - 2024-06-26
 
 ### Changed
@@ -357,7 +363,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.29.0]: https://github.com/giantswarm/cilium-app/compare/v0.28.0...v0.29.0
 [0.28.0]: https://github.com/giantswarm/cilium-app/compare/v0.27.0...v0.28.0
 [0.27.0]: https://github.com/giantswarm/cilium-app/compare/v0.26.0...v0.27.0
-[0.26.0]: https://github.com/giantswarm/cilium-app/compare/v0.25.1...v0.26.0
+[0.26.0]: https://github.com/giantswarm/cilium-app/compare/v0.25.2...v0.26.0
+[0.25.2]: https://github.com/giantswarm/cilium-app/compare/v0.25.1...v0.25.2
 [0.25.1]: https://github.com/giantswarm/cilium-app/compare/v0.25.0...v0.25.1
 [0.25.0]: https://github.com/giantswarm/cilium-app/compare/v0.24.0...v0.25.0
 [0.24.0]: https://github.com/giantswarm/cilium-app/compare/v0.23.0...v0.24.0
