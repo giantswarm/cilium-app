@@ -7,7 +7,7 @@ replace github.com/imdario/mergo => github.com/imdario/mergo v0.3.16
 replace github.com/alessio/shellescape => al.essio.dev/pkg/shellescape v1.5.1
 
 require (
-	github.com/cilium/cilium v1.17.0-rc.1
+	github.com/cilium/cilium v1.17.0-rc.2
 	github.com/fluxcd/helm-controller/api v1.1.0
 	github.com/giantswarm/apptest-framework v1.11.0
 	github.com/giantswarm/clustertest v1.32.1
@@ -37,7 +37,7 @@ require (
 	github.com/chai2010/gettext-go v1.0.3 // indirect
 	github.com/cilium/charts v0.0.0-20241213141006-a9d85774177e // indirect
 	github.com/cilium/ebpf v0.17.1 // indirect
-	github.com/cilium/hive v0.0.0-20241213121623-605c1412b9b3 // indirect
+	github.com/cilium/hive v0.0.0-20250121145729-e67f66eb0375 // indirect
 	github.com/cilium/proxy v0.0.0-20241115112946-fb67566cbd95 // indirect
 	github.com/cilium/statedb v0.3.4 // indirect
 	github.com/cilium/stream v0.0.0-20241203114243-53c3e5d79744 // indirect
@@ -242,7 +242,7 @@ require (
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 // indirect
 	sigs.k8s.io/kustomize/api v0.18.0 // indirect
 	sigs.k8s.io/kustomize/kyaml v0.18.1 // indirect
-	sigs.k8s.io/mcs-api v0.1.1-0.20241209122601-8690854b517f // indirect
+	sigs.k8s.io/mcs-api v0.1.1-0.20250116162235-62ede9a032dc // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.2 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
