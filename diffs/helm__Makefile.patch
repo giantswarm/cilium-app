@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/Makefile b/helm/Makefile
-index d8f3848..0e65362 100644
+index 8670d32..8873030 100644
 --- a/vendor/cilium/install/kubernetes/Makefile
 +++ b/helm/Makefile
 @@ -3,8 +3,9 @@
@@ -24,7 +24,7 @@ index d8f3848..0e65362 100644
  	--volume $(CURDIR):$(CURDIR) \
  	--user "$(shell id -u):$(shell id -g)"
  HELM_DOCS := $(DOCKER_RUN) $(HELM_TOOLBOX_IMAGE) helm-docs
-@@ -67,7 +68,7 @@ cilium/values.schema.json: cilium/values.yaml
+@@ -72,7 +73,7 @@ cilium/values.schema.json: cilium/values.yaml
  	$(ECHO_GEN)$@
  	$(HELM_SCHEMA_GEN) -c cilium --skip-auto-generation title,description,required,default,additionalProperties
  

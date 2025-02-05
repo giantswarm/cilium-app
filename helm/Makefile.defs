@@ -62,8 +62,6 @@ ETCD_IMAGE_VERSION = v3.5.17
 ETCD_IMAGE_SHA = sha256:15b1882f07aeaf357a48fbbcf35a566ae3ea110395704711488ea263fa86838d
 ETCD_IMAGE=gcr.io/etcd-development/etcd:$(ETCD_IMAGE_VERSION)@$(ETCD_IMAGE_SHA)
 
-CONSUL_IMAGE=consul:1.7.2
-
 CILIUM_BUILDER_IMAGE=$(shell cat $(ROOT_DIR)/images/cilium/Dockerfile | grep "ARG CILIUM_BUILDER_IMAGE=" | cut -d"=" -f2)
 
 export CILIUM_CLI ?= cilium
@@ -99,13 +97,13 @@ ifneq ($(shell command -v tparse),)
 	GOTEST_COVER_OPTS += -json
 	GOTEST_FORMATTER = tparse
 ifneq ($(V),0)
-	GOTEST_FORMATTER += -progress
+	GOTEST_FORMATTER += -follow
 endif
 endif
 
 # renovate: datasource=docker depName=golangci/golangci-lint
-GOLANGCILINT_WANT_VERSION = v1.59.1
-GOLANGCILINT_IMAGE_SHA = sha256:b5f8712114561f1e2fbe74d04ed07ddfd992768705033a6251f3c7b848eac38e
+GOLANGCILINT_WANT_VERSION = v1.62.2
+GOLANGCILINT_IMAGE_SHA = sha256:4e53bfe25ef2f1e14a95da42d694211080f40d118730541ce1513a83cf7587ec
 GOLANGCILINT_VERSION = $(shell golangci-lint version --format short 2>/dev/null)
 
 VERSION = $(shell cat $(dir $(lastword $(MAKEFILE_LIST)))/VERSION)

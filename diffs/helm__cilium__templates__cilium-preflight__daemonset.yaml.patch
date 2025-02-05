@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-preflight/daemonset.yaml b/helm/cilium/templates/cilium-preflight/daemonset.yaml
-index 51cfe1a..144b717 100644
+index 0e793cf..8185df1 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-preflight/daemonset.yaml
 +++ b/helm/cilium/templates/cilium-preflight/daemonset.yaml
-@@ -42,7 +42,7 @@ spec:
+@@ -49,7 +49,7 @@ spec:
        {{- end }}
        initContainers:
          - name: clean-cilium-state
@@ -11,7 +11,7 @@ index 51cfe1a..144b717 100644
            imagePullPolicy: {{ .Values.preflight.image.pullPolicy }}
            command: ["/bin/echo"]
            args:
-@@ -50,7 +50,7 @@ spec:
+@@ -57,7 +57,7 @@ spec:
            terminationMessagePolicy: FallbackToLogsOnError
        containers:
          - name: cilium-pre-flight-check
@@ -20,7 +20,7 @@ index 51cfe1a..144b717 100644
            imagePullPolicy: {{ .Values.preflight.image.pullPolicy }}
            command: ["/bin/sh"]
            args:
-@@ -106,7 +106,7 @@ spec:
+@@ -113,7 +113,7 @@ spec:
            terminationMessagePolicy: FallbackToLogsOnError
          {{- if ne .Values.preflight.tofqdnsPreCache "" }}
          - name: cilium-pre-flight-fqdn-precache

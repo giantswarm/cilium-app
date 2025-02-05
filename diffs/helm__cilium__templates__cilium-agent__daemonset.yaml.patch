@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml b/helm/cilium/templates/cilium-agent/daemonset.yaml
-index 27498c5..811493d 100644
+index efe748c..0338fda 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml
 +++ b/helm/cilium/templates/cilium-agent/daemonset.yaml
-@@ -95,7 +95,7 @@ spec:
+@@ -101,7 +101,7 @@ spec:
        {{- end }}
        containers:
        - name: cilium-agent
@@ -11,7 +11,7 @@ index 27498c5..811493d 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          {{- if .Values.sleepAfterInit }}
          command:
-@@ -197,6 +197,18 @@ spec:
+@@ -203,6 +203,18 @@ spec:
              resourceFieldRef:
                resource: limits.memory
                divisor: '1'
@@ -30,7 +30,7 @@ index 27498c5..811493d 100644
          {{- if .Values.k8sServiceHost }}
          - name: KUBERNETES_SERVICE_HOST
            value: {{ include "k8sServiceHost" . }}
-@@ -393,7 +405,7 @@ spec:
+@@ -399,7 +411,7 @@ spec:
          {{- end }}
        {{- if .Values.monitor.enabled }}
        - name: cilium-monitor
@@ -39,7 +39,7 @@ index 27498c5..811493d 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          command:
          - /bin/bash
-@@ -425,7 +437,7 @@ spec:
+@@ -431,7 +443,7 @@ spec:
        {{- end }}
        initContainers:
        - name: config
@@ -48,7 +48,7 @@ index 27498c5..811493d 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          command:
          - cilium-dbg
-@@ -453,6 +465,18 @@ spec:
+@@ -459,6 +471,18 @@ spec:
              fieldRef:
                apiVersion: v1
                fieldPath: metadata.namespace
@@ -67,7 +67,7 @@ index 27498c5..811493d 100644
          {{- if .Values.k8sServiceHost }}
          - name: KUBERNETES_SERVICE_HOST
            value: {{ include "k8sServiceHost" . }}
-@@ -478,7 +502,7 @@ spec:
+@@ -484,7 +508,7 @@ spec:
        # Required to mount cgroup2 filesystem on the underlying Kubernetes node.
        # We use nsenter command with host's cgroup and mount namespaces enabled.
        - name: mount-cgroup
@@ -76,7 +76,7 @@ index 27498c5..811493d 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          env:
          - name: CGROUP_ROOT
-@@ -526,7 +550,7 @@ spec:
+@@ -532,7 +556,7 @@ spec:
        {{- end }}
        {{- if .Values.sysctlfix.enabled }}
        - name: apply-sysctl-overwrites
@@ -85,7 +85,7 @@ index 27498c5..811493d 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          {{- with .Values.initResources }}
          resources:
-@@ -575,7 +599,7 @@ spec:
+@@ -581,7 +605,7 @@ spec:
        # from a privileged container because the mount propagation bidirectional
        # only works from privileged containers.
        - name: mount-bpf-fs
@@ -94,7 +94,7 @@ index 27498c5..811493d 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          {{- with .Values.initResources }}
          resources:
-@@ -599,7 +623,7 @@ spec:
+@@ -605,7 +629,7 @@ spec:
        {{- end }}
        {{- if and .Values.nodeinit.enabled .Values.nodeinit.bootstrapFile }}
        - name: wait-for-node-init
@@ -103,7 +103,7 @@ index 27498c5..811493d 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          {{- with .Values.initResources }}
          resources:
-@@ -619,7 +643,7 @@ spec:
+@@ -625,7 +649,7 @@ spec:
            mountPath: "/tmp/cilium-bootstrap.d"
        {{- end }}
        - name: clean-cilium-state
@@ -112,7 +112,7 @@ index 27498c5..811493d 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          command:
          - /init-container.sh
-@@ -688,7 +712,7 @@ spec:
+@@ -694,7 +718,7 @@ spec:
          {{- end }}
        {{- if and .Values.waitForKubeProxy (and (ne (toString $kubeProxyReplacement) "strict") (ne (toString $kubeProxyReplacement) "true"))  }}
        - name: wait-for-kube-proxy
@@ -121,7 +121,7 @@ index 27498c5..811493d 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          {{- with .Values.initResources }}
          resources:
-@@ -723,10 +747,22 @@ spec:
+@@ -729,10 +753,22 @@ spec:
              done
          terminationMessagePolicy: FallbackToLogsOnError
        {{- end }} # wait-for-kube-proxy

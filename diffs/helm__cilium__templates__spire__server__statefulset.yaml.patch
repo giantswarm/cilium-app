@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/spire/server/statefulset.yaml b/helm/cilium/templates/spire/server/statefulset.yaml
-index a47cbf5..43d6eda 100644
+index b515ead..f2e6dc7 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/spire/server/statefulset.yaml
 +++ b/helm/cilium/templates/spire/server/statefulset.yaml
-@@ -48,7 +48,7 @@ spec:
+@@ -56,7 +56,7 @@ spec:
        {{- end }}
        containers:
        - name: cilium-init
@@ -11,7 +11,7 @@ index a47cbf5..43d6eda 100644
          imagePullPolicy: {{ .Values.authentication.mutual.spire.install.initImage.pullPolicy }}
          command:
            - /bin/sh
-@@ -59,7 +59,7 @@ spec:
+@@ -67,7 +67,7 @@ spec:
          {{- if eq (typeOf .Values.authentication.mutual.spire.install.server.image) "string" }}
          image: {{ .Values.authentication.mutual.spire.install.server.image }}
          {{- else }}

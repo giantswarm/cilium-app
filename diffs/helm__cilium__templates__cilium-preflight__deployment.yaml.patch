@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-preflight/deployment.yaml b/helm/cilium/templates/cilium-preflight/deployment.yaml
-index 32c169b..1547cf7 100644
+index 26c7f06..5351a6c 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-preflight/deployment.yaml
 +++ b/helm/cilium/templates/cilium-preflight/deployment.yaml
-@@ -37,7 +37,7 @@ spec:
+@@ -43,7 +43,7 @@ spec:
        {{- end }}
        containers:
          - name: cnp-validator
