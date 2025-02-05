@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-envoy/daemonset.yaml b/helm/cilium/templates/cilium-envoy/daemonset.yaml
-index c62dea3..64383ad 100644
+index 5649796..94e327d 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-envoy/daemonset.yaml
 +++ b/helm/cilium/templates/cilium-envoy/daemonset.yaml
-@@ -65,7 +65,7 @@ spec:
+@@ -71,7 +71,7 @@ spec:
        {{- end }}
        containers:
        - name: cilium-envoy

@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/hubble-ui/deployment.yaml b/helm/cilium/templates/hubble-ui/deployment.yaml
-index 66f3b08..dd489da 100644
+index c3b3dc5..a8bf265 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/hubble-ui/deployment.yaml
 +++ b/helm/cilium/templates/hubble-ui/deployment.yaml
-@@ -52,7 +52,7 @@ spec:
+@@ -62,7 +62,7 @@ spec:
        {{- end }}
        containers:
        - name: frontend
@@ -11,7 +11,7 @@ index 66f3b08..dd489da 100644
          imagePullPolicy: {{ .Values.hubble.ui.frontend.image.pullPolicy }}
          ports:
          - name: http
-@@ -88,7 +88,7 @@ spec:
+@@ -98,7 +98,7 @@ spec:
            {{- toYaml . | trim | nindent 10 }}
          {{- end }}
        - name: backend

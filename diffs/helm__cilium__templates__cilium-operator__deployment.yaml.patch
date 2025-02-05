@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-operator/deployment.yaml b/helm/cilium/templates/cilium-operator/deployment.yaml
-index 627a63c..4a86b49 100644
+index e0fe311..5214e20 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-operator/deployment.yaml
 +++ b/helm/cilium/templates/cilium-operator/deployment.yaml
-@@ -71,7 +71,7 @@ spec:
+@@ -77,7 +77,7 @@ spec:
        {{- end }}
        containers:
        - name: cilium-operator

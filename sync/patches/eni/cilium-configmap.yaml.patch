@@ -1,9 +1,9 @@
-diff --git b/helm/cilium/cilium/templates/cilium-configmap.yaml a/helm/cilium/cilium/templates/cilium-configmap.yaml
-index 9531ca1..f1362e5 100644
+diff --git b/helm/cilium/templates/cilium-configmap.yaml a/helm/cilium/templates/cilium-configmap.yaml
+index aa46118..dd0efbc 100644
 --- b/helm/cilium/templates/cilium-configmap.yaml
 +++ a/helm/cilium/templates/cilium-configmap.yaml
-@@ -810,10 +810,7 @@ data:
- {{- end }}
+@@ -868,10 +868,7 @@ data:
+   enable-endpoint-lockdown-on-policy-overflow: {{ .Values.endpointLockdownOnMapOverflow | quote }}
  {{- if .Values.cni.configMap }}
    read-cni-conf: {{ .Values.cni.confFileMountPath }}/{{ .Values.cni.configMapKey }}
 -{{- if .Values.cni.customConf  }}

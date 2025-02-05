@@ -1,11 +1,14 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-operator/_helpers.tpl b/helm/cilium/templates/cilium-operator/_helpers.tpl
-index 0910de6..bcc1cf2 100644
+index 67ab34c..eb7c6b6 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-operator/_helpers.tpl
 +++ b/helm/cilium/templates/cilium-operator/_helpers.tpl
-@@ -26,11 +26,20 @@
+@@ -26,12 +26,21 @@
  Return cilium operator image
  */}}
  {{- define "cilium.operator.image" -}}
+-{{- if .Values.operator.image.override -}}
+-{{- printf "%s" .Values.operator.image.override -}}
+-{{- else -}}
 +{{- if not (kindIs "slice" .) }}
 +{{- (fail (printf "required list, but got %q" (kindOf .))) }}
 +{{- end }}
@@ -14,13 +17,14 @@ index 0910de6..bcc1cf2 100644
 +{{- end }}
 +{{- $ := index . 0 }}
 +{{- with index . 1 }}
- {{- if .Values.operator.image.override -}}
- {{- printf "%s" .Values.operator.image.override -}}
- {{- else -}}
  {{- $cloud := include "cilium.operator.cloud" . }}
  {{- $imageDigest := include "cilium.operator.imageDigestName" . }}
--{{- printf "%s-%s%s:%s%s" .Values.operator.image.repository $cloud .Values.operator.image.suffix .Values.operator.image.tag $imageDigest -}}
-+{{- printf "%s/%s-%s%s:%s%s" $.Values.image.registry .Values.operator.image.repository $cloud .Values.operator.image.suffix .Values.operator.image.tag $imageDigest -}}
+ {{- $tag := .Values.operator.image.tag | default "" | eq "" | ternary "" (printf ":%s" .Values.operator.image.tag) }}
+-{{- printf "%s-%s%s%s%s" .Values.operator.image.repository $cloud .Values.operator.image.suffix $tag $imageDigest -}}
++{{- if .Values.operator.image.override -}}
++{{- printf "%s" .Values.operator.image.override -}}
++{{- else -}}
++{{- printf "%s/%s-%s%s%s%s" $.Values.image.registry .Values.operator.image.repository $cloud .Values.operator.image.suffix $tag $imageDigest -}}
 +{{- end -}}
  {{- end -}}
  {{- end -}}

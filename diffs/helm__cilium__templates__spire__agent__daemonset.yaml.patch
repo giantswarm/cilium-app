@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/spire/agent/daemonset.yaml b/helm/cilium/templates/spire/agent/daemonset.yaml
-index d8c80d9..bef692a 100644
+index cac6087..a43c680 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/spire/agent/daemonset.yaml
 +++ b/helm/cilium/templates/spire/agent/daemonset.yaml
-@@ -45,7 +45,7 @@ spec:
+@@ -52,7 +52,7 @@ spec:
        {{- end }}
        initContainers:
          - name: init
@@ -11,7 +11,7 @@ index d8c80d9..bef692a 100644
            imagePullPolicy: {{ .Values.authentication.mutual.spire.install.initImage.pullPolicy }}
            command:
              - /bin/sh
-@@ -57,7 +57,7 @@ spec:
+@@ -64,7 +64,7 @@ spec:
            {{- if eq (typeOf .Values.authentication.mutual.spire.install.agent.image) "string" }}
            image: {{ .Values.authentication.mutual.spire.install.agent.image }}
            {{- else }}

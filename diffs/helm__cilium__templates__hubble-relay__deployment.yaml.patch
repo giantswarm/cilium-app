@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/hubble-relay/deployment.yaml b/helm/cilium/templates/hubble-relay/deployment.yaml
-index 30d8d06..490dbd8 100644
+index e7805c2..8f9487c 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/hubble-relay/deployment.yaml
 +++ b/helm/cilium/templates/hubble-relay/deployment.yaml
-@@ -57,7 +57,7 @@ spec:
+@@ -64,7 +64,7 @@ spec:
            securityContext:
              {{- toYaml . | nindent 12 }}
            {{- end }}
