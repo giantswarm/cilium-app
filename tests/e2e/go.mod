@@ -7,7 +7,7 @@ replace github.com/imdario/mergo => github.com/imdario/mergo v0.3.16
 replace github.com/alessio/shellescape => al.essio.dev/pkg/shellescape v1.5.1
 
 require (
-	github.com/cilium/cilium v1.17.0-rc.2
+	github.com/cilium/cilium v1.17.0
 	github.com/fluxcd/helm-controller/api v1.1.0
 	github.com/giantswarm/apptest-framework v1.11.0
 	github.com/giantswarm/clustertest v1.32.1
