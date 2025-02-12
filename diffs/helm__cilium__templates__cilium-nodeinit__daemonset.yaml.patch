@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-nodeinit/daemonset.yaml b/helm/cilium/templates/cilium-nodeinit/daemonset.yaml
-index c92eabf..86492b1 100644
+index add6ae5..465ca9e 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-nodeinit/daemonset.yaml
 +++ b/helm/cilium/templates/cilium-nodeinit/daemonset.yaml
-@@ -58,7 +58,7 @@ spec:
+@@ -64,7 +64,7 @@ spec:
        {{- end }}
        containers:
          - name: node-init

@@ -34,12 +34,13 @@ Return cilium operator image
 {{- end }}
 {{- $ := index . 0 }}
 {{- with index . 1 }}
+{{- $cloud := include "cilium.operator.cloud" . }}
+{{- $imageDigest := include "cilium.operator.imageDigestName" . }}
+{{- $tag := .Values.operator.image.tag | default "" | eq "" | ternary "" (printf ":%s" .Values.operator.image.tag) }}
 {{- if .Values.operator.image.override -}}
 {{- printf "%s" .Values.operator.image.override -}}
 {{- else -}}
-{{- $cloud := include "cilium.operator.cloud" . }}
-{{- $imageDigest := include "cilium.operator.imageDigestName" . }}
-{{- printf "%s/%s-%s%s:%s%s" $.Values.image.registry .Values.operator.image.repository $cloud .Values.operator.image.suffix .Values.operator.image.tag $imageDigest -}}
+{{- printf "%s/%s-%s%s%s%s" $.Values.image.registry .Values.operator.image.repository $cloud .Values.operator.image.suffix $tag $imageDigest -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
