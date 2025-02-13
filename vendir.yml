@@ -7,7 +7,7 @@ directories:
         git:
           depth: 1
           url: https://github.com/cilium/cilium
-          ref: &version "v1.17.0"
+          ref: &version "v1.17.1"
         includePaths:
           - install/kubernetes/**/*
           - Makefile.defs
