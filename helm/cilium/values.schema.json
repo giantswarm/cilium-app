@@ -5183,13 +5183,6 @@
           "type": "boolean"
         },
         "metrics": {
-          "items": {
-            "anyOf": [
-              {
-                "type": "string"
-              }
-            ]
-          },
           "type": [
             "null",
             "array"
