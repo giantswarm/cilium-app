@@ -2,7 +2,6 @@ package basic
 
 import (
 	"os"
-	"regexp"
 
 	"github.com/cilium/cilium/cilium-cli/api"
 	"github.com/cilium/cilium/cilium-cli/connectivity/check"
@@ -20,8 +19,8 @@ func buildConnectivityTestParams() check.Parameters {
 	params.TestNamespace = "cilium-test-1"
 
 	// Use this regex to filter which tests to run.
-	rgx, _ := regexp.Compile("no-policies")
-	params.RunTests = append(params.RunTests, rgx)
+	// rgx, _ := regexp.Compile("no-policies")
+	// params.RunTests = append(params.RunTests, rgx)
 
 	return params
 }
