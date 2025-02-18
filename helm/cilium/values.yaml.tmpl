@@ -2297,8 +2297,7 @@ prometheus:
   # The list is expected to be separated by a space. (+metric_foo to enable
   # metric_foo , -metric_bar to disable metric_bar).
   # ref: https://docs.cilium.io/en/stable/observability/metrics/
-  metrics:
-    - +cilium_bpf_map_pressure
+  metrics: ~
   # --- Enable controller group metrics for monitoring specific Cilium
   # subsystems. The list is a list of controller group names. The special
   # values of "all" and "none" are supported. The set of controller
