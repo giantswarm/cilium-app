@@ -9,8 +9,8 @@ replace github.com/alessio/shellescape => al.essio.dev/pkg/shellescape v1.5.1
 require (
 	github.com/cilium/cilium v1.17.0-rc.2
 	github.com/fluxcd/helm-controller/api v1.1.0
-	github.com/giantswarm/apptest-framework v1.11.0
-	github.com/giantswarm/clustertest v1.32.1
+	github.com/giantswarm/apptest-framework v1.12.0
+	github.com/giantswarm/clustertest v1.33.0
 	github.com/onsi/ginkgo/v2 v2.22.2
 	github.com/onsi/gomega v1.36.2
 	k8s.io/api v0.32.2
