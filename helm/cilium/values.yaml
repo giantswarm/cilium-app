@@ -1522,13 +1522,13 @@ hubble:
     # -- hubble-relay container security context
     securityContext:
       allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
       readOnlyRootFilesystem: true
       runAsNonRoot: true
       runAsUser: 65532
       runAsGroup: 65532
+      capabilities:
+        drop:
+          - ALL
       seccompProfile:
         type: RuntimeDefault
     # -- hubble-relay service configuration.
@@ -2308,7 +2308,9 @@ envoy:
   # type: [null, boolean]
   # @schema
   # -- Enable Envoy Proxy in standalone DaemonSet.
-  enabled: false
+  # This field is enabled by default for new installation.
+  # @default -- `true` for new installation
+  enabled: ~
   # -- (int)
   # Set Envoy'--base-id' to use when allocating shared memory regions.
   # Only needs to be changed if multiple Envoy instances will run on the same node and may have conflicts. Supported values: 0 - 4294967295. Defaults to '0'
