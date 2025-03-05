@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index 7c18e03..3d8e375 100644
+index 4a7c2de..77dcb97 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
 @@ -146,6 +146,7 @@ name: cilium
@@ -212,7 +212,7 @@ index 7c18e03..3d8e375 100644
    # -- (int)
    # Set Envoy'--base-id' to use when allocating shared memory regions.
    # Only needs to be changed if multiple Envoy instances will run on the same node and may have conflicts. Supported values: 0 - 4294967295. Defaults to '0'
-@@ -2556,7 +2591,9 @@ operator:
+@@ -2563,7 +2598,9 @@ operator:
    # -- Additional cilium-operator container arguments.
    extraArgs: []
    # -- Additional cilium-operator environment variables.
@@ -223,7 +223,7 @@ index 7c18e03..3d8e375 100644
    # -- Additional cilium-operator hostPath mounts.
    extraHostPathMounts: []
    # - name: host-mnt-data
-@@ -2567,15 +2604,22 @@ operator:
+@@ -2574,15 +2611,22 @@ operator:
    #   mountPropagation: HostToContainer
  
    # -- Additional cilium-operator volumes.
@@ -249,7 +249,7 @@ index 7c18e03..3d8e375 100644
    # -- Annotations to be added to cilium-operator pods
    podAnnotations: {}
    # -- Labels to be added to cilium-operator pods
-@@ -2584,7 +2628,7 @@ operator:
+@@ -2591,7 +2635,7 @@ operator:
    podDisruptionBudget:
      # -- enable PodDisruptionBudget
      # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
@@ -258,7 +258,7 @@ index 7c18e03..3d8e375 100644
      # @schema
      # type: [null, integer, string]
      # @schema
-@@ -2607,8 +2651,17 @@ operator:
+@@ -2614,8 +2658,17 @@ operator:
    #     memory: 128Mi
  
    # -- Security context to be added to cilium-operator pods
@@ -278,7 +278,7 @@ index 7c18e03..3d8e375 100644
  
    # -- Interval for endpoint garbage collection.
    endpointGCInterval: "5m0s"
-@@ -3580,3 +3633,11 @@ authentication:
+@@ -3587,3 +3640,11 @@ authentication:
        agentSocketPath: /run/spire/sockets/agent/agent.sock
        # -- SPIRE connection timeout
        connectionTimeout: 30s
