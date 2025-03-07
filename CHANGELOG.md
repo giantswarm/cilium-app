@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 - Upgrade Cilium to [v1.17.1](https://github.com/cilium/cilium/releases/tag/v1.17.1).
+- Remove cleanup kube-proxy patch.
 
 ## [0.32.0] - 2025-03-07
 

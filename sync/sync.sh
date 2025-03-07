@@ -14,7 +14,6 @@ helm dependency update helm/cilium/
 { set +x; } 2>/dev/null
 
 # Patches
-./sync/patches/cleanup_kube_proxy/patch.sh
 ./sync/patches/eni/patch.sh
 ./sync/patches/image_registries/patch.sh
 ./sync/patches/readme/patch.sh
