@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml b/helm/cilium/templates/cilium-agent/daemonset.yaml
-index efe748c..0338fda 100644
+index efe748c..2396d54 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml
 +++ b/helm/cilium/templates/cilium-agent/daemonset.yaml
 @@ -101,7 +101,7 @@ spec:
@@ -121,22 +121,7 @@ index efe748c..0338fda 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          {{- with .Values.initResources }}
          resources:
-@@ -729,10 +753,22 @@ spec:
-             done
-         terminationMessagePolicy: FallbackToLogsOnError
-       {{- end }} # wait-for-kube-proxy
-+      {{ if and (.Values.cleanupKubeProxy) (not (eq .Values.kubeProxyReplacement "disabled")) }}
-+      - name: cleanup-kube-proxy-iptables
-+        image: "{{ include "cilium.image" (list $ .Values.image) }}"
-+        imagePullPolicy: {{ .Values.image.pullPolicy }}
-+        securityContext:
-+          privileged: true
-+        command:
-+        - sh
-+        - -c
-+        - |
-+          /usr/sbin/iptables-nft-save | grep -v KUBE | grep -v cali | /usr/sbin/iptables-nft-restore
-+      {{ end }}
+@@ -732,7 +756,7 @@ spec:
        {{- if .Values.cni.install }}
        # Install the CNI binaries in an InitContainer so we don't have a writable host mount in the agent
        - name: install-cni-binaries
