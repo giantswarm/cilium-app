@@ -516,6 +516,14 @@
         "disableExternalIPMitigation": {
           "type": "boolean"
         },
+        "distributedLRU": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
         "enableTCX": {
           "type": "boolean"
         },
@@ -2144,6 +2152,12 @@
             }
           },
           "type": "object"
+        },
+        "policyRestoreTimeoutDuration": {
+          "type": [
+            "null",
+            "string"
+          ]
         },
         "priorityClassName": {
           "type": [
@@ -5763,6 +5777,9 @@
       "type": "integer"
     },
     "tunnelProtocol": {
+      "type": "string"
+    },
+    "tunnelSourcePortRange": {
       "type": "string"
     },
     "updateStrategy": {
