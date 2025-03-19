@@ -14,10 +14,10 @@ helm dependency update helm/cilium/
 { set +x; } 2>/dev/null
 
 # Patches
-./sync/patches/cleanup_kube_proxy/patch.sh
 ./sync/patches/eni/patch.sh
 ./sync/patches/image_registries/patch.sh
 ./sync/patches/readme/patch.sh
+./sync/patches/networkpolicies/patch.sh
 ./sync/patches/values/patch.sh
 
 # Store diffs
@@ -29,13 +29,19 @@ for f in $(git --no-pager diff --no-exit-code --no-color --no-index vendor/ciliu
         [[ "$f" == "helm/cilium/values.schema.json" ]] && continue
         [[ "$f" == "helm/cilium/values.yaml" ]] && continue
         [[ "$f" =~ ^helm/cilium/charts/.* ]] && continue
+
+        base_file="vendor/cilium/install/kubernetes/${f#"helm/"}"
+        [[ ! -e $base_file ]] && base_file="vendor/cilium/${f#"helm/"}"
+        [[ ! -e $base_file ]] && base_file="/dev/null"
+
         set +e
         set -x
-        git --no-pager diff --no-exit-code --no-color --no-index "vendor/cilium/install/kubernetes/${f#"helm/"}" "${f}" \
+        git --no-pager diff --no-exit-code --no-color --no-index "$base_file" "${f}" \
                 > "./diffs/${f//\//__}.patch" # ${f//\//__} replaces all "/" with "__"
-        ret=$?
+
         { set +x; } 2>/dev/null
         set -e
+        ret=$?
         if [ $ret -ne 0 ] && [ $ret -ne 1 ] ; then
                 exit $ret
         fi

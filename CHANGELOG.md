@@ -7,10 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Upgrade Cilium to [v1.17.2](https://github.com/cilium/cilium/releases/tag/v1.17.2).
+- Remove cleanup kube-proxy patch.
+- Identity computation label exclusion list regular expressions. Remove `controller-uid`, since this is excluded by default now.
+
+## [0.32.0] - 2025-03-07
+
 ### Changed
 
 - Upgrade Cilium to [v1.17.0](https://github.com/cilium/cilium/releases/tag/v1.17.0).
-- Identity computation label exclusion list regular expressions. Remove `controller-uid`, since this is excluded by default now.
+- Use upstream default value for `prometheus.metrics`.
+- Enable Envoy Proxy in standalone DaemonSet.
+
+## [0.31.1] - 2025-03-06
+
+### Changed
+
+- Upgrade Cilium to [v1.16.7](https://github.com/cilium/cilium/releases/tag/v1.16.7).
 
 ## [0.31.0] - 2025-01-28
 
@@ -365,7 +378,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2022-03-25
 
-[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v0.31.0...HEAD
+[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v0.32.0...HEAD
+[0.32.0]: https://github.com/giantswarm/cilium-app/compare/v0.31.0...v0.32.0
 [0.31.0]: https://github.com/giantswarm/cilium-app/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/giantswarm/cilium-app/compare/v0.29.0...v0.30.0
 [0.29.0]: https://github.com/giantswarm/cilium-app/compare/v0.28.0...v0.29.0

@@ -7,7 +7,7 @@ directories:
         git:
           depth: 1
           url: https://github.com/cilium/cilium
-          ref: &version "v1.17.0"
+          ref: &version "v1.17.2"
         includePaths:
           - install/kubernetes/**/*
           - Makefile.defs
@@ -30,8 +30,6 @@ directories:
         ignorePaths:
           - cilium/Chart.yaml
           - cilium/Chart.lock
-          - cilium/templates/**/networkpolicy.yaml
-          - cilium/templates/**/podsecuritypolicy.yaml
           - cilium/charts/cilium-giantswarm-cni-customconf/*.yaml
           - cilium/charts/cilium-giantswarm-cni-customconf/README.md
           - cilium/charts/cilium-giantswarm-cni-customconf/values.schema.json
