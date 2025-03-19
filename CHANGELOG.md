@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upgrade Cilium to [v1.17.2](https://github.com/cilium/cilium/releases/tag/v1.17.2).
 - Remove cleanup kube-proxy patch.
+- Identity computation label exclusion list regular expressions. Remove `controller-uid`, since this is excluded by default now.
 
 ## [0.32.0] - 2025-03-07
 

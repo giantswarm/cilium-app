@@ -701,7 +701,7 @@ contributors across the globe, there is almost always someone available to help.
 | l2podAnnouncements.enabled | bool | `false` | Enable L2 pod announcements |
 | l2podAnnouncements.interface | string | `"eth0"` | Interface used for sending Gratuitous ARP pod announcements |
 | l7Proxy | bool | `true` | Enable Layer 7 network policy. |
-| labels | string | `"k8s:!.*/enforce k8s:!.*fluxcd.io/.* k8s:!.*kubernetes.io/managed-by.* k8s:!controller-uid k8s:!job-name"` |  |
+| labels | string | `"!.*/enforce !.*fluxcd\\.io/.* !.*kubernetes\\.io/managed-by.* !job-name"` |  |
 | livenessProbe.failureThreshold | int | `10` | failure threshold of liveness probe |
 | livenessProbe.periodSeconds | int | `30` | interval between checks of the liveness probe |
 | loadBalancer | object | `{"acceleration":"disabled","experimental":false,"l7":{"algorithm":"round_robin","backend":"disabled","ports":[]}}` | Configure service load balancing |
