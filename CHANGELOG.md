@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use upstream default value for `prometheus.metrics`.
 - Enable Envoy Proxy in standalone DaemonSet.
 
+## [0.31.2] - 2025-03-20
+
+### Changed
+
+- Upgrade Cilium to [v1.16.8](https://github.com/cilium/cilium/releases/tag/v1.16.8).
+
 ## [0.31.1] - 2025-03-06
 
 ### Changed
@@ -380,6 +386,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/giantswarm/cilium-app/compare/v0.32.0...HEAD
 [0.32.0]: https://github.com/giantswarm/cilium-app/compare/v0.31.0...v0.32.0
+[0.31.2]: https://github.com/giantswarm/cilium-app/compare/v0.31.1...v0.31.2
+[0.31.1]: https://github.com/giantswarm/cilium-app/compare/v0.31.0...v0.31.1
 [0.31.0]: https://github.com/giantswarm/cilium-app/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/giantswarm/cilium-app/compare/v0.29.0...v0.30.0
 [0.29.0]: https://github.com/giantswarm/cilium-app/compare/v0.28.0...v0.29.0
