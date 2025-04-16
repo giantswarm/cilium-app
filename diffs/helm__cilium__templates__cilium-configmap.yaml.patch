@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-configmap.yaml b/helm/cilium/templates/cilium-configmap.yaml
-index 864d2b6..8dbdb05 100644
+index f1ffd01..2f88c80 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-configmap.yaml
 +++ b/helm/cilium/templates/cilium-configmap.yaml
 @@ -831,10 +831,7 @@ data:
