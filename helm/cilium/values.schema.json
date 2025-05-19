@@ -502,7 +502,10 @@
           "type": "boolean"
         },
         "ctAnyMax": {
-          "type": "null"
+          "type": [
+            "null",
+            "integer"
+          ]
         },
         "ctTcpMax": {
           "type": [
@@ -4211,6 +4214,9 @@
         },
         "periodSeconds": {
           "type": "integer"
+        },
+        "requireK8sConnectivity": {
+          "type": "boolean"
         }
       },
       "type": "object"
