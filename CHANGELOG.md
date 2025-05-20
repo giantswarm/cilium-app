@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Upgrade Cilium to [v1.17.4](https://github.com/cilium/cilium/releases/tag/v1.17.4).
+  - Cilium v1.17.4 disables kubernetes api connectivity check for liveness probes. (Upstream PR: https://github.com/cilium/cilium/pull/38703)
 
 ## [1.1.0] - 2025-04-28
 
