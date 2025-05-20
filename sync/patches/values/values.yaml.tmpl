@@ -499,7 +499,6 @@ bpf:
   # @schema
   # -- (int) Configure the maximum number of entries for the non-TCP connection
   # tracking table.
-
   # @default -- `262144`
   ctAnyMax: ~
   # -- Control to use a distributed per-CPU backend memory for the core BPF LRU maps
@@ -2059,6 +2058,8 @@ livenessProbe:
   failureThreshold: 10
   # -- interval between checks of the liveness probe
   periodSeconds: 30
+  # -- whether to require k8s connectivity as part of the check.
+  requireK8sConnectivity: false
 readinessProbe:
   # -- failure threshold of readiness probe
   failureThreshold: 3

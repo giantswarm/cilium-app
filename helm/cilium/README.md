@@ -1,6 +1,6 @@
 # cilium
 
-![AppVersion: 1.17.3](https://img.shields.io/badge/AppVersion-1.17.3-informational?style=flat-square)
+![AppVersion: 1.17.4](https://img.shields.io/badge/AppVersion-1.17.4-informational?style=flat-square)
 
 Cilium is open source software for providing and transparently securing
 network connectivity and loadbalancing between application workloads such as
@@ -128,7 +128,7 @@ contributors across the globe, there is almost always someone available to help.
 | bpf.authMapMax | int | `524288` | Configure the maximum number of entries in auth map. |
 | bpf.autoMount.enabled | bool | `true` | Enable automatic mount of BPF filesystem When `autoMount` is enabled, the BPF filesystem is mounted at `bpf.root` path on the underlying host and inside the cilium agent pod. If users disable `autoMount`, it's expected that users have mounted bpffs filesystem at the specified `bpf.root` volume, and then the volume will be mounted inside the cilium agent pod at the same path. |
 | bpf.ctAccounting | bool | `false` | Enable CT accounting for packets and bytes |
-| bpf.ctAnyMax | string | `nil` |  |
+| bpf.ctAnyMax | int | `262144` | Configure the maximum number of entries for the non-TCP connection tracking table. |
 | bpf.ctTcpMax | int | `524288` | Configure the maximum number of entries in the TCP connection tracking table. |
 | bpf.datapathMode | string | `veth` | Mode for Pod devices for the core datapath (veth, netkit, netkit-l2, lb-only) |
 | bpf.disableExternalIPMitigation | bool | `false` | Disable ExternalIP mitigation (CVE-2020-8554) |
@@ -199,7 +199,7 @@ contributors across the globe, there is almost always someone available to help.
 | clustermesh.apiserver.extraVolumeMounts | list | `[]` | Additional clustermesh-apiserver volumeMounts. |
 | clustermesh.apiserver.extraVolumes | list | `[]` | Additional clustermesh-apiserver volumes. |
 | clustermesh.apiserver.healthPort | int | `9880` | TCP port for the clustermesh-apiserver health API. |
-| clustermesh.apiserver.image | object | `{"digest":"sha256:98d5feaf67dd9b5d8d219ff5990de10539566eedc5412bcf52df75920896ad42","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-clustermesh-apiserver","tag":"v1.17.3","useDigest":true}` | Clustermesh API server image. |
+| clustermesh.apiserver.image | object | `{"digest":"sha256:0b72f3046cf36ff9b113d53cc61185e893edb5fe728a2c9e561c1083f806453d","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-clustermesh-apiserver","tag":"v1.17.4","useDigest":true}` | Clustermesh API server image. |
 | clustermesh.apiserver.kvstoremesh.enabled | bool | `true` | Enable KVStoreMesh. KVStoreMesh caches the information retrieved from the remote clusters in the local etcd instance. |
 | clustermesh.apiserver.kvstoremesh.extraArgs | list | `[]` | Additional KVStoreMesh arguments. |
 | clustermesh.apiserver.kvstoremesh.extraEnv | list | `[]` | Additional KVStoreMesh environment variables. |
@@ -379,7 +379,7 @@ contributors across the globe, there is almost always someone available to help.
 | envoy.healthPort | int | `9878` | TCP port for the health API. |
 | envoy.httpRetryCount | int | `3` | Maximum number of retries for each HTTP request |
 | envoy.idleTimeoutDurationSeconds | int | `60` | Set Envoy upstream HTTP idle connection timeout seconds. Does not apply to connections with pending requests. Default 60s |
-| envoy.image | object | `{"digest":"sha256:a01cadf7974409b5c5c92ace3d6afa298408468ca24cab1cb413c04f89d3d1f9","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-envoy","tag":"v1.32.5-1744305768-f9ddca7dcd91f7ca25a505560e655c47d3dec2cf","useDigest":true}` | Envoy container image. |
+| envoy.image | object | `{"digest":"sha256:a04218c6879007d60d96339a441c448565b6f86650358652da27582e0efbf182","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-envoy","tag":"v1.32.6-1746661844-0f602c28cb2aa57b29078195049fb257d5b5246c","useDigest":true}` | Envoy container image. |
 | envoy.initialFetchTimeoutSeconds | int | `30` | Time in seconds after which the initial fetch on an xDS stream is considered timed out |
 | envoy.livenessProbe.failureThreshold | int | `10` | failure threshold of liveness probe |
 | envoy.livenessProbe.periodSeconds | int | `30` | interval between checks of the liveness probe |
@@ -521,7 +521,7 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.relay.extraVolumes | list | `[{"emptyDir":{},"name":"tmp-dir"}]` | Additional hubble-relay volumes. |
 | hubble.relay.gops.enabled | bool | `true` | Enable gops for hubble-relay |
 | hubble.relay.gops.port | int | `9893` | Configure gops listen port for hubble-relay |
-| hubble.relay.image | object | `{"digest":"sha256:f8674b5139111ac828a8818da7f2d344b4a5bfbaeb122c5dc9abed3e74000c55","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/hubble-relay","tag":"v1.17.3","useDigest":true}` | Hubble-relay container image. |
+| hubble.relay.image | object | `{"digest":"sha256:c16de12a64b8b56de62b15c1652d036253b40cd7fa643d7e1a404dc71dc66441","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/hubble-relay","tag":"v1.17.4","useDigest":true}` | Hubble-relay container image. |
 | hubble.relay.listenHost | string | `""` | Host to listen to. Specify an empty string to bind to all the interfaces. |
 | hubble.relay.listenPort | string | `"4245"` | Port to listen to. |
 | hubble.relay.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for pod assignment ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
@@ -628,7 +628,7 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.ui.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":1},"type":"RollingUpdate"}` | hubble-ui update strategy. |
 | identityAllocationMode | string | `"crd"` | Method to use for identity allocation (`crd`, `kvstore` or `doublewrite-readkvstore` / `doublewrite-readcrd` for migrating between identity backends). |
 | identityChangeGracePeriod | string | `"5s"` | Time to wait before using new identity on endpoint identity change. |
-| image | object | `{"digest":"sha256:1782794aeac951af139315c10eff34050aa7579c12827ee9ec376bb719b82873","override":null,"pullPolicy":"IfNotPresent","registry":"gsoci.azurecr.io","repository":"giantswarm/cilium","tag":"v1.17.3","useDigest":true}` | Agent container image. |
+| image | object | `{"digest":"sha256:24a73fe795351cf3279ac8e84918633000b52a9654ff73a6b0d7223bcff4a67a","override":null,"pullPolicy":"IfNotPresent","registry":"gsoci.azurecr.io","repository":"giantswarm/cilium","tag":"v1.17.4","useDigest":true}` | Agent container image. |
 | imagePullSecrets | list | `[]` | Configure image pull secrets for pulling container images |
 | ingressController.default | bool | `false` | Set cilium ingress controller to be the default ingress controller This will let cilium ingress controller route entries without ingress class set |
 | ingressController.defaultSecretName | string | `nil` | Default secret name for ingresses without .spec.tls[].secretName set. |
@@ -704,6 +704,7 @@ contributors across the globe, there is almost always someone available to help.
 | labels | string | `"!.*/enforce !.*fluxcd\\.io/.* !.*kubernetes\\.io/managed-by.* !job-name"` |  |
 | livenessProbe.failureThreshold | int | `10` | failure threshold of liveness probe |
 | livenessProbe.periodSeconds | int | `30` | interval between checks of the liveness probe |
+| livenessProbe.requireK8sConnectivity | bool | `false` | whether to require k8s connectivity as part of the check. |
 | loadBalancer | object | `{"acceleration":"disabled","experimental":false,"l7":{"algorithm":"round_robin","backend":"disabled","ports":[]}}` | Configure service load balancing |
 | loadBalancer.acceleration | string | `"disabled"` | acceleration is the option to accelerate service handling via XDP Applicable values can be: disabled (do not use XDP), native (XDP BPF program is run directly out of the networking driver's early receive path), or best-effort (use native mode XDP acceleration on devices that support it). |
 | loadBalancer.experimental | bool | `false` | experimental enables support for the experimental load-balancing control-plane. |
@@ -766,7 +767,7 @@ contributors across the globe, there is almost always someone available to help.
 | operator.hostNetwork | bool | `true` | HostNetwork setting |
 | operator.identityGCInterval | string | `"15m0s"` | Interval for identity garbage collection. |
 | operator.identityHeartbeatTimeout | string | `"30m0s"` | Timeout for identity heartbeats. |
-| operator.image | object | `{"alibabacloudDigest":"sha256:e9a9ab227c6e833985bde6537b4d1540b0907f21a84319de4b7d62c5302eed5c","awsDigest":"sha256:40f235111fb2bca209ee65b12f81742596e881a0a3ee4d159776d78e3091ba7f","azureDigest":"sha256:6a3294ec8a2107048254179c3ac5121866f90d20fccf12f1d70960e61f304713","genericDigest":"sha256:8bd38d0e97a955b2d725929d60df09d712fb62b60b930551a29abac2dd92e597","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-operator","suffix":"","tag":"v1.17.3","useDigest":true}` | cilium-operator image. |
+| operator.image | object | `{"alibabacloudDigest":"sha256:eaa7b18b7cda65af1d454d54224d175fdb69a35199fa949ae7dfda2789c18dd6","awsDigest":"sha256:3c31583e57648470fbf6646ac67122ac5896ce5f979ab824d9a38cfc7eafc753","azureDigest":"sha256:d8d95049bfeab47cb1a3f995164e1ca2cdec8e6c7036c29799647999cdae07b1","genericDigest":"sha256:a3906412f477b09904f46aac1bed28eb522bef7899ed7dd81c15f78b7aa1b9b5","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-operator","suffix":"","tag":"v1.17.4","useDigest":true}` | cilium-operator image. |
 | operator.nodeGCInterval | string | `"5m0s"` | Interval for cilium node garbage collection. |
 | operator.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for cilium-operator pod assignment ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
 | operator.podAnnotations | object | `{}` | Annotations to be added to cilium-operator pods |
@@ -816,7 +817,7 @@ contributors across the globe, there is almost always someone available to help.
 | preflight.extraEnv | list | `[]` | Additional preflight environment variables. |
 | preflight.extraVolumeMounts | list | `[]` | Additional preflight volumeMounts. |
 | preflight.extraVolumes | list | `[]` | Additional preflight volumes. |
-| preflight.image | object | `{"digest":"sha256:1782794aeac951af139315c10eff34050aa7579c12827ee9ec376bb719b82873","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium","tag":"v1.17.3","useDigest":true}` | Cilium pre-flight image. |
+| preflight.image | object | `{"digest":"sha256:24a73fe795351cf3279ac8e84918633000b52a9654ff73a6b0d7223bcff4a67a","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium","tag":"v1.17.4","useDigest":true}` | Cilium pre-flight image. |
 | preflight.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for preflight pod assignment ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
 | preflight.podAnnotations | object | `{}` | Annotations to be added to preflight pods |
 | preflight.podDisruptionBudget.enabled | bool | `false` | enable PodDisruptionBudget ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/ |
