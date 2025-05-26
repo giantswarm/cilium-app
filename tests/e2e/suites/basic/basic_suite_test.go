@@ -129,6 +129,38 @@ func TestBasic(t *testing.T) {
 				err = connectivity.Run(ctx, connTests, hooks)
 				Expect(err).ShouldNot(HaveOccurred())
 			})
+
+			It("ensure key metrics are available on mimir", func() {
+				const mimirUrl = "mimir-gateway.mimir.svc:80/prometheus"
+				mcClient := state.GetFramework().MC()
+				metrics := []string{
+					// Cilium Agent metrics
+					"cilium_version",
+
+					// Cilium Operator metrics
+					// TBD
+				}
+
+				By("Creating a test pod")
+				// Run a pod with alpine in the default namespace of the MC.
+				testPodName := fmt.Sprintf("%s-metrics-test", state.GetCluster().Name)
+				testPodNamespace := "default"
+
+				err := runTestPod(mcClient, testPodName, testPodNamespace)
+				Expect(err).NotTo(HaveOccurred())
+
+				By("ensuring that metrics are present in Mimir")
+				for _, metric := range metrics {
+					Eventually(checkMetricPresent(mcClient, metric, mimirUrl, testPodName, testPodNamespace)).
+						WithTimeout(10 * time.Minute).
+						WithPolling(10 * time.Second).
+						Should(Succeed())
+				}
+
+				By("Cleaning up test pod")
+				err = cleanupTestPod(mcClient, testPodName, testPodNamespace)
+				Expect(err).NotTo(HaveOccurred())
+			})
 		}).
 		AfterSuite(func() {
 			wcName := state.GetCluster().Name
