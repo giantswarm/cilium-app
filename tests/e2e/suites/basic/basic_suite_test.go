@@ -138,7 +138,7 @@ func TestBasic(t *testing.T) {
 					"cilium_version",
 
 					// Cilium Operator metrics
-					// TBD
+					"cilium_operator_version",
 				}
 
 				By("Creating a test pod")
