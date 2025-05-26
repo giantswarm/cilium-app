@@ -16,6 +16,7 @@ helm dependency update helm/cilium/
 # Patches
 ./sync/patches/cleanup_kube_proxy/patch.sh
 ./sync/patches/eni/patch.sh
+./sync/patches/metrics_port/patch.sh
 ./sync/patches/image_registries/patch.sh
 ./sync/patches/readme/patch.sh
 ./sync/patches/values/patch.sh
