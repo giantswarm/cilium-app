@@ -3167,6 +3167,30 @@
               "type": "integer"
             },
             "resources": {
+              "properties": {
+                "limits": {
+                  "properties": {
+                    "ephemeral-storage": {
+                      "type": "string"
+                    },
+                    "memory": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "requests": {
+                  "properties": {
+                    "cpu": {
+                      "type": "string"
+                    },
+                    "memory": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
               "type": "object"
             },
             "retryTimeout": {
@@ -3451,6 +3475,30 @@
                   "type": "object"
                 },
                 "resources": {
+                  "properties": {
+                    "limits": {
+                      "properties": {
+                        "ephemeral-storage": {
+                          "type": "string"
+                        },
+                        "memory": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "requests": {
+                      "properties": {
+                        "cpu": {
+                          "type": "string"
+                        },
+                        "memory": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
                   "type": "object"
                 },
                 "securityContext": {
@@ -3546,6 +3594,30 @@
                   "type": "object"
                 },
                 "resources": {
+                  "properties": {
+                    "limits": {
+                      "properties": {
+                        "ephemeral-storage": {
+                          "type": "string"
+                        },
+                        "memory": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "requests": {
+                      "properties": {
+                        "cpu": {
+                          "type": "string"
+                        },
+                        "memory": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
                   "type": "object"
                 },
                 "securityContext": {
@@ -4834,6 +4906,30 @@
           "type": "integer"
         },
         "resources": {
+          "properties": {
+            "limits": {
+              "properties": {
+                "ephemeral-storage": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "requests": {
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
           "type": "object"
         },
         "rollOutPods": {
