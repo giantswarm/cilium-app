@@ -3184,6 +3184,9 @@
                     "cpu": {
                       "type": "string"
                     },
+                    "ephemeral-storage": {
+                      "type": "string"
+                    },
                     "memory": {
                       "type": "string"
                     }
@@ -3492,6 +3495,9 @@
                         "cpu": {
                           "type": "string"
                         },
+                        "ephemeral-storage": {
+                          "type": "string"
+                        },
                         "memory": {
                           "type": "string"
                         }
@@ -3609,6 +3615,9 @@
                     "requests": {
                       "properties": {
                         "cpu": {
+                          "type": "string"
+                        },
+                        "ephemeral-storage": {
                           "type": "string"
                         },
                         "memory": {
@@ -4921,6 +4930,9 @@
             "requests": {
               "properties": {
                 "cpu": {
+                  "type": "string"
+                },
+                "ephemeral-storage": {
                   "type": "string"
                 },
                 "memory": {

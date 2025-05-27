@@ -1455,6 +1455,7 @@ hubble:
       requests:
         cpu: 100m
         memory: 128Mi
+        ephemeral-storage: 2Gi
       limits:
         memory: 512Mi
         ephemeral-storage: 2Gi
@@ -1748,6 +1749,7 @@ hubble:
         requests:
           cpu: 100m
           memory: 64Mi
+          ephemeral-storage: 4Gi
     frontend:
       # -- Hubble-ui frontend image.
       image:
@@ -1786,6 +1788,7 @@ hubble:
         requests:
           cpu: 100m
           memory: 64Mi
+          ephemeral-storage: 4Gi
       server:
         # -- Controls server listener for ipv6
         ipv6:
@@ -2873,6 +2876,7 @@ operator:
     requests:
       cpu: 100m
       memory: 256Mi
+      ephemeral-storage: 2Gi
   # -- Security context to be added to cilium-operator pods
   securityContext:
     allowPrivilegeEscalation: false
