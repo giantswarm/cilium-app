@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index 9d6ce1d..a9663cc 100644
+index 9d6ce1d..f970ee3 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
 @@ -187,6 +187,7 @@ name: cilium
@@ -205,11 +205,13 @@ index 9d6ce1d..a9663cc 100644
  
  # logOptions allows you to define logging options. eg:
  # logOptions:
-@@ -2232,7 +2268,7 @@ pprof:
+@@ -2231,8 +2267,8 @@ pprof:
+   port: 6060
  # -- Configure prometheus metrics on the configured port at /metrics
  prometheus:
-   metricsService: false
+-  metricsService: false
 -  enabled: false
++  metricsService: true
 +  enabled: true
    port: 9962
    serviceMonitor:
@@ -280,6 +282,15 @@ index 9d6ce1d..a9663cc 100644
  
    # -- Interval for endpoint garbage collection.
    endpointGCInterval: "5m0s"
+@@ -2863,7 +2917,7 @@ operator:
+   # -- Enable prometheus metrics for cilium-operator on the configured port at
+   # /metrics
+   prometheus:
+-    metricsService: false
++    metricsService: true
+     enabled: true
+     port: 9963
+     serviceMonitor:
 @@ -3836,3 +3890,11 @@ authentication:
  enableInternalTrafficPolicy: true
  # -- Enable LoadBalancer IP Address Management
