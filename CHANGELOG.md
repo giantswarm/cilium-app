@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Re-enable Cilium agent and operator metrics port.
+- Add resource requests and limits to Hubble UI and Relay.
+- Add resource requests and limits to Cilium Operator.
 
 ## [1.1.1] - 2025-05-20
 

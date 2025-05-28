@@ -1460,7 +1460,14 @@ hubble:
       useDigest: ${USE_DIGESTS}
       pullPolicy: "${PULL_POLICY}"
     # -- Specifies the resources for the hubble-relay pods
-    resources: {}
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+        ephemeral-storage: 2Gi
+      limits:
+        memory: 512Mi
+        ephemeral-storage: 2Gi
     # -- Number of replicas run for the hubble-relay deployment.
     replicas: 1
     # -- Affinity for hubble-replay
@@ -1744,13 +1751,14 @@ hubble:
         # -- Enable readiness probe for Hubble-ui backend (requires Hubble-ui 0.12+)
         enabled: false
       # -- Resource requests and limits for the 'backend' container of the 'hubble-ui' deployment.
-      resources: {}
-      #   limits:
-      #     cpu: 1000m
-      #     memory: 1024M
-      #   requests:
-      #     cpu: 100m
-      #     memory: 64Mi
+      resources:
+        limits:
+          memory: 1024M
+          ephemeral-storage: 4Gi
+        requests:
+          cpu: 100m
+          memory: 64Mi
+          ephemeral-storage: 4Gi
     frontend:
       # -- Hubble-ui frontend image.
       image:
@@ -1782,13 +1790,14 @@ hubble:
       # -- Additional hubble-ui frontend volumeMounts.
       extraVolumeMounts: []
       # -- Resource requests and limits for the 'frontend' container of the 'hubble-ui' deployment.
-      resources: {}
-      #   limits:
-      #     cpu: 1000m
-      #     memory: 1024M
-      #   requests:
-      #     cpu: 100m
-      #     memory: 64Mi
+      resources:
+        limits:
+          memory: 1024M
+          ephemeral-storage: 4Gi
+        requests:
+          cpu: 100m
+          memory: 64Mi
+          ephemeral-storage: 4Gi
       server:
         # -- Controls server listener for ipv6
         ipv6:
@@ -2878,13 +2887,14 @@ operator:
     maxUnavailable: 1
   # -- cilium-operator resource limits & requests
   # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-  resources: {}
-  #   limits:
-  #     cpu: 1000m
-  #     memory: 1Gi
-  #   requests:
-  #     cpu: 100m
-  #     memory: 128Mi
+  resources:
+    limits:
+      memory: 1Gi
+      ephemeral-storage: 2Gi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+      ephemeral-storage: 2Gi
 
   # -- Security context to be added to cilium-operator pods
   securityContext:
