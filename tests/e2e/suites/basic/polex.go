@@ -114,7 +114,7 @@ func buildPolicyException() *unstructured.Unstructured {
 	u.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "kyverno.io",
 		Kind:    "PolicyException",
-		Version: "v2beta1",
+		Version: "v2",
 	})
 
 	return &u
