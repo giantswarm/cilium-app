@@ -14,3 +14,20 @@ There are several ways to install this app onto a workload cluster.
 ## Upgrading cilium version
 
 Update the version in `vendir.s1.yml` and run `./sync/sync.sh`. It's good to check the diffs from upstream. They are stored in the `./diffs` directory.
+
+
+## Version compatibility
+
+| Cilium app | Cilium version | 
+| --- | --- |
+| 0.25.x | 1.15.x |
+| 0.26.x | 1.16.x |
+| 0.27.x | 1.16.x |
+| 0.28.x | 1.16.x |
+| 0.29.x | 1.16.x |
+| 0.30.x | 1.16.x |
+| 0.31.x | 1.16.x |
+| 0.32.x | 1.17.x |
+| 1.0.x | 1.17.x |
+| 1.1.x | 1.17.x |
+| 1.2.x | 1.17.x |
