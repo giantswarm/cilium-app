@@ -5,7 +5,7 @@ go 1.23.1
 replace github.com/imdario/mergo => github.com/imdario/mergo v0.3.16
 
 require (
-	github.com/cilium/cilium v1.17.0-rc.2
+	github.com/cilium/cilium v1.17.4
 	github.com/fluxcd/helm-controller/api v1.2.0
 	github.com/giantswarm/apptest-framework v1.13.0
 	github.com/giantswarm/clustertest v1.33.0
