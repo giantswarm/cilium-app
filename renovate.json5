@@ -20,5 +20,8 @@
       "matchFileNames": ["tests/e2e/**"],
       "groupName": "All E2E tests changes"
     }
+  ],
+  "ignoreDeps": [
+      "github.com/cilium/cilium"
   ]
 }
