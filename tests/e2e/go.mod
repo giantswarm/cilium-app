@@ -1,6 +1,8 @@
 module e2e
 
-go 1.23.1
+go 1.24.3
+
+toolchain go1.24.4
 
 replace github.com/imdario/mergo => github.com/imdario/mergo v0.3.16
 
@@ -13,6 +15,7 @@ require (
 	github.com/onsi/gomega v1.37.0
 	k8s.io/api v0.32.3
 	k8s.io/apimachinery v0.32.3
+	sigs.k8s.io/controller-runtime v0.20.4
 )
 
 require (
@@ -236,7 +239,6 @@ require (
 	k8s.io/utils v0.0.0-20241210054802-24370beab758 // indirect
 	oras.land/oras-go v1.2.6 // indirect
 	sigs.k8s.io/cluster-api v1.9.6 // indirect
-	sigs.k8s.io/controller-runtime v0.20.4 // indirect
 	sigs.k8s.io/e2e-framework v0.6.0 // indirect
 	sigs.k8s.io/gateway-api v1.2.1 // indirect
 	sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8 // indirect
