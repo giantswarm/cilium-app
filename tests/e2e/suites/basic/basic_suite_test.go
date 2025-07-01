@@ -119,8 +119,8 @@ func TestBasic(t *testing.T) {
 				ctx := api.SetNamespaceContextValue(context.Background(), ciliumNamespace)
 				ctx = api.SetK8sClientContextValue(ctx, k8sClient)
 
-				logger := check.NewConcurrentLogger(params.Writer, params.TestConcurrency)
-				logger.Start(ctx)
+				logger := check.NewConcurrentLogger(params.Writer)
+				logger.Start()
 				defer logger.Stop()
 
 				connTests, err := newConnectivityTests(k8sClient, params, logger)

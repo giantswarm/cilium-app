@@ -6,6 +6,7 @@ import (
 
 	"github.com/cilium/cilium/cilium-cli/api"
 	"github.com/cilium/cilium/cilium-cli/connectivity/check"
+	"github.com/cilium/cilium/cilium-cli/utils/codeowners"
 	"github.com/cilium/cilium/cilium-cli/defaults"
 	"github.com/cilium/cilium/cilium-cli/k8s"
 	"github.com/cilium/cilium/cilium-cli/sysdump"
@@ -28,7 +29,8 @@ func buildConnectivityTestParams() check.Parameters {
 
 func newConnectivityTests(client *k8s.Client, p check.Parameters, logger *check.ConcurrentLogger) ([]*check.ConnectivityTest, error) {
 	hooks := &api.NopHooks{}
-	cc, err := check.NewConnectivityTest(client, p, hooks, logger)
+	ruleset := &codeowners.Ruleset{}
+	cc, err := check.NewConnectivityTest(client, p, hooks, logger, ruleset)
 	if err != nil {
 		return nil, err
 	}
@@ -55,21 +57,24 @@ func defaultConnectivityTestParams() check.Parameters {
 		ConnDisruptTestSetup:          false,
 		ConnDisruptTestXfrmErrorsPath: "/tmp/cilium-conn-disrupt-xfrm-errors",
 		ConnectTimeout:                defaults.ConnectTimeout,
-		CurlImage:                     defaults.ConnectivityCheckAlpineCurlImage,
+		CurlImage:                     defaults.ConnectivityCheckImagesTest["ConnectivityCheckAlpineCurlImage"],
 		CurlInsecure:                  false,
-		DNSTestServerImage:            defaults.ConnectivityDNSTestServerImage,
+		DNSTestServerImage:            defaults.ConnectivityCheckImagesTest["ConnectivityDNSTestServerImage"],
 		Debug:                         false,
 		EchoServerHostPort:            4000,
 		ExpectedDropReasons:           defaults.ExpectedDropReasons,
 		ExpectedXFRMErrors:            defaults.ExpectedXFRMErrors,
-		ExternalCIDR:                  "1.0.0.0/8",
+		ExternalCIDRv4:                "1.0.0.0/8",
+		ExternalCIDRv6:                "2606:4700:4700::/96",
 		ExternalDeploymentPort:        8080,
-		ExternalIP:                    "1.1.1.1",
-		ExternalOtherIP:               "1.0.0.1",
+		ExternalIPv4:                  "1.1.1.1",
+		ExternalIPv6:                  "2606:4700:4700::1111",
+		ExternalOtherIPv4:             "1.0.0.1",
+		ExternalOtherIPv6:             "2606:4700:4700::1001",
 		ExternalTarget:                "one.one.one.one.",
 		ExternalTargetCAName:          "cabundle",
 		ExternalTargetCANamespace:     "cilium-test-1",
-		FRRImage:                      defaults.ConnectivityTestFRRImage,
+		FRRImage:                      defaults.ConnectivityCheckImagesTest["ConnectivityDNSTestServerImage"],
 		FlowValidation:                check.FlowValidationModeWarning,
 		FlushCT:                       false,
 		ForceDeploy:                   false,
@@ -79,7 +84,7 @@ func defaultConnectivityTestParams() check.Parameters {
 		HubbleServer:                  "localhost:4245",
 		IncludeConnDisruptTest:        false,
 		IncludeUnsafeTests:            false,
-		JSONMockImage:                 defaults.ConnectivityCheckJSONMockImage,
+		JSONMockImage:                 defaults.ConnectivityCheckImagesTest["ConnectivityCheckJSONMockImage"],
 		JunitFile:                     "",
 		JunitProperties:               make(map[string]string),
 		K8sLocalHostTest:              false,
@@ -98,7 +103,7 @@ func defaultConnectivityTestParams() check.Parameters {
 		SingleNode:                    false,
 		SkipIPCacheCheck:              true,
 		TestConcurrency:               1,
-		TestConnDisruptImage:          defaults.ConnectivityTestConnDisruptImage,
+		TestConnDisruptImage:          defaults.ConnectivityCheckImagesTest["ConnectivityTestConnDisruptImage"],
 		TestNamespaceIndex:            0,
 		Timeout:                       defaults.ConnectivityTestSuiteTimeout,
 		Timestamp:                     false,
