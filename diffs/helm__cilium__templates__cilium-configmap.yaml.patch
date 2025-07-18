@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-configmap.yaml b/helm/cilium/templates/cilium-configmap.yaml
-index 1579754..acfc761 100644
+index 72c391d..e47c360 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-configmap.yaml
 +++ b/helm/cilium/templates/cilium-configmap.yaml
-@@ -872,10 +872,7 @@ data:
+@@ -868,10 +868,7 @@ data:
    enable-endpoint-lockdown-on-policy-overflow: {{ .Values.endpointLockdownOnMapOverflow | quote }}
  {{- if .Values.cni.configMap }}
    read-cni-conf: {{ .Values.cni.confFileMountPath }}/{{ .Values.cni.configMapKey }}

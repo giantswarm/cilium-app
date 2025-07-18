@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgrade Cilium to [v1.17.5](https://github.com/cilium/cilium/releases/tag/v1.17.5).
+- Upgrade Cilium to [v1.17.6](https://github.com/cilium/cilium/releases/tag/v1.17.6).
 - Updated E2E tests to use apptest-framework v1.14.0
 
 ## [1.2.1] - 2025-06-10
