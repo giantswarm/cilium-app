@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upgrade Cilium to [v1.17.6](https://github.com/cilium/cilium/releases/tag/v1.17.6).
 - Updated E2E tests to use apptest-framework v1.14.0
-- Restore hostPort.enabled flag.
 - Increase Cilium operator resource limits.
 
 ### Removed
