@@ -46,3 +46,6 @@ for f in $(git --no-pager diff --no-exit-code --no-color --no-index vendor/ciliu
                 exit $ret
         fi
 done
+
+# Print upstream changelog
+awk '/^##/ { if (++count == 2) exit } count >= 1' vendor/cilium/CHANGELOG.md

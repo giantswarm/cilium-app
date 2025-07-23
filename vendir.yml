@@ -10,6 +10,7 @@ directories:
           ref: &version "v1.17.6"
         includePaths:
           - install/kubernetes/**/*
+          - CHANGELOG.md
           - Makefile.defs
           - Makefile.quiet
           - VERSION
