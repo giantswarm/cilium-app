@@ -7,11 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.2] - 2025-07-23
+
 ### Changed
 
 - Upgrade Cilium to [v1.17.6](https://github.com/cilium/cilium/releases/tag/v1.17.6).
 - Updated E2E tests to use apptest-framework v1.14.0
-- Restore hostPort.enabled flag.
 - Increase Cilium operator resource limits.
 
 ### Removed
@@ -436,7 +437,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2022-03-25
 
-[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v1.2.2...HEAD
+[1.2.2]: https://github.com/giantswarm/cilium-app/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/giantswarm/cilium-app/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/giantswarm/cilium-app/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/giantswarm/cilium-app/compare/v1.1.0...v1.1.1
