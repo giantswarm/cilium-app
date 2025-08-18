@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-preflight/daemonset.yaml b/helm/cilium/templates/cilium-preflight/daemonset.yaml
-index 0e793cf..8185df1 100644
+index 17c39a4..c5f04eb 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-preflight/daemonset.yaml
 +++ b/helm/cilium/templates/cilium-preflight/daemonset.yaml
-@@ -49,7 +49,7 @@ spec:
+@@ -52,7 +52,7 @@ spec:
        {{- end }}
        initContainers:
          - name: clean-cilium-state
@@ -11,7 +11,7 @@ index 0e793cf..8185df1 100644
            imagePullPolicy: {{ .Values.preflight.image.pullPolicy }}
            command: ["/bin/echo"]
            args:
-@@ -57,7 +57,7 @@ spec:
+@@ -60,7 +60,7 @@ spec:
            terminationMessagePolicy: FallbackToLogsOnError
        containers:
          - name: cilium-pre-flight-check
@@ -20,7 +20,7 @@ index 0e793cf..8185df1 100644
            imagePullPolicy: {{ .Values.preflight.image.pullPolicy }}
            command: ["/bin/sh"]
            args:
-@@ -113,7 +113,7 @@ spec:
+@@ -116,7 +116,7 @@ spec:
            terminationMessagePolicy: FallbackToLogsOnError
          {{- if ne .Values.preflight.tofqdnsPreCache "" }}
          - name: cilium-pre-flight-fqdn-precache
@@ -29,3 +29,12 @@ index 0e793cf..8185df1 100644
            imagePullPolicy: {{ .Values.preflight.image.pullPolicy }}
            name: cilium-pre-flight-fqdn-precache
            command: ["/bin/sh"]
+@@ -186,7 +186,7 @@ spec:
+         {{- end }}
+         {{- if $envoyDS }}
+         - name: cilium-pre-flight-envoy
+-          image: {{ include "cilium.image" .Values.preflight.envoy.image | quote }}
++          image: {{ include "cilium.image" (list $ .Values.preflight.envoy.image) | quote }}
+           imagePullPolicy: {{ .Values.preflight.image.pullPolicy }}
+           command: ["/bin/sh"]
+           args:

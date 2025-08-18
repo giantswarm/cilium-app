@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/spire/agent/daemonset.yaml b/helm/cilium/templates/spire/agent/daemonset.yaml
-index cac6087..a43c680 100644
+index 00bfee9..d94100c 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/spire/agent/daemonset.yaml
 +++ b/helm/cilium/templates/spire/agent/daemonset.yaml
 @@ -52,7 +52,7 @@ spec:
