@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index 3608049..69a52f0 100644
+index 98956df..69a52f0 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
 @@ -217,6 +217,7 @@ name: cilium
@@ -258,6 +258,17 @@ index 3608049..69a52f0 100644
  # -- Enables masquerading of IPv6 traffic leaving the node from endpoints.
  enableIPv6Masquerade: true
  # -- Enables masquerading to the source of the route for traffic leaving the node from endpoints.
+@@ -2251,8 +2291,8 @@ loadBalancer:
+   # path), or best-effort (use native mode XDP acceleration on devices
+   # that support it).
+   acceleration: disabled
+-  # -- dsrDispatch configures whether IP option (opt), IPIP encapsulation (ipip),
+-  # Geneve Class Option (geneve) used to pass a service IP and port to remote backend
++  # -- dsrDispatch configures whether IP option or IPIP encapsulation is
++  # used to pass a service IP and port to remote backend
+   # dsrDispatch: opt
+ 
+   # -- serviceTopology enables K8s Topology Aware Hints -based service
 @@ -2329,8 +2369,8 @@ pprof:
    port: 6060
  # -- Configure prometheus metrics on the configured port at /metrics
