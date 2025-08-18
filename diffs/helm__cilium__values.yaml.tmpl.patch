@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index 1911033..8423e81 100644
+index 9ac9655..bff6168 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
 @@ -187,6 +187,7 @@ name: cilium
@@ -10,7 +10,7 @@ index 1911033..8423e81 100644
    # @schema
    # type: [null, string]
    # @schema
-@@ -485,7 +486,7 @@ bpf:
+@@ -487,7 +488,7 @@ bpf:
    # @default -- `524288`
    authMapMax: ~
    # -- Enable CT accounting for packets and bytes
@@ -19,7 +19,7 @@ index 1911033..8423e81 100644
    # @schema
    # type: [null, integer]
    # @schema
-@@ -564,7 +565,7 @@ bpf:
+@@ -572,7 +573,7 @@ bpf:
    # @schema
    # type: [null, integer]
    # @schema
@@ -28,7 +28,7 @@ index 1911033..8423e81 100644
    # @schema
    # type: [null, number, string]
    # @schema
-@@ -1107,7 +1108,7 @@ socketLB:
+@@ -1115,7 +1116,7 @@ socketLB:
    # -- Enable socket LB
    enabled: false
    # -- Disable socket lb for non-root ns. This is used to enable Istio routing rules.
@@ -37,7 +37,7 @@ index 1911033..8423e81 100644
    # -- Enable terminating pod connections to deleted service backends.
    # terminatePodConnections: true
    # -- Enables tracing for socket-based load balancing.
-@@ -1278,11 +1279,11 @@ hubble:
+@@ -1286,11 +1287,11 @@ hubble:
          # Switch to false if you want to self maintain the file content.
          createConfigMap: true
          # ---- Exporters configuration in YAML format.
@@ -54,7 +54,7 @@ index 1911033..8423e81 100644
    # -- Unix domain socket path to listen to when Hubble is enabled.
    socketPath: /var/run/cilium/hubble.sock
    # -- Enables redacting sensitive information present in Layer 7 flows.
-@@ -1358,7 +1359,7 @@ hubble:
+@@ -1366,7 +1367,7 @@ hubble:
        #
        #   --set hubble.redact.enabled="true"
        #   --set hubble.redact.kafka.apiKey="true"
@@ -63,7 +63,7 @@ index 1911033..8423e81 100644
    # -- An additional address for Hubble to listen to.
    # Set this field ":4244" if you are enabling Hubble Relay, as it assumes that
    # Hubble is listening on port 4244.
-@@ -1440,7 +1441,7 @@ hubble:
+@@ -1448,7 +1449,7 @@ hubble:
        extraIpAddresses: []
    relay:
      # -- Enable Hubble Relay (requires hubble.enabled=true)
@@ -72,7 +72,7 @@ index 1911033..8423e81 100644
      # -- Roll out Hubble Relay pods automatically when configmap is updated.
      rollOutPods: false
      # -- Hubble-relay container image.
-@@ -1456,7 +1457,14 @@ hubble:
+@@ -1464,7 +1465,14 @@ hubble:
        useDigest: ${USE_DIGESTS}
        pullPolicy: "${PULL_POLICY}"
      # -- Specifies the resources for the hubble-relay pods
@@ -88,7 +88,7 @@ index 1911033..8423e81 100644
      # -- Number of replicas run for the hubble-relay deployment.
      replicas: 1
      # -- Affinity for hubble-replay
-@@ -1481,11 +1489,14 @@ hubble:
+@@ -1489,11 +1497,14 @@ hubble:
      # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
      tolerations: []
      # -- Additional hubble-relay environment variables.
@@ -105,7 +105,7 @@ index 1911033..8423e81 100644
      # -- Labels to be added to hubble-relay pods
      podLabels: {}
      # PodDisruptionBudget settings
-@@ -1517,21 +1528,28 @@ hubble:
+@@ -1525,21 +1536,28 @@ hubble:
          # @schema
          maxUnavailable: 1
      # -- Additional hubble-relay volumes.
@@ -137,7 +137,7 @@ index 1911033..8423e81 100644
      # -- hubble-relay service configuration.
      service:
        # --- The type of service used for Hubble Relay access, either ClusterIP, NodePort or LoadBalancer.
-@@ -1618,7 +1636,7 @@ hubble:
+@@ -1626,7 +1644,7 @@ hubble:
      # -- Enable prometheus metrics for hubble-relay on the configured port at
      # /metrics
      prometheus:
@@ -146,7 +146,7 @@ index 1911033..8423e81 100644
        port: 9966
        serviceMonitor:
          # -- Enable service monitors.
-@@ -1657,7 +1675,7 @@ hubble:
+@@ -1665,7 +1683,7 @@ hubble:
        port: 6062
    ui:
      # -- Whether to enable the Hubble UI.
@@ -155,7 +155,7 @@ index 1911033..8423e81 100644
      standalone:
        # -- When true, it will allow installing the Hubble UI only, without checking dependencies.
        # It is useful if a cluster already has cilium and Hubble relay installed and you just
-@@ -1706,7 +1724,17 @@ hubble:
+@@ -1714,7 +1732,17 @@ hubble:
          useDigest: true
          pullPolicy: "${PULL_POLICY}"
        # -- Hubble-ui backend security context.
@@ -174,7 +174,7 @@ index 1911033..8423e81 100644
        # -- Additional hubble-ui backend environment variables.
        extraEnv: []
        # -- Additional hubble-ui backend volumes.
-@@ -1720,13 +1748,14 @@ hubble:
+@@ -1728,13 +1756,14 @@ hubble:
          # -- Enable readiness probe for Hubble-ui backend (requires Hubble-ui 0.12+)
          enabled: false
        # -- Resource requests and limits for the 'backend' container of the 'hubble-ui' deployment.
@@ -196,7 +196,7 @@ index 1911033..8423e81 100644
      frontend:
        # -- Hubble-ui frontend image.
        image:
-@@ -1740,7 +1769,17 @@ hubble:
+@@ -1748,7 +1777,17 @@ hubble:
          useDigest: true
          pullPolicy: "${PULL_POLICY}"
        # -- Hubble-ui frontend security context.
@@ -215,7 +215,7 @@ index 1911033..8423e81 100644
        # -- Additional hubble-ui frontend environment variables.
        extraEnv: []
        # -- Additional hubble-ui frontend volumes.
-@@ -1748,13 +1787,14 @@ hubble:
+@@ -1756,13 +1795,14 @@ hubble:
        # -- Additional hubble-ui frontend volumeMounts.
        extraVolumeMounts: []
        # -- Resource requests and limits for the 'frontend' container of the 'hubble-ui' deployment.
@@ -237,7 +237,7 @@ index 1911033..8423e81 100644
        server:
          # -- Controls server listener for ipv6
          ipv6:
-@@ -1766,7 +1806,8 @@ hubble:
+@@ -1774,7 +1814,8 @@ hubble:
      # -- Additional labels to be added to 'hubble-ui' deployment object
      labels: {}
      # -- Annotations to be added to hubble-ui pods
@@ -247,7 +247,7 @@ index 1911033..8423e81 100644
      # -- Labels to be added to hubble-ui pods
      podLabels: {}
      # PodDisruptionBudget settings
-@@ -1812,9 +1853,13 @@ hubble:
+@@ -1820,9 +1861,13 @@ hubble:
          maxUnavailable: 1
      # -- Security context to be added to Hubble UI pods
      securityContext:
@@ -262,7 +262,7 @@ index 1911033..8423e81 100644
      # -- hubble-ui service configuration.
      service:
        # -- Annotations to be added for the Hubble UI service
-@@ -2044,9 +2089,9 @@ l2NeighDiscovery:
+@@ -2052,9 +2097,9 @@ l2NeighDiscovery:
  # -- Enable Layer 7 network policy.
  l7Proxy: true
  # -- Enable Local Redirect Policy.
@@ -274,7 +274,7 @@ index 1911033..8423e81 100644
  
  # logOptions allows you to define logging options. eg:
  # logOptions:
-@@ -2228,8 +2273,8 @@ pprof:
+@@ -2236,8 +2281,8 @@ pprof:
    port: 6060
  # -- Configure prometheus metrics on the configured port at /metrics
  prometheus:
@@ -285,7 +285,7 @@ index 1911033..8423e81 100644
    port: 9962
    serviceMonitor:
      # -- Enable service monitors.
-@@ -2788,7 +2833,9 @@ operator:
+@@ -2796,7 +2841,9 @@ operator:
    # -- Additional cilium-operator container arguments.
    extraArgs: []
    # -- Additional cilium-operator environment variables.
@@ -296,7 +296,7 @@ index 1911033..8423e81 100644
    # -- Additional cilium-operator hostPath mounts.
    extraHostPathMounts: []
    # - name: host-mnt-data
-@@ -2799,15 +2846,22 @@ operator:
+@@ -2807,15 +2854,22 @@ operator:
    #   mountPropagation: HostToContainer
  
    # -- Additional cilium-operator volumes.
@@ -322,7 +322,7 @@ index 1911033..8423e81 100644
    # -- Annotations to be added to cilium-operator pods
    podAnnotations: {}
    # -- Labels to be added to cilium-operator pods
-@@ -2816,7 +2870,7 @@ operator:
+@@ -2824,7 +2878,7 @@ operator:
    podDisruptionBudget:
      # -- enable PodDisruptionBudget
      # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
@@ -331,7 +331,7 @@ index 1911033..8423e81 100644
      # @schema
      # type: [null, integer, string]
      # @schema
-@@ -2830,17 +2884,27 @@ operator:
+@@ -2838,17 +2892,27 @@ operator:
      maxUnavailable: 1
    # -- cilium-operator resource limits & requests
    # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -368,7 +368,7 @@ index 1911033..8423e81 100644
  
    # -- Interval for endpoint garbage collection.
    endpointGCInterval: "5m0s"
-@@ -2860,7 +2924,7 @@ operator:
+@@ -2868,7 +2932,7 @@ operator:
    # -- Enable prometheus metrics for cilium-operator on the configured port at
    # /metrics
    prometheus:
@@ -377,7 +377,7 @@ index 1911033..8423e81 100644
      enabled: true
      port: 9963
      serviceMonitor:
-@@ -3835,3 +3899,11 @@ authentication:
+@@ -3843,3 +3907,11 @@ authentication:
  enableInternalTrafficPolicy: true
  # -- Enable LoadBalancer IP Address Management
  enableLBIPAM: true
