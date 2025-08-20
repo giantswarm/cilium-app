@@ -141,8 +141,8 @@ To override the namespace and configMap when using `auto`:
   {{- $configmapName := default "cluster-info" .Values.k8sServiceLookupConfigMapName }}
   {{- $configmapNamespace := default "kube-public" .Values.k8sServiceLookupNamespace }}
   {{- if eq .Values.k8sServiceHost "auto" }}
-    {{- if lookup "v1" "ConfigMap" $configmapNamespace $configmapName }}
-      {{- $configmap := (lookup "v1" "ConfigMap" $configmapNamespace $configmapName) }}
+    {{- $configmap := (lookup "v1" "ConfigMap" $configmapNamespace $configmapName) }}
+    {{- if $configmap }}
       {{- $kubeconfig := get $configmap.data "kubeconfig" }}
       {{- $k8sServer := get ($kubeconfig | fromYaml) "clusters" | mustFirst | dig "cluster" "server" "" }}
       {{- $uri := (split "https://" $k8sServer)._1 | trim }}
