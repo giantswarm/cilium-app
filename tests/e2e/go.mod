@@ -7,12 +7,12 @@ replace github.com/imdario/mergo => github.com/imdario/mergo v0.3.16
 require (
 	github.com/cilium/cilium v1.18.0-pre.3
 	github.com/fluxcd/helm-controller/api v1.3.0
-	github.com/giantswarm/apptest-framework v1.14.0
-	github.com/giantswarm/clustertest v1.37.0
-	github.com/onsi/ginkgo/v2 v2.23.4
-	github.com/onsi/gomega v1.38.0
-	k8s.io/api v0.33.3
-	k8s.io/apimachinery v0.33.3
+	github.com/giantswarm/apptest-framework v1.15.2
+	github.com/giantswarm/clustertest v1.39.2
+	github.com/onsi/ginkgo/v2 v2.25.1
+	github.com/onsi/gomega v1.38.1
+	k8s.io/api v0.33.4
+	k8s.io/apimachinery v0.33.4
 	sigs.k8s.io/controller-runtime v0.21.0
 )
 
