@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Improve the k8s service host autodiscovery mechanism
+
 ## [1.2.2] - 2025-07-23
 
 ### Changed
