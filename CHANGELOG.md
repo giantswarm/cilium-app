@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Improve the k8s service host autodiscovery mechanism
+- Upgrade Cilium to [v1.17.7](https://github.com/cilium/cilium/releases/tag/v1.17.7).
 
 ## [1.2.2] - 2025-07-23
 
