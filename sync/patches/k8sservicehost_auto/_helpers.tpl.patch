@@ -1,31 +1,8 @@
-diff --git a/vendor/cilium/install/kubernetes/cilium/templates/_helpers.tpl b/helm/cilium/templates/_helpers.tpl
-index ba91c35..0ef904a 100644
---- a/vendor/cilium/install/kubernetes/cilium/templates/_helpers.tpl
+diff --git a/helm/cilium/templates/_helpers.tpl b/helm/cilium/templates/_helpers.tpl
+index f457443..ee81bf6 100644
+--- a/helm/cilium/templates/_helpers.tpl
 +++ b/helm/cilium/templates/_helpers.tpl
-@@ -28,12 +28,21 @@ your container engine doesn't support specifying both the tag and digest for
- instance).
- */}}
- {{- define "cilium.image" -}}
-+{{- if not (kindIs "slice" .) }}
-+{{- (fail (printf "required list, but got %q" (kindOf .))) }}
-+{{- end }}
-+{{- if (ne (len .) 2) }}
-+{{- (fail (printf "required list of 2 arguments, but got %d" (len .))) }}
-+{{- end }}
-+{{- $ := index . 0 }}
-+{{- with index . 1 }}
- {{- $digest := (.useDigest | default false) | ternary (printf "@%s" .digest) "" -}}
- {{- $tag := .tag | default "" | eq "" | ternary "" (printf ":%s" .tag) -}}
- {{- if .override -}}
- {{- printf "%s" .override -}}
- {{- else -}}
--{{- printf "%s%s%s" .repository $tag $digest -}}
-+{{- printf "%s/%s%s%s" $.Values.image.registry .repository $tag $digest -}}
-+{{- end -}}
- {{- end -}}
- {{- end -}}
- 
-@@ -131,12 +140,16 @@ To override the namespace and configMap when using `auto`:
+@@ -140,12 +140,16 @@ To override the namespace and configMap when using `auto`:
  {{- define "k8sServiceHost" }}
    {{- $configmapName := default "cluster-info" .Values.k8sServiceLookupConfigMapName }}
    {{- $configmapNamespace := default "kube-public" .Values.k8sServiceLookupNamespace }}
