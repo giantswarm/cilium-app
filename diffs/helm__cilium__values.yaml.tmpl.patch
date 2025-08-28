@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index 98956df..69a52f0 100644
+index 98956df..a85e56d 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
 @@ -217,6 +217,7 @@ name: cilium
@@ -280,16 +280,19 @@ index 98956df..69a52f0 100644
    port: 9962
    serviceMonitor:
      # -- Enable service monitors.
-@@ -2915,7 +2955,7 @@ operator:
+@@ -2915,17 +2955,14 @@ operator:
    # @schema
    # type: [null, array]
    # @schema
 -  tolerations: 
+-    - key: "node-role.kubernetes.io/control-plane"
+-      operator: Exists
+-    - key: "node-role.kubernetes.io/master" #deprecated
+-      operator: Exists
+-    - key: "node.kubernetes.io/not-ready"
+-      operator: Exists
 +  tolerations:
-     - key: "node-role.kubernetes.io/control-plane"
-       operator: Exists
-     - key: "node-role.kubernetes.io/master" #deprecated
-@@ -2925,7 +2965,9 @@ operator:
++    - operator: Exists
    # -- Additional cilium-operator container arguments.
    extraArgs: []
    # -- Additional cilium-operator environment variables.
@@ -300,7 +303,7 @@ index 98956df..69a52f0 100644
    # -- Additional cilium-operator hostPath mounts.
    extraHostPathMounts: []
    # - name: host-mnt-data
-@@ -2936,15 +2978,20 @@ operator:
+@@ -2936,15 +2973,20 @@ operator:
    #   mountPropagation: HostToContainer
  
    # -- Additional cilium-operator volumes.
@@ -323,7 +326,7 @@ index 98956df..69a52f0 100644
      seccompProfile:
        type: RuntimeDefault
    # -- Annotations to be added to cilium-operator pods
-@@ -2955,7 +3002,7 @@ operator:
+@@ -2955,7 +2997,7 @@ operator:
    podDisruptionBudget:
      # -- enable PodDisruptionBudget
      # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
@@ -332,7 +335,7 @@ index 98956df..69a52f0 100644
      # @schema
      # type: [null, integer, string]
      # @schema
-@@ -2974,13 +3021,14 @@ operator:
+@@ -2974,13 +3016,14 @@ operator:
      unhealthyPodEvictionPolicy: null
    # -- cilium-operator resource limits & requests
    # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -354,7 +357,7 @@ index 98956df..69a52f0 100644
  
    # -- Security context to be added to cilium-operator pods
    securityContext:
-@@ -2988,7 +3036,12 @@ operator:
+@@ -2988,7 +3031,12 @@ operator:
        drop:
        - ALL
      allowPrivilegeEscalation: false
@@ -368,7 +371,7 @@ index 98956df..69a52f0 100644
  
    # -- Interval for endpoint garbage collection.
    endpointGCInterval: "5m0s"
-@@ -3008,7 +3061,7 @@ operator:
+@@ -3008,7 +3056,7 @@ operator:
    # -- Enable prometheus metrics for cilium-operator on the configured port at
    # /metrics
    prometheus:
@@ -377,7 +380,7 @@ index 98956df..69a52f0 100644
      enabled: true
      port: 9963
      serviceMonitor:
-@@ -4031,3 +4084,10 @@ enableInternalTrafficPolicy: true
+@@ -4031,3 +4079,10 @@ enableInternalTrafficPolicy: true
  # -- Enable LoadBalancer IP Address Management
  enableLBIPAM: true
  

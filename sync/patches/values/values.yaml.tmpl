@@ -2956,12 +2956,7 @@ operator:
   # type: [null, array]
   # @schema
   tolerations:
-    - key: "node-role.kubernetes.io/control-plane"
-      operator: Exists
-    - key: "node-role.kubernetes.io/master" #deprecated
-      operator: Exists
-    - key: "node.kubernetes.io/not-ready"
-      operator: Exists
+    - operator: Exists
   # -- Additional cilium-operator container arguments.
   extraArgs: []
   # -- Additional cilium-operator environment variables.
