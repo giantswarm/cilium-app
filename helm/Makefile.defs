@@ -28,6 +28,8 @@ LOCALSTATEDIR?=/var
 RUNDIR?=/var/run
 CONFDIR?=/etc
 
+CILIUM_BUILD_DIR?=.
+
 export GO ?= go
 NATIVE_ARCH = $(shell GOARCH= $(GO) env GOARCH)
 export GOARCH ?= $(NATIVE_ARCH)
@@ -58,8 +60,8 @@ ifeq ($(DOCKER_IMAGE_TAG),)
 endif
 
 # renovate: datasource=docker depName=gcr.io/etcd-development/etcd
-ETCD_IMAGE_VERSION = v3.5.21
-ETCD_IMAGE_SHA = sha256:fd158fbe55240e252947bbd2e8dddc217997ff43978071fac2bd202b6ad15c03
+ETCD_IMAGE_VERSION = v3.6.4
+ETCD_IMAGE_SHA = sha256:5d10878e4fd4ebfdf82bc142fb044542a3ca514c0ee169277643a84d6816892a
 ETCD_IMAGE=gcr.io/etcd-development/etcd:$(ETCD_IMAGE_VERSION)@$(ETCD_IMAGE_SHA)
 
 CILIUM_BUILDER_IMAGE=$(shell cat $(ROOT_DIR)/images/cilium/Dockerfile | grep "ARG CILIUM_BUILDER_IMAGE=" | cut -d"=" -f2)
@@ -67,9 +69,6 @@ CILIUM_BUILDER_IMAGE=$(shell cat $(ROOT_DIR)/images/cilium/Dockerfile | grep "AR
 export CILIUM_CLI ?= cilium
 export KUBECTL ?= kubectl
 
-# Till the self-hosted renovate PR #30185 is merged, we might need to run the below
-# command locally for any version update.
-# make generate-api generate-health-api generate-hubble-api generate-operator-api generate-kvstoremesh-api
 # renovate: datasource=docker depName=quay.io/goswagger/swagger
 SWAGGER_VERSION = 0.32.3
 SWAGGER_IMAGE_SHA = sha256:9cfa5ae0f8e68753bf3f987c4d656d3ff0908d5f3324ffacba286271c9cc8a2d
@@ -132,8 +131,8 @@ ifneq ($(GOTEST_FORMATTER),cat)
 endif
 
 # renovate: datasource=docker depName=golangci/golangci-lint
-GOLANGCILINT_WANT_VERSION = v2.0.0
-GOLANGCILINT_IMAGE_SHA = sha256:6513c569224cd49ba365401f583cf34eaf44b0862aeb6f9a402cff05a7b53d75
+GOLANGCILINT_WANT_VERSION = v2.3.0
+GOLANGCILINT_IMAGE_SHA = sha256:67bf4b8b2d64faa4effe19cbda0c651c1c3b8099ea26ec2e09bc20a383d2daa4
 GOLANGCILINT_VERSION = $(shell golangci-lint version --short 2>/dev/null)
 
 VERSION = $(shell cat $(dir $(lastword $(MAKEFILE_LIST)))/VERSION)
@@ -179,7 +178,7 @@ GO_BUILD_FLAGS += -mod=vendor
 GO_TEST_FLAGS += -mod=vendor -vet=all
 GO_CLEAN_FLAGS += -mod=vendor
 
-GO_BUILD = CGO_ENABLED=0 $(GO) build
+CGO_ENABLED ?= 0
 
 # Support CGO cross-compiling for amd64 and arm64 targets
 CGO_CC =
@@ -192,15 +191,16 @@ ifeq ($(CROSS_ARCH),arm64)
 else ifeq ($(CROSS_ARCH),amd64)
     CGO_CC = CC=x86_64-linux-gnu-gcc
 endif
-GO_BUILD_WITH_CGO = CGO_ENABLED=1 $(CGO_CC) $(GO) build
+
+GO_BUILD = CGO_ENABLED=$(CGO_ENABLED) $(CGO_CC) $(GO) build
 
 ifneq ($(RACE),)
     GO_BUILD_FLAGS += -race
     GO_TEST_FLAGS += -race
     GOTEST_COVER_OPTS += -covermode=atomic
 
-    # GO_BUILD becomes GO_BUILD_WITH_CGO as `-race` requires CGO
-    GO_BUILD = $(GO_BUILD_WITH_CGO)
+    # `-race` requires CGO
+    CGO_ENABLED = 1
     ifeq ($(LOCKDEBUG),)
         LOCKDEBUG=1
     endif
@@ -220,7 +220,6 @@ ifeq ($(NOOPT),1)
 endif
 
 GO_BUILD += $(GO_BUILD_FLAGS)
-GO_BUILD_WITH_CGO += $(GO_BUILD_FLAGS)
 
 GO_TEST = CGO_ENABLED=0 $(GO) test $(GO_TEST_FLAGS)
 GO_CLEAN = $(GO) clean $(GO_CLEAN_FLAGS)
@@ -234,7 +233,7 @@ HELM_TOOLBOX_IMAGE ?= "quay.io/cilium/helm-toolbox:$(HELM_TOOLBOX_VERSION)@sha25
 
 YQ_VERSION ?= "4.40.5"
 YQ_SHA ?= "32be61dc94d0acc44f513ba69d0fc05f1f92c2e760491f2a27e11fc13cde6327"
-YQ_IMAGE ?= "mikefarah/yq:$(YQ_VERSION)@sha256:$(YQ_SHA)"
+YQ_IMAGE ?= "docker.io/mikefarah/yq:$(YQ_VERSION)@sha256:$(YQ_SHA)"
 
 define print_help_line
   @printf "  \033[36m%-29s\033[0m %s.\n" $(1) $(2)
@@ -250,3 +249,5 @@ CURRENT_GO_MODULE = $(shell go list -m)
 define ASSERT_CILIUM_MODULE
 	$(if $(filter $(CILIUM_GO_MODULE), $(CURRENT_GO_MODULE)) ,, $(error "Could not locate Cilium's go.mod file, are you in Cilium's repository?"))
 endef
+
+RENOVATE_GITHUB_COM_TOKEN ?= $(shell gh auth token)

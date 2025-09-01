@@ -449,6 +449,9 @@
         "bbr": {
           "type": "boolean"
         },
+        "bbrHostNamespaceOnly": {
+          "type": "boolean"
+        },
         "enabled": {
           "type": "boolean"
         }
@@ -459,6 +462,17 @@
       "properties": {
         "enabled": {
           "type": "boolean"
+        },
+        "routerIDAllocation": {
+          "properties": {
+            "ipPool": {
+              "type": "string"
+            },
+            "mode": {
+              "type": "string"
+            }
+          },
+          "type": "object"
         },
         "secretsNamespace": {
           "properties": {
@@ -646,6 +660,12 @@
             "integer"
           ]
         },
+        "policyStatsMapMax": {
+          "type": [
+            "null",
+            "integer"
+          ]
+        },
         "preallocateMaps": {
           "type": "boolean"
         },
@@ -731,6 +751,9 @@
         },
         "priorityClassName": {
           "type": "string"
+        },
+        "resources": {
+          "type": "object"
         },
         "tolerations": {
           "items": {},
@@ -833,12 +856,6 @@
             ]
           },
           "type": "array"
-        },
-        "sliceMode": {
-          "enum": [
-            "identity",
-            "fcfs"
-          ]
         }
       },
       "type": "object"
@@ -1036,6 +1053,9 @@
                 "healthPort": {
                   "type": "integer"
                 },
+                "kvstoreMode": {
+                  "type": "string"
+                },
                 "lifecycle": {
                   "type": "object"
                 },
@@ -1131,6 +1151,12 @@
                             "null",
                             "array"
                           ]
+                        },
+                        "scrapeTimeout": {
+                          "type": [
+                            "null",
+                            "string"
+                          ]
                         }
                       },
                       "type": "object"
@@ -1154,6 +1180,12 @@
                             "null",
                             "array"
                           ]
+                        },
+                        "scrapeTimeout": {
+                          "type": [
+                            "null",
+                            "string"
+                          ]
                         }
                       },
                       "type": "object"
@@ -1171,6 +1203,12 @@
                       "type": [
                         "null",
                         "array"
+                      ]
+                    },
+                    "scrapeTimeout": {
+                      "type": [
+                        "null",
+                        "string"
                       ]
                     }
                   },
@@ -1206,6 +1244,12 @@
                   "type": [
                     "null",
                     "integer",
+                    "string"
+                  ]
+                },
+                "unhealthyPodEvictionPolicy": {
+                  "type": [
+                    "null",
                     "string"
                   ]
                 }
@@ -1462,6 +1506,9 @@
         "maxConnectedClusters": {
           "type": "integer"
         },
+        "policyDefaultLocalCluster": {
+          "type": "boolean"
+        },
         "useAPIServer": {
           "type": "boolean"
         }
@@ -1491,6 +1538,9 @@
         "confPath": {
           "type": "string"
         },
+        "configMap": {
+          "type": "string"
+        },
         "configMapKey": {
           "type": "string"
         },
@@ -1507,6 +1557,9 @@
           "type": "string"
         },
         "install": {
+          "type": "boolean"
+        },
+        "iptablesRemoveAWSRules": {
           "type": "boolean"
         },
         "logFile": {
@@ -1538,6 +1591,12 @@
       "type": [
         "null",
         "object"
+      ]
+    },
+    "connectivityProbeFrequencyRatio": {
+      "type": [
+        "null",
+        "number"
       ]
     },
     "conntrackGCInterval": {
@@ -1617,6 +1676,12 @@
         "enabled": {
           "type": "boolean"
         },
+        "metricsSamplingInterval": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
         "verbose": {
           "type": [
             "null",
@@ -1658,6 +1723,9 @@
         "minTtl": {
           "type": "integer"
         },
+        "preAllocateIdentities": {
+          "type": "boolean"
+        },
         "preCache": {
           "type": "string"
         },
@@ -1684,9 +1752,6 @@
       },
       "type": "object"
     },
-    "enableCiliumEndpointSlice": {
-      "type": "boolean"
-    },
     "enableCriticalPriorityClass": {
       "type": "boolean"
     },
@@ -1694,7 +1759,10 @@
       "type": "boolean"
     },
     "enableIPv4Masquerade": {
-      "type": "boolean"
+      "type": [
+        "null",
+        "boolean"
+      ]
     },
     "enableIPv6BIGTCP": {
       "type": "boolean"
@@ -1705,9 +1773,6 @@
     "enableInternalTrafficPolicy": {
       "type": "boolean"
     },
-    "enableK8sTerminatingEndpoint": {
-      "type": "boolean"
-    },
     "enableLBIPAM": {
       "type": "boolean"
     },
@@ -1715,9 +1780,6 @@
       "type": "boolean"
     },
     "enableNonDefaultDenyPolicies": {
-      "type": "boolean"
-    },
-    "enableRuntimeDeviceDetection": {
       "type": "boolean"
     },
     "enableXTSocketFallback": {
@@ -1844,9 +1906,6 @@
         "subnetTagsFilter": {
           "items": {},
           "type": "array"
-        },
-        "updateEC2AdapterLimitViaAPI": {
-          "type": "boolean"
         }
       },
       "type": "object"
@@ -2043,6 +2102,9 @@
         "httpRetryCount": {
           "type": "integer"
         },
+        "httpUpstreamLingerTimeout": {
+          "type": "null"
+        },
         "idleTimeoutDurationSeconds": {
           "type": "integer"
         },
@@ -2077,6 +2139,9 @@
         },
         "livenessProbe": {
           "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
             "failureThreshold": {
               "type": "integer"
             },
@@ -2211,6 +2276,9 @@
                     "anyOf": [
                       {
                         "properties": {
+                          "action": {
+                            "type": "string"
+                          },
                           "replacement": {
                             "type": "string"
                           },
@@ -2232,6 +2300,12 @@
                     ]
                   },
                   "type": "array"
+                },
+                "scrapeTimeout": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
                 }
               },
               "type": "object"
@@ -2298,6 +2372,9 @@
         },
         "startupProbe": {
           "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
             "failureThreshold": {
               "type": "integer"
             },
@@ -2306,6 +2383,9 @@
             }
           },
           "type": "object"
+        },
+        "streamIdleTimeoutDurationSeconds": {
+          "type": "integer"
         },
         "terminationGracePeriodSeconds": {
           "type": "integer"
@@ -2390,14 +2470,6 @@
           "type": "array"
         },
         "ssl": {
-          "type": "boolean"
-        }
-      },
-      "type": "object"
-    },
-    "externalWorkloads": {
-      "properties": {
-        "enabled": {
           "type": "boolean"
         }
       },
@@ -2528,23 +2600,7 @@
     "healthPort": {
       "type": "integer"
     },
-    "highScaleIPcache": {
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        }
-      },
-      "type": "object"
-    },
     "hostFirewall": {
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        }
-      },
-      "type": "object"
-    },
-    "hostPort": {
       "properties": {
         "enabled": {
           "type": "boolean"
@@ -2606,6 +2662,15 @@
                                 "items": {},
                                 "type": "array"
                               },
+                              "fileCompress": {
+                                "type": "boolean"
+                              },
+                              "fileMaxBackups": {
+                                "type": "integer"
+                              },
+                              "fileMaxSizeMb": {
+                                "type": "integer"
+                              },
                               "filePath": {
                                 "type": "string"
                               },
@@ -2634,12 +2699,6 @@
               },
               "type": "object"
             },
-            "fileMaxBackups": {
-              "type": "integer"
-            },
-            "fileMaxSizeMb": {
-              "type": "integer"
-            },
             "static": {
               "properties": {
                 "allowList": {
@@ -2656,6 +2715,15 @@
                 "fieldMask": {
                   "items": {},
                   "type": "array"
+                },
+                "fileCompress": {
+                  "type": "boolean"
+                },
+                "fileMaxBackups": {
+                  "type": "integer"
+                },
+                "fileMaxSizeMb": {
+                  "type": "integer"
                 },
                 "filePath": {
                   "type": "string"
@@ -2702,29 +2770,7 @@
                       "type": "string"
                     },
                     "content": {
-                      "items": {
-                        "anyOf": [
-                          {
-                            "properties": {
-                              "contextOptions": {
-                                "items": {},
-                                "type": "array"
-                              },
-                              "excludeFilters": {
-                                "items": {},
-                                "type": "array"
-                              },
-                              "includeFilters": {
-                                "items": {},
-                                "type": "array"
-                              },
-                              "name": {
-                                "type": "string"
-                              }
-                            }
-                          }
-                        ]
-                      },
+                      "items": {},
                       "type": "array"
                     },
                     "createConfigMap": {
@@ -2782,6 +2828,9 @@
                     "anyOf": [
                       {
                         "properties": {
+                          "action": {
+                            "type": "string"
+                          },
                           "replacement": {
                             "type": "string"
                           },
@@ -2803,6 +2852,12 @@
                     ]
                   },
                   "type": "array"
+                },
+                "scrapeTimeout": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
                 },
                 "tlsConfig": {
                   "type": "object"
@@ -2856,6 +2911,14 @@
                 }
               },
               "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "networkPolicyCorrelation": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
             }
           },
           "type": "object"
@@ -2955,12 +3018,6 @@
             },
             "annotations": {
               "type": "object"
-            },
-            "dialTimeout": {
-              "type": [
-                "null",
-                "string"
-              ]
             },
             "enabled": {
               "type": "boolean"
@@ -3093,6 +3150,12 @@
                     "integer",
                     "string"
                   ]
+                },
+                "unhealthyPodEvictionPolicy": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
                 }
               },
               "type": "object"
@@ -3104,6 +3167,14 @@
               "properties": {
                 "fsGroup": {
                   "type": "integer"
+                },
+                "seccompProfile": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
                 }
               },
               "type": "object"
@@ -3157,6 +3228,12 @@
                       "type": [
                         "null",
                         "array"
+                      ]
+                    },
+                    "scrapeTimeout": {
+                      "type": [
+                        "null",
+                        "string"
                       ]
                     }
                   },
@@ -3758,6 +3835,12 @@
                     "integer",
                     "string"
                   ]
+                },
+                "unhealthyPodEvictionPolicy": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
                 }
               },
               "type": "object"
@@ -3805,6 +3888,9 @@
             "service": {
               "properties": {
                 "annotations": {
+                  "type": "object"
+                },
+                "labels": {
                   "type": "object"
                 },
                 "nodePort": {
@@ -3889,6 +3975,13 @@
     },
     "identityChangeGracePeriod": {
       "type": "string"
+    },
+    "identityManagementMode": {
+      "enum": [
+        "agent",
+        "operator",
+        "both"
+      ]
     },
     "image": {
       "properties": {
@@ -4179,6 +4272,20 @@
       },
       "type": "object"
     },
+    "k8sClientExponentialBackoff": {
+      "properties": {
+        "backoffBaseSeconds": {
+          "type": "integer"
+        },
+        "backoffMaxDurationSeconds": {
+          "type": "integer"
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
     "k8sClientRateLimit": {
       "properties": {
         "burst": {
@@ -4224,6 +4331,23 @@
     "k8sServiceHost": {
       "type": "string"
     },
+    "k8sServiceHostRef": {
+      "properties": {
+        "key": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
     "k8sServiceLookupConfigMapName": {
       "type": [
         "null",
@@ -4258,9 +4382,6 @@
       "properties": {
         "enabled": {
           "type": "boolean"
-        },
-        "refreshPeriod": {
-          "type": "string"
         }
       },
       "type": "object"
@@ -4309,9 +4430,6 @@
         "acceleration": {
           "type": "string"
         },
-        "experimental": {
-          "type": "boolean"
-        },
         "l7": {
           "properties": {
             "algorithm": {
@@ -4326,6 +4444,20 @@
             }
           },
           "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "localRedirectPolicies": {
+      "properties": {
+        "addressMatcherCIDRs": {
+          "type": [
+            "null",
+            "array"
+          ]
+        },
+        "enabled": {
+          "type": "boolean"
         }
       },
       "type": "object"
@@ -4532,6 +4664,9 @@
         },
         "securityContext": {
           "properties": {
+            "allowPrivilegeEscalation": {
+              "type": "boolean"
+            },
             "capabilities": {
               "properties": {
                 "add": {
@@ -4824,6 +4959,12 @@
                 "integer",
                 "string"
               ]
+            },
+            "unhealthyPodEvictionPolicy": {
+              "type": [
+                "null",
+                "string"
+              ]
             }
           },
           "type": "object"
@@ -4902,6 +5043,12 @@
                   "type": [
                     "null",
                     "array"
+                  ]
+                },
+                "scrapeTimeout": {
+                  "type": [
+                    "null",
+                    "string"
                   ]
                 }
               },
@@ -5016,7 +5163,10 @@
               }
             ]
           },
-          "type": "array"
+          "type": [
+            "null",
+            "array"
+          ]
         },
         "topologySpreadConstraints": {
           "items": {},
@@ -5165,6 +5315,37 @@
         "enabled": {
           "type": "boolean"
         },
+        "envoy": {
+          "properties": {
+            "image": {
+              "properties": {
+                "digest": {
+                  "type": "string"
+                },
+                "override": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "pullPolicy": {
+                  "type": "string"
+                },
+                "repository": {
+                  "type": "string"
+                },
+                "tag": {
+                  "type": "string"
+                },
+                "useDigest": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
         "extraEnv": {
           "items": {},
           "type": "array"
@@ -5232,6 +5413,12 @@
                 "integer",
                 "string"
               ]
+            },
+            "unhealthyPodEvictionPolicy": {
+              "type": [
+                "null",
+                "string"
+              ]
             }
           },
           "type": "object"
@@ -5260,6 +5447,11 @@
           "type": "object"
         },
         "securityContext": {
+          "properties": {
+            "allowPrivilegeEscalation": {
+              "type": "boolean"
+            }
+          },
           "type": "object"
         },
         "terminationGracePeriodSeconds": {
@@ -5360,6 +5552,9 @@
                 "anyOf": [
                   {
                     "properties": {
+                      "action": {
+                        "type": "string"
+                      },
                       "replacement": {
                         "type": "string"
                       },
@@ -5381,6 +5576,12 @@
                 ]
               },
               "type": "array"
+            },
+            "scrapeTimeout": {
+              "type": [
+                "null",
+                "string"
+              ]
             },
             "trustCRDsExist": {
               "type": "boolean"
@@ -5472,8 +5673,14 @@
       },
       "type": "object"
     },
+    "secretsNamespaceAnnotations": {
+      "type": "object"
+    },
     "securityContext": {
       "properties": {
+        "allowPrivilegeEscalation": {
+          "type": "boolean"
+        },
         "capabilities": {
           "properties": {
             "applySysctlOverwrites": {
@@ -5904,6 +6111,9 @@
       "type": "string"
     },
     "tunnelSourcePortRange": {
+      "type": "string"
+    },
+    "underlayProtocol": {
       "type": "string"
     },
     "updateStrategy": {

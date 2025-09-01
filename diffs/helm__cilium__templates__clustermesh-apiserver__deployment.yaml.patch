@@ -1,9 +1,9 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/clustermesh-apiserver/deployment.yaml b/helm/cilium/templates/clustermesh-apiserver/deployment.yaml
-index 72b4167..e6cc90c 100644
+index 28bb4a7..539662f 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/clustermesh-apiserver/deployment.yaml
 +++ b/helm/cilium/templates/clustermesh-apiserver/deployment.yaml
-@@ -54,7 +54,7 @@ spec:
-       {{- end }}
+@@ -63,7 +63,7 @@ spec:
+       {{- if eq .Values.clustermesh.apiserver.kvstoremesh.kvstoreMode "internal" }}
        initContainers:
        - name: etcd-init
 -        image: {{ include "cilium.image" .Values.clustermesh.apiserver.image | quote }}
@@ -11,8 +11,8 @@ index 72b4167..e6cc90c 100644
          imagePullPolicy: {{ .Values.clustermesh.apiserver.image.pullPolicy }}
          command:
          - /usr/bin/clustermesh-apiserver
-@@ -107,7 +107,7 @@ spec:
-       containers:
+@@ -118,7 +118,7 @@ spec:
+       {{- if eq .Values.clustermesh.apiserver.kvstoremesh.kvstoreMode "internal" }}
        - name: etcd
          # The clustermesh-apiserver container image includes an etcd binary.
 -        image: {{ include "cilium.image" .Values.clustermesh.apiserver.image | quote }}
@@ -20,17 +20,17 @@ index 72b4167..e6cc90c 100644
          imagePullPolicy: {{ .Values.clustermesh.apiserver.image.pullPolicy }}
          command:
          - /usr/bin/etcd
-@@ -171,7 +171,7 @@ spec:
-           {{- toYaml . | nindent 10 }}
-         {{- end }}
+@@ -184,7 +184,7 @@ spec:
+       {{- end }}
+       {{- if eq "true" (include "identityAllocationCRD" .) }}
        - name: apiserver
 -        image: {{ include "cilium.image" .Values.clustermesh.apiserver.image | quote }}
 +        image: {{ include "cilium.image" (list $ .Values.clustermesh.apiserver.image) | quote }}
          imagePullPolicy: {{ .Values.clustermesh.apiserver.image.pullPolicy }}
          command:
          - /usr/bin/clustermesh-apiserver
-@@ -268,7 +268,7 @@ spec:
-         {{- end }}
+@@ -284,7 +284,7 @@ spec:
+       {{- end }}
        {{- if .Values.clustermesh.apiserver.kvstoremesh.enabled }}
        - name: kvstoremesh
 -        image: {{ include "cilium.image" .Values.clustermesh.apiserver.image | quote }}

@@ -1,8 +1,8 @@
 diff --git a/helm/cilium/templates/cilium-agent/daemonset.yaml b/helm/cilium/templates/cilium-agent/daemonset.yaml
-index afde82d..91f3efd 100644
+index 13e2800..878ba66 100644
 --- a/helm/cilium/templates/cilium-agent/daemonset.yaml
 +++ b/helm/cilium/templates/cilium-agent/daemonset.yaml
-@@ -197,6 +197,18 @@ spec:
+@@ -206,6 +206,18 @@ spec:
              resourceFieldRef:
                resource: limits.memory
                divisor: '1'
@@ -18,10 +18,10 @@ index afde82d..91f3efd 100644
 +              name: cilium-config
 +              key: custom-cni-conf
 +              optional: true
-         {{- if .Values.k8sServiceHost }}
+         {{- if and .Values.k8sServiceHostRef.name .Values.k8sServiceHostRef.key }}
          - name: KUBERNETES_SERVICE_HOST
-           value: {{ include "k8sServiceHost" . }}
-@@ -457,6 +469,18 @@ spec:
+           valueFrom:
+@@ -480,6 +492,18 @@ spec:
              fieldRef:
                apiVersion: v1
                fieldPath: metadata.namespace
@@ -37,6 +37,6 @@ index afde82d..91f3efd 100644
 +              name: cilium-config
 +              key: custom-cni-conf
 +              optional: true
-         {{- if .Values.k8sServiceHost }}
+         {{- if and .Values.k8sServiceHostRef.name .Values.k8sServiceHostRef.key }}
          - name: KUBERNETES_SERVICE_HOST
-           value: {{ include "k8sServiceHost" . }}
+           valueFrom:

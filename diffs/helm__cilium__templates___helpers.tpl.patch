@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/_helpers.tpl b/helm/cilium/templates/_helpers.tpl
-index dc113ba..e550773 100644
+index ba91c35..0ef904a 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/_helpers.tpl
 +++ b/helm/cilium/templates/_helpers.tpl
 @@ -28,12 +28,21 @@ your container engine doesn't support specifying both the tag and digest for
