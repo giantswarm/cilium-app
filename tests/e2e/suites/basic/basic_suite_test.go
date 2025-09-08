@@ -16,6 +16,10 @@ import (
 	"github.com/giantswarm/clustertest/pkg/logger"
 	"github.com/giantswarm/clustertest/pkg/wait"
 
+	"github.com/giantswarm/cilium/tests/e2e/internal/connectivity"
+	"github.com/giantswarm/cilium/tests/e2e/internal/metrics"
+	"github.com/giantswarm/cilium/tests/e2e/internal/polex"
+
 	helmv2beta1 "github.com/fluxcd/helm-controller/api/v2beta1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -99,13 +103,13 @@ func TestBasic(t *testing.T) {
 					Should(Succeed())
 
 				By("Applying policy exceptions")
-				polex := buildPolicyException()
-				err := wcClient.Create(context.Background(), polex)
+				p := polex.New()
+				err := wcClient.Create(context.Background(), p)
 				Expect(err).ShouldNot(HaveOccurred())
 
 				By("Running connectivity tests")
 				ciliumNamespace := "kube-system"
-				params := buildConnectivityTestParams()
+				params := connectivity.BuildParams()
 				hooks := &api.NopHooks{}
 				tmpKubeconfig := fmt.Sprintf("/tmp/kubeconfig-%s", wcName)
 
@@ -122,7 +126,7 @@ func TestBasic(t *testing.T) {
 				logger.Start()
 				defer logger.Stop()
 
-				connTests, err := newConnectivityTests(k8sClient, params, logger)
+				connTests, err := connectivity.New(k8sClient, params, logger)
 				Expect(err).ShouldNot(HaveOccurred())
 
 				err = connectivity.Run(ctx, connTests, hooks)
@@ -132,7 +136,7 @@ func TestBasic(t *testing.T) {
 			It("ensure key metrics are available on mimir", func() {
 				const mimirUrl = "mimir-gateway.mimir.svc:80/prometheus"
 				mcClient := state.GetFramework().MC()
-				metrics := []string{
+				expectedMetrics := []string{
 					// Cilium Agent metrics
 					"cilium_version",
 
@@ -145,19 +149,19 @@ func TestBasic(t *testing.T) {
 				testPodName := fmt.Sprintf("%s-metrics-test", state.GetCluster().Name)
 				testPodNamespace := "default"
 
-				err := runTestPod(mcClient, testPodName, testPodNamespace)
+				err := metrics.Run(mcClient, testPodName, testPodNamespace)
 				Expect(err).NotTo(HaveOccurred())
 
 				By("ensuring that metrics are present in Mimir")
-				for _, metric := range metrics {
-					Eventually(checkMetricPresent(mcClient, metric, mimirUrl, testPodName, testPodNamespace)).
+				for _, metric := range expectedMetrics {
+					Eventually(metrics.Check(mcClient, metric, mimirUrl, testPodName, testPodNamespace)).
 						WithTimeout(10 * time.Minute).
 						WithPolling(10 * time.Second).
 						Should(Succeed())
 				}
 
 				By("Cleaning up test pod")
-				err = cleanupTestPod(mcClient, testPodName, testPodNamespace)
+				err = metrics.Cleanup(mcClient, testPodName, testPodNamespace)
 				Expect(err).NotTo(HaveOccurred())
 			})
 		}).
@@ -166,8 +170,8 @@ func TestBasic(t *testing.T) {
 			wcClient, _ := state.GetFramework().WC(wcName)
 
 			By("Deleting cilium-test-1 namespace")
-			polex := buildPolicyException()
-			err := wcClient.Delete(context.Background(), polex)
+			p := polex.New()
+			err := wcClient.Delete(context.Background(), p)
 			Expect(err).ShouldNot(HaveOccurred())
 
 			By("Deleting cilium-test PolicyException")
