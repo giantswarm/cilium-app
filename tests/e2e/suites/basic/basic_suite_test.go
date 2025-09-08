@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"os"
 	"testing"
 	"time"
 
@@ -24,11 +23,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-
-	"github.com/cilium/cilium/cilium-cli/api"
-	ciliumconnectivity "github.com/cilium/cilium/cilium-cli/connectivity"
-	"github.com/cilium/cilium/cilium-cli/connectivity/check"
-	"github.com/cilium/cilium/cilium-cli/k8s"
 )
 
 const (
@@ -86,7 +80,6 @@ func TestBasic(t *testing.T) {
 
 			It("should pass cilium connectivity test", func() {
 
-				mcClient := state.GetFramework().MC()
 				wcNamespace := state.GetCluster().Organization.GetNamespace()
 				wcName := state.GetCluster().Name
 				wcClient, _ := state.GetFramework().WC(wcName)
@@ -108,28 +101,7 @@ func TestBasic(t *testing.T) {
 				Expect(err).ShouldNot(HaveOccurred())
 
 				By("Running connectivity tests")
-				ciliumNamespace := "kube-system"
-				params := connectivity.BuildParams()
-				hooks := &api.NopHooks{}
-				tmpKubeconfig := fmt.Sprintf("/tmp/kubeconfig-%s", wcName)
-
-				kubeconfig, err := mcClient.GetClusterKubeConfig(context.Background(), wcName, wcNamespace)
-				err = os.WriteFile(tmpKubeconfig, []byte(kubeconfig), 0644)
-				Expect(err).ShouldNot(HaveOccurred())
-
-				k8sClient, err := k8s.NewClient("", tmpKubeconfig, ciliumNamespace, "", nil)
-				Expect(err).ShouldNot(HaveOccurred())
-				ctx := api.SetNamespaceContextValue(context.Background(), ciliumNamespace)
-				ctx = api.SetK8sClientContextValue(ctx, k8sClient)
-
-				logger := check.NewConcurrentLogger(params.Writer)
-				logger.Start()
-				defer logger.Stop()
-
-				connTests, err := connectivity.New(k8sClient, params, logger)
-				Expect(err).ShouldNot(HaveOccurred())
-
-				err = ciliumconnectivity.Run(ctx, connTests, hooks)
+				err = connectivity.Run(wcNamespace, wcName)
 				Expect(err).ShouldNot(HaveOccurred())
 			})
 
