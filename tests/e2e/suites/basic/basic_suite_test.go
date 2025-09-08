@@ -16,9 +16,9 @@ import (
 	"github.com/giantswarm/clustertest/pkg/logger"
 	"github.com/giantswarm/clustertest/pkg/wait"
 
-	"github.com/giantswarm/cilium/tests/e2e/internal/connectivity"
-	"github.com/giantswarm/cilium/tests/e2e/internal/metrics"
-	"github.com/giantswarm/cilium/tests/e2e/internal/polex"
+	"github.com/giantswarm/cilium-app/tests/e2e/internal/connectivity"
+	"github.com/giantswarm/cilium-app/tests/e2e/internal/metrics"
+	"github.com/giantswarm/cilium-app/tests/e2e/internal/polex"
 
 	helmv2beta1 "github.com/fluxcd/helm-controller/api/v2beta1"
 	corev1 "k8s.io/api/core/v1"

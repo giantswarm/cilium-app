@@ -1,4 +1,4 @@
-module e2e
+module github.com/giantswarm/cilium-app/tests/e2e
 
 go 1.24.6
 
