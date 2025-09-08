@@ -155,5 +155,5 @@ func TestBasic(t *testing.T) {
 			err = wcClient.Delete(context.Background(), testNamespace)
 			Expect(err).ShouldNot(HaveOccurred())
 		}).
-		Run(t, "CAPA E2E Test")
+		Run(t, "CAPA ENI mode Test")
 }
