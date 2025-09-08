@@ -26,7 +26,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 
 	"github.com/cilium/cilium/cilium-cli/api"
-	"github.com/cilium/cilium/cilium-cli/connectivity"
+	ciliumconnectivity "github.com/cilium/cilium/cilium-cli/connectivity"
 	"github.com/cilium/cilium/cilium-cli/connectivity/check"
 	"github.com/cilium/cilium/cilium-cli/k8s"
 )
@@ -129,7 +129,7 @@ func TestBasic(t *testing.T) {
 				connTests, err := connectivity.New(k8sClient, params, logger)
 				Expect(err).ShouldNot(HaveOccurred())
 
-				err = connectivity.Run(ctx, connTests, hooks)
+				err = ciliumconnectivity.Run(ctx, connTests, hooks)
 				Expect(err).ShouldNot(HaveOccurred())
 			})
 

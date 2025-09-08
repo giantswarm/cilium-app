@@ -123,7 +123,7 @@ func Run(mcClient *client.Client, podName string, ns string) error {
 		// Check if pod is running.
 		if existing.Status.Phase != corev1.PodRunning {
 			// Pod unhealthy, delete and recreate it.
-			err := cleanupTestPod(mcClient, podName, ns)
+			err := Cleanup(mcClient, podName, ns)
 			if err != nil {
 				return err
 			}
