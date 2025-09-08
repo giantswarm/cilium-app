@@ -1,0 +1,8 @@
+global:
+  connectivity:
+    network:
+      pods:
+        cidrBlocks:
+          - 10.1.0.0/16
+    cilium:
+      ipamMode: eni
