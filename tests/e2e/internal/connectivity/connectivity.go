@@ -1,4 +1,4 @@
-package basic
+package connectivity
 
 import (
 	"os"
@@ -12,7 +12,7 @@ import (
 	"github.com/cilium/cilium/cilium-cli/sysdump"
 )
 
-func buildConnectivityTestParams() check.Parameters {
+func BuildParams() check.Parameters {
 
 	params := defaultConnectivityTestParams()
 
@@ -27,7 +27,7 @@ func buildConnectivityTestParams() check.Parameters {
 	return params
 }
 
-func newConnectivityTests(client *k8s.Client, p check.Parameters, logger *check.ConcurrentLogger) ([]*check.ConnectivityTest, error) {
+func New(client *k8s.Client, p check.Parameters, logger *check.ConcurrentLogger) ([]*check.ConnectivityTest, error) {
 	hooks := &api.NopHooks{}
 	ruleset := &codeowners.Ruleset{}
 	cc, err := check.NewConnectivityTest(client, p, hooks, logger, ruleset)
