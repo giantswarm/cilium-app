@@ -1,6 +1,8 @@
 global:
   connectivity:
     network:
+      nodePortIngressRuleCidrBlocks:
+        - 10.1.0.0/16
       pods:
         cidrBlocks:
           - 10.1.0.0/16
