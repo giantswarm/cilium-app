@@ -1,11 +1,11 @@
-package basic
+package polex
 
 import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-func buildPolicyException() *unstructured.Unstructured {
+func New() *unstructured.Unstructured {
 
 	u := unstructured.Unstructured{}
 
