@@ -19,7 +19,7 @@ import (
 	"github.com/giantswarm/cilium-app/tests/e2e/internal/metrics"
 	"github.com/giantswarm/cilium-app/tests/e2e/internal/polex"
 
-	helmv2beta1 "github.com/fluxcd/helm-controller/api/v2beta1"
+	helmv2beta2 "github.com/fluxcd/helm-controller/api/v2beta2"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -55,7 +55,7 @@ func TestBasic(t *testing.T) {
 
 					logger.Log("HelmRelease: %s/%s", appNamespace, appName)
 
-					release := &helmv2beta1.HelmRelease{}
+					release := &helmv2beta2.HelmRelease{}
 					err := mcKubeClient.Get(state.GetContext(), types.NamespacedName{Name: appName, Namespace: appNamespace}, release)
 					if err != nil {
 						return false, err
