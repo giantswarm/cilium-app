@@ -9,7 +9,7 @@ require (
 	github.com/fluxcd/helm-controller/api v1.4.0
 	github.com/giantswarm/apptest-framework v1.16.0
 	github.com/giantswarm/clustertest v1.41.0
-	github.com/onsi/ginkgo/v2 v2.25.3
+	github.com/onsi/ginkgo/v2 v2.26.0
 	github.com/onsi/gomega v1.38.2
 	k8s.io/api v0.34.1
 	k8s.io/apimachinery v0.34.1
@@ -183,6 +183,7 @@ require (
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	go4.org/netipx v0.0.0-20231129151722-fdeea329fbba // indirect
 	golang.org/x/crypto v0.42.0 // indirect
+	golang.org/x/mod v0.28.0 // indirect
 	golang.org/x/net v0.44.0 // indirect
 	golang.org/x/oauth2 v0.31.0 // indirect
 	golang.org/x/sync v0.17.0 // indirect
