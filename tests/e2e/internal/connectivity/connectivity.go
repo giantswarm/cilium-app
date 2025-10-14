@@ -9,12 +9,12 @@ import (
 	"github.com/cilium/cilium/cilium-cli/api"
 	"github.com/cilium/cilium/cilium-cli/connectivity"
 	"github.com/cilium/cilium/cilium-cli/connectivity/check"
-	"github.com/cilium/cilium/cilium-cli/utils/codeowners"
 	"github.com/cilium/cilium/cilium-cli/defaults"
 	"github.com/cilium/cilium/cilium-cli/k8s"
 	"github.com/cilium/cilium/cilium-cli/sysdump"
+	"github.com/cilium/cilium/cilium-cli/utils/codeowners"
 
-	"github.com/giantswarm/apptest-framework/pkg/state"
+	"github.com/giantswarm/apptest-framework/v2/pkg/state"
 )
 
 func buildParams() check.Parameters {
