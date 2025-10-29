@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index a3061c0..5d4f1d7 100644
+index 83b87cf..1b26a2e 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
 @@ -217,6 +217,7 @@ name: cilium
@@ -222,7 +222,7 @@ index a3061c0..5d4f1d7 100644
      # -- hubble-ui service configuration.
      service:
        # -- Annotations to be added for the Hubble UI service
-@@ -2134,7 +2174,7 @@ readinessProbe:
+@@ -2137,7 +2177,7 @@ kubeProxyReplacement: "false"
  kubeProxyReplacementHealthzBindAddr: ""
  l2NeighDiscovery:
    # -- Enable L2 neighbor discovery in the agent
@@ -231,7 +231,7 @@ index a3061c0..5d4f1d7 100644
  # -- Enable Layer 7 network policy.
  l7Proxy: true
  
-@@ -2143,7 +2183,7 @@ localRedirectPolicy: false
+@@ -2146,7 +2186,7 @@ localRedirectPolicy: false
  
  localRedirectPolicies:
    # -- Enable local redirect policies.
@@ -240,7 +240,7 @@ index a3061c0..5d4f1d7 100644
    
    # -- Limit the allowed addresses in Address Matcher rule of
    # Local Redirect Policies to the given CIDRs.
-@@ -2153,7 +2193,7 @@ localRedirectPolicies:
+@@ -2156,7 +2196,7 @@ localRedirectPolicies:
    addressMatcherCIDRs: ~
  
  # To include or exclude matched resources from cilium identity evaluation
@@ -249,7 +249,7 @@ index a3061c0..5d4f1d7 100644
  
  # logOptions allows you to define logging options. eg:
  # logOptions:
-@@ -2175,7 +2215,7 @@ maglev: {}
+@@ -2178,7 +2218,7 @@ maglev: {}
  # @schema
  # -- (bool) Enables masquerading of IPv4 traffic leaving the node from endpoints.
  # @default -- `true` unless ipam eni mode is active 
@@ -258,18 +258,7 @@ index a3061c0..5d4f1d7 100644
  # -- Enables masquerading of IPv6 traffic leaving the node from endpoints.
  enableIPv6Masquerade: true
  # -- Enables masquerading to the source of the route for traffic leaving the node from endpoints.
-@@ -2257,8 +2297,8 @@ loadBalancer:
-   # path), or best-effort (use native mode XDP acceleration on devices
-   # that support it).
-   acceleration: disabled
--  # -- dsrDispatch configures whether IP option (opt), IPIP encapsulation (ipip),
--  # Geneve Class Option (geneve) used to pass a service IP and port to remote backend
-+  # -- dsrDispatch configures whether IP option or IPIP encapsulation is
-+  # used to pass a service IP and port to remote backend
-   # dsrDispatch: opt
- 
-   # -- serviceTopology enables K8s Topology Aware Hints -based service
-@@ -2335,8 +2375,8 @@ pprof:
+@@ -2338,8 +2378,8 @@ pprof:
    port: 6060
  # -- Configure prometheus metrics on the configured port at /metrics
  prometheus:
@@ -280,7 +269,7 @@ index a3061c0..5d4f1d7 100644
    port: 9962
    serviceMonitor:
      # -- Enable service monitors.
-@@ -2921,19 +2961,14 @@ operator:
+@@ -2924,19 +2964,14 @@ operator:
    # @schema
    # type: [null, array]
    # @schema
@@ -305,7 +294,7 @@ index a3061c0..5d4f1d7 100644
    # -- Additional cilium-operator hostPath mounts.
    extraHostPathMounts: []
    # - name: host-mnt-data
-@@ -2944,15 +2979,20 @@ operator:
+@@ -2947,15 +2982,20 @@ operator:
    #   mountPropagation: HostToContainer
  
    # -- Additional cilium-operator volumes.
@@ -328,7 +317,7 @@ index a3061c0..5d4f1d7 100644
      seccompProfile:
        type: RuntimeDefault
    # -- Annotations to be added to cilium-operator pods
-@@ -2963,7 +3003,7 @@ operator:
+@@ -2966,7 +3006,7 @@ operator:
    podDisruptionBudget:
      # -- enable PodDisruptionBudget
      # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
@@ -337,7 +326,7 @@ index a3061c0..5d4f1d7 100644
      # @schema
      # type: [null, integer, string]
      # @schema
-@@ -2982,13 +3022,14 @@ operator:
+@@ -2985,13 +3025,14 @@ operator:
      unhealthyPodEvictionPolicy: null
    # -- cilium-operator resource limits & requests
    # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -359,7 +348,7 @@ index a3061c0..5d4f1d7 100644
  
    # -- Security context to be added to cilium-operator pods
    securityContext:
-@@ -2996,7 +3037,12 @@ operator:
+@@ -2999,7 +3040,12 @@ operator:
        drop:
        - ALL
      allowPrivilegeEscalation: false
@@ -373,7 +362,7 @@ index a3061c0..5d4f1d7 100644
  
    # -- Interval for endpoint garbage collection.
    endpointGCInterval: "5m0s"
-@@ -3016,7 +3062,7 @@ operator:
+@@ -3019,7 +3065,7 @@ operator:
    # -- Enable prometheus metrics for cilium-operator on the configured port at
    # /metrics
    prometheus:
@@ -382,7 +371,7 @@ index a3061c0..5d4f1d7 100644
      enabled: true
      port: 9963
      serviceMonitor:
-@@ -4039,3 +4085,10 @@ enableInternalTrafficPolicy: true
+@@ -4042,3 +4088,10 @@ enableInternalTrafficPolicy: true
  # -- Enable LoadBalancer IP Address Management
  enableLBIPAM: true
  
