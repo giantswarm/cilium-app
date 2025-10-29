@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index 83b87cf..1d2de83 100644
+index 83b87cf..1b26a2e 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
 @@ -217,6 +217,7 @@ name: cilium
@@ -222,15 +222,6 @@ index 83b87cf..1d2de83 100644
      # -- hubble-ui service configuration.
      service:
        # -- Annotations to be added for the Hubble UI service
-@@ -2128,7 +2168,7 @@ readinessProbe:
-   # @schema@
-   # type: [string, boolean]
-   # @schema@
--kubeProxyReplacement: "false"
-+#kubeProxyReplacement: "false"
- 
- # -- healthz server bind address for the kube-proxy replacement.
- # To enable set the value to '0.0.0.0:10256' for all ipv4
 @@ -2137,7 +2177,7 @@ kubeProxyReplacement: "false"
  kubeProxyReplacementHealthzBindAddr: ""
  l2NeighDiscovery:
