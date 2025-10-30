@@ -7,15 +7,15 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/giantswarm/clustertest/pkg/client"
-	"github.com/giantswarm/clustertest/pkg/logger"
+	"github.com/giantswarm/clustertest/v2/pkg/client"
+	"github.com/giantswarm/clustertest/v2/pkg/logger"
 	. "github.com/onsi/gomega" //nolint:staticcheck
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	client2 "sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/giantswarm/apptest-framework/pkg/state"
+	"github.com/giantswarm/apptest-framework/v2/pkg/state"
 )
 
 func Check(mcClient *client.Client, metric string, mimirUrl string, testPodName string, testPodNamespace string) func() error {

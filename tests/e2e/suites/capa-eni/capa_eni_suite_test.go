@@ -10,16 +10,16 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/giantswarm/apptest-framework/pkg/state"
-	"github.com/giantswarm/apptest-framework/pkg/suite"
-	"github.com/giantswarm/clustertest/pkg/logger"
-	"github.com/giantswarm/clustertest/pkg/wait"
+	"github.com/giantswarm/apptest-framework/v2/pkg/state"
+	"github.com/giantswarm/apptest-framework/v2/pkg/suite"
+	"github.com/giantswarm/clustertest/v2/pkg/logger"
+	"github.com/giantswarm/clustertest/v2/pkg/wait"
 
 	"github.com/giantswarm/cilium-app/tests/e2e/internal/connectivity"
 	"github.com/giantswarm/cilium-app/tests/e2e/internal/metrics"
 	"github.com/giantswarm/cilium-app/tests/e2e/internal/polex"
 
-	helmv2beta2 "github.com/fluxcd/helm-controller/api/v2beta2"
+	helmv2 "github.com/fluxcd/helm-controller/api/v2"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -55,7 +55,7 @@ func TestBasic(t *testing.T) {
 
 					logger.Log("HelmRelease: %s/%s", appNamespace, appName)
 
-					release := &helmv2beta2.HelmRelease{}
+					release := &helmv2.HelmRelease{}
 					err := mcKubeClient.Get(state.GetContext(), types.NamespacedName{Name: appName, Namespace: appNamespace}, release)
 					if err != nil {
 						return false, err
