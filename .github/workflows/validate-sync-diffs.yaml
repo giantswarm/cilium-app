@@ -26,6 +26,7 @@ jobs:
           binary: "helm-docs"
           version: "1.14.2"
           download_url: "https://github.com/norwoodj/helm-docs/releases/download/v${version}/helm-docs_${version}_Linux_x86_64.tar.gz"
+          tarball_binary_path: "helm-docs"
           smoke_test: "${binary} --version"
 
       - name: Run sync.sh
