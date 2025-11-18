@@ -16,7 +16,6 @@ helm dependency update helm/cilium/
 # Patches
 ./sync/patches/eni/patch.sh
 ./sync/patches/image_registries/patch.sh
-./sync/patches/readme/patch.sh
 ./sync/patches/networkpolicies/patch.sh
 ./sync/patches/k8sservicehost_auto/patch.sh
 ./sync/patches/chart_yaml/patch.sh
