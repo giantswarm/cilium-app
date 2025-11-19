@@ -1,18 +1,23 @@
-package basic
+package connectivity
 
 import (
+	"context"
+	"fmt"
 	"os"
 	"regexp"
 
 	"github.com/cilium/cilium/cilium-cli/api"
+	"github.com/cilium/cilium/cilium-cli/connectivity"
 	"github.com/cilium/cilium/cilium-cli/connectivity/check"
-	"github.com/cilium/cilium/cilium-cli/utils/codeowners"
 	"github.com/cilium/cilium/cilium-cli/defaults"
 	"github.com/cilium/cilium/cilium-cli/k8s"
 	"github.com/cilium/cilium/cilium-cli/sysdump"
+	"github.com/cilium/cilium/cilium-cli/utils/codeowners"
+
+	"github.com/giantswarm/apptest-framework/v2/pkg/state"
 )
 
-func buildConnectivityTestParams() check.Parameters {
+func buildParams() check.Parameters {
 
 	params := defaultConnectivityTestParams()
 
@@ -27,7 +32,7 @@ func buildConnectivityTestParams() check.Parameters {
 	return params
 }
 
-func newConnectivityTests(client *k8s.Client, p check.Parameters, logger *check.ConcurrentLogger) ([]*check.ConnectivityTest, error) {
+func newTests(client *k8s.Client, p check.Parameters, logger *check.ConcurrentLogger) ([]*check.ConnectivityTest, error) {
 	hooks := &api.NopHooks{}
 	ruleset := &codeowners.Ruleset{}
 	cc, err := check.NewConnectivityTest(client, p, hooks, logger, ruleset)
@@ -38,6 +43,44 @@ func newConnectivityTests(client *k8s.Client, p check.Parameters, logger *check.
 	connTests := make([]*check.ConnectivityTest, 0, p.TestConcurrency)
 	connTests = append(connTests, cc)
 	return connTests, nil
+}
+
+func Run(wcNamespace, wcName string) error {
+	ciliumNamespace := "kube-system"
+	params := buildParams()
+	hooks := &api.NopHooks{}
+	tmpKubeconfig := fmt.Sprintf("/tmp/kubeconfig-%s", wcName)
+
+	mcClient := state.GetFramework().MC()
+	kubeconfig, err := mcClient.GetClusterKubeConfig(context.Background(), wcName, wcNamespace)
+	err = os.WriteFile(tmpKubeconfig, []byte(kubeconfig), 0644)
+	if err != nil {
+		return err
+	}
+
+	k8sClient, err := k8s.NewClient("", tmpKubeconfig, ciliumNamespace, "", nil)
+	if err != nil {
+		return err
+	}
+
+	ctx := api.SetNamespaceContextValue(context.Background(), ciliumNamespace)
+	ctx = api.SetK8sClientContextValue(ctx, k8sClient)
+
+	logger := check.NewConcurrentLogger(params.Writer)
+	logger.Start()
+	defer logger.Stop()
+
+	connTests, err := newTests(k8sClient, params, logger)
+	if err != nil {
+		return err
+	}
+
+	err = connectivity.Run(ctx, connTests, hooks)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func defaultConnectivityTestParams() check.Parameters {

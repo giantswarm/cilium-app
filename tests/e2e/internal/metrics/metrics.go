@@ -1,4 +1,4 @@
-package basic
+package metrics
 
 import (
 	"context"
@@ -7,18 +7,18 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/giantswarm/clustertest/pkg/client"
-	"github.com/giantswarm/clustertest/pkg/logger"
+	"github.com/giantswarm/clustertest/v2/pkg/client"
+	"github.com/giantswarm/clustertest/v2/pkg/logger"
 	. "github.com/onsi/gomega" //nolint:staticcheck
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	client2 "sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/giantswarm/apptest-framework/pkg/state"
+	"github.com/giantswarm/apptest-framework/v2/pkg/state"
 )
 
-func checkMetricPresent(mcClient *client.Client, metric string, mimirUrl string, testPodName string, testPodNamespace string) func() error {
+func Check(mcClient *client.Client, metric string, mimirUrl string, testPodName string, testPodNamespace string) func() error {
 	return func() error {
 		query := fmt.Sprintf("absent(%[1]s{cluster_id=\"%[2]s\"}) or label_replace(vector(0), \"cluster_id\", \"%[2]s\", \"\", \"\")", metric, state.GetCluster().Name)
 
@@ -73,7 +73,7 @@ func checkMetricPresent(mcClient *client.Client, metric string, mimirUrl string,
 	}
 }
 
-func runTestPod(mcClient *client.Client, podName string, ns string) error {
+func Run(mcClient *client.Client, podName string, ns string) error {
 	t := true
 	f := false
 	userAndGroup := int64(35)
@@ -123,7 +123,7 @@ func runTestPod(mcClient *client.Client, podName string, ns string) error {
 		// Check if pod is running.
 		if existing.Status.Phase != corev1.PodRunning {
 			// Pod unhealthy, delete and recreate it.
-			err := cleanupTestPod(mcClient, podName, ns)
+			err := Cleanup(mcClient, podName, ns)
 			if err != nil {
 				return err
 			}
@@ -160,7 +160,7 @@ func runTestPod(mcClient *client.Client, podName string, ns string) error {
 	return nil
 }
 
-func cleanupTestPod(mcClient *client.Client, podName string, ns string) error {
+func Cleanup(mcClient *client.Client, podName string, ns string) error {
 	pod := corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      podName,

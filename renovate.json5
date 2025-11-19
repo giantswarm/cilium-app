@@ -5,23 +5,7 @@
     "github>giantswarm/renovate-presets:disable-vendir.json5",
     // Go specific config - https://github.com/giantswarm/renovate-presets/blob/main/lang-go.json5
     "github>giantswarm/renovate-presets:lang-go.json5",
-    // e2e app test specific config - https://github.com/giantswarm/renovate-presets/blob/main/tests-e2e-app.json5
-    "github>giantswarm/renovate-presets:tests-e2e-app.json5",
+    // e2e app test specific config - https://github.com/giantswarm/renovate-presets/blob/main/tests-e2e-app-cabbage.json5
+    "github>giantswarm/renovate-presets:tests-e2e-app-cabbage.json5",
   ],
-  "ignorePaths": [
-    ".github/workflows/zz_generated.*",
-    ".github/workflows/codeql-analysis.yml",
-    ".github/workflows/pre_commit_*.yaml",
-    "helm/cilium/**",
-  ],
-  "packageRules": [
-    {
-      "description": "Group dependencies from E2E tests",
-      "matchFileNames": ["tests/e2e/**"],
-      "groupName": "All E2E tests changes"
-    }
-  ],
-  "ignoreDeps": [
-      "github.com/cilium/cilium"
-  ]
 }
