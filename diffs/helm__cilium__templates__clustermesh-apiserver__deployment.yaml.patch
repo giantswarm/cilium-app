@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/clustermesh-apiserver/deployment.yaml b/helm/cilium/templates/clustermesh-apiserver/deployment.yaml
-index 28bb4a7..539662f 100644
+index b0366e3..4458794 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/clustermesh-apiserver/deployment.yaml
 +++ b/helm/cilium/templates/clustermesh-apiserver/deployment.yaml
 @@ -63,7 +63,7 @@ spec:
@@ -20,7 +20,7 @@ index 28bb4a7..539662f 100644
          imagePullPolicy: {{ .Values.clustermesh.apiserver.image.pullPolicy }}
          command:
          - /usr/bin/etcd
-@@ -184,7 +184,7 @@ spec:
+@@ -182,7 +182,7 @@ spec:
        {{- end }}
        {{- if eq "true" (include "identityAllocationCRD" .) }}
        - name: apiserver
@@ -29,7 +29,7 @@ index 28bb4a7..539662f 100644
          imagePullPolicy: {{ .Values.clustermesh.apiserver.image.pullPolicy }}
          command:
          - /usr/bin/clustermesh-apiserver
-@@ -284,7 +284,7 @@ spec:
+@@ -282,7 +282,7 @@ spec:
        {{- end }}
        {{- if .Values.clustermesh.apiserver.kvstoremesh.enabled }}
        - name: kvstoremesh
