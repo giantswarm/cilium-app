@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.4] - 2026-01-15
+
 ### Changed
 
 - Upgrade Cilium to [v1.18.6](https://github.com/cilium/cilium/releases/tag/v1.18.6).
@@ -485,7 +487,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2022-03-25
 
-[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v1.3.3...HEAD
+[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v1.3.4...HEAD
+[1.3.4]: https://github.com/giantswarm/cilium-app/compare/v1.3.3...v1.3.4
 [1.3.3]: https://github.com/giantswarm/cilium-app/compare/v1.3.2...v1.3.3
 [1.3.2]: https://github.com/giantswarm/cilium-app/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/giantswarm/cilium-app/compare/v1.3.0...v1.3.1
