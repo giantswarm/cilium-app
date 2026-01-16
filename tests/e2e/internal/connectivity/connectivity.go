@@ -14,7 +14,7 @@ import (
 	"github.com/cilium/cilium/cilium-cli/sysdump"
 	"github.com/cilium/cilium/cilium-cli/utils/codeowners"
 
-	"github.com/giantswarm/apptest-framework/v2/pkg/state"
+	"github.com/giantswarm/apptest-framework/v3/pkg/state"
 )
 
 func buildParams() check.Parameters {
