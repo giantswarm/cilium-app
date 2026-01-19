@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/_helpers.tpl b/helm/cilium/templates/_helpers.tpl
-index ba91c35..0ef904a 100644
+index e90aa48..0ef904a 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/_helpers.tpl
 +++ b/helm/cilium/templates/_helpers.tpl
 @@ -28,12 +28,21 @@ your container engine doesn't support specifying both the tag and digest for
@@ -25,25 +25,3 @@ index ba91c35..0ef904a 100644
  {{- end -}}
  {{- end -}}
  
-@@ -131,12 +140,16 @@ To override the namespace and configMap when using `auto`:
- {{- define "k8sServiceHost" }}
-   {{- $configmapName := default "cluster-info" .Values.k8sServiceLookupConfigMapName }}
-   {{- $configmapNamespace := default "kube-public" .Values.k8sServiceLookupNamespace }}
--  {{- if and (eq .Values.k8sServiceHost "auto") (lookup "v1" "ConfigMap" $configmapNamespace $configmapName) }}
-+  {{- if eq .Values.k8sServiceHost "auto" }}
-     {{- $configmap := (lookup "v1" "ConfigMap" $configmapNamespace $configmapName) }}
--    {{- $kubeconfig := get $configmap.data "kubeconfig" }}
--    {{- $k8sServer := get ($kubeconfig | fromYaml) "clusters" | mustFirst | dig "cluster" "server" "" }}
--    {{- $uri := (split "https://" $k8sServer)._1 | trim }}
--    {{- (split ":" $uri)._0 | quote }}
-+    {{- if $configmap }}
-+      {{- $kubeconfig := get $configmap.data "kubeconfig" }}
-+      {{- $k8sServer := get ($kubeconfig | fromYaml) "clusters" | mustFirst | dig "cluster" "server" "" }}
-+      {{- $uri := (split "https://" $k8sServer)._1 | trim }}
-+      {{- (split ":" $uri)._0 | quote }}
-+    {{- else }}
-+      {{- fail (printf "ConfigMap %s/%s not found, please create it or set k8sServiceHost to a valid value" $configmapNamespace $configmapName) }}
-+    {{- end }}
-   {{- else }}
-     {{- .Values.k8sServiceHost | quote }}
-   {{- end }}

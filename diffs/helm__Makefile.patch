@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/Makefile b/helm/Makefile
-index 8670d32..8873030 100644
+index 84b0417..d70fdff 100644
 --- a/vendor/cilium/install/kubernetes/Makefile
 +++ b/helm/Makefile
 @@ -3,8 +3,9 @@
@@ -24,12 +24,12 @@ index 8670d32..8873030 100644
  	--volume $(CURDIR):$(CURDIR) \
  	--user "$(shell id -u):$(shell id -g)"
  HELM_DOCS := $(DOCKER_RUN) $(HELM_TOOLBOX_IMAGE) helm-docs
-@@ -72,7 +73,7 @@ cilium/values.schema.json: cilium/values.yaml
+@@ -73,7 +74,7 @@ cilium/values.schema.json: cilium/values.yaml
  	$(ECHO_GEN)$@
  	$(HELM_SCHEMA_GEN) -c cilium --skip-auto-generation title,description,required,default,additionalProperties
  
 -update-versions: update-chart cilium/values.yaml # Update the Helm values file to point to the current version.
 +update-versions: cilium/values.yaml # Update the Helm values file to point to the current version.
  
- CRD_FILES := $(shell find $(ROOT_DIR)/examples/crds/*/ -type f)
  CRDS := $(foreach path,$(patsubst %.yaml,%,$(CRD_FILES)),$(shell basename $(path)))
+ RAND_FILES := $(shell grep -R -l -e "rand" -e "shuffle" -e "genPrivateKey" -e "genCA" -e "genSignedCert" -e "UUID" -e "cilium.ca.setup" --include="*.yaml" $(ROOT_DIR)/$(RELATIVE_DIR)/cilium/templates)
