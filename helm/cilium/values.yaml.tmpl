@@ -525,8 +525,9 @@ pmtuDiscovery:
   enabled: false
   # -- Enable kernel probing path MTU discovery for Pods which uses different message
   # sizes to search for correct MTU value.
-  packetizationLayerPMTUD:
-    enabled: true
+  # Valid values are: always, blackhole, disabled and unset (or empty). If value
+  # is 'unset' or left empty then will not try to override setting.
+  packetizationLayerPMTUDMode: "blackhole"
 bpf:
   autoMount:
     # -- Enable automatic mount of BPF filesystem
@@ -697,7 +698,8 @@ bpf:
   # type: [null, boolean]
   # @schema
   # -- (bool) Configure the eBPF-based TPROXY (beta) to reduce reliance on iptables rules
-  # for implementing Layer 7 policy.
+  # for implementing Layer 7 policy. Note this is incompatible with netkit (`bpf.datapathMode=netkit`,
+  # `bpf.datapathMode=netkit-l2`).
   # @default -- `false`
   tproxy: ~
   # @schema
@@ -723,7 +725,8 @@ bpf:
   # supported kernels.
   # @default -- `true`
   enableTCX: true
-  # -- (string) Mode for Pod devices for the core datapath (veth, netkit, netkit-l2)
+  # -- (string) Mode for Pod devices for the core datapath (veth, netkit, netkit-l2).
+  # Note netkit is incompatible with TPROXY (`bpf.tproxy`).
   # @default -- `veth`
   datapathMode: veth
 # -- Enable BPF clock source probing for more efficient tick retrieval.
@@ -847,10 +850,6 @@ conntrackGCMaxInterval: ""
 # -- (string) Configure timeout in which Cilium will exit if CRDs are not available
 # @default -- `"5m"`
 crdWaitTimeout: ""
-# -- Tail call hooks for custom eBPF programs.
-customCalls:
-  # -- Enable tail call hooks for custom eBPF programs.
-  enabled: false
 daemon:
   # -- Configure where Cilium runtime state should be stored.
   runPath: "/var/run/cilium"
@@ -918,9 +917,6 @@ forceDeviceDetection: false
 
 # -- Enable setting identity mark for local traffic.
 # enableIdentityMark: true
-
-# -- Enable Kubernetes EndpointSlice feature in Cilium if the cluster supports it.
-# enableK8sEndpointSlice: true
 
 # -- CiliumEndpointSlice configuration options.
 ciliumEndpointSlice:
@@ -1851,6 +1847,20 @@ hubble:
       mutexProfileFraction: 0
       # -- Enable goroutine blocking profiling for hubble-relay and set the rate of sampled events in nanoseconds (set to 1 to sample all events [warning: performance overhead])
       blockProfileRate: 0
+    # -- Logging configuration for hubble-relay.
+    logOptions:
+      # @schema
+      # type: [null, string]
+      # @schema
+      # -- Log format for hubble-relay. Valid values are: text, text-ts, json, json-ts.
+      # @default -- text-ts
+      format: ~
+      # @schema
+      # type: [null, string]
+      # @schema
+      # -- Log level for hubble-relay. Valid values are: debug, info, warn, error.
+      # @default -- info
+      level: ~
   ui:
     # -- Whether to enable the Hubble UI.
     enabled: true
@@ -2319,7 +2329,7 @@ kubeProxyReplacement: "false"
 kubeProxyReplacementHealthzBindAddr: ""
 l2NeighDiscovery:
   # -- Enable L2 neighbor discovery in the agent
-  enabled: true
+  enabled: false
 # -- Enable Layer 7 network policy.
 l7Proxy: true
 
@@ -2329,7 +2339,7 @@ localRedirectPolicy: false
 localRedirectPolicies:
   # -- Enable local redirect policies.
   enabled: true
-  
+
   # -- Limit the allowed addresses in Address Matcher rule of
   # Local Redirect Policies to the given CIDRs.
   # @schema@
@@ -3015,6 +3025,9 @@ tls:
 # @default -- `"vxlan"`
 tunnelProtocol: ""
 # -- IP family for the underlay.
+# Possible values:
+#   - "ipv4"
+#   - "ipv6"
 # @default -- `"ipv4"`
 underlayProtocol: ""
 # -- Enable native-routing mode or tunneling mode.

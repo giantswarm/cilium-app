@@ -1767,14 +1767,6 @@
     "crdWaitTimeout": {
       "type": "string"
     },
-    "customCalls": {
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        }
-      },
-      "type": "object"
-    },
     "daemon": {
       "properties": {
         "allowedConfigOverrides": {
@@ -3375,6 +3367,23 @@
             },
             "listenPort": {
               "type": "string"
+            },
+            "logOptions": {
+              "properties": {
+                "format": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "level": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                }
+              },
+              "type": "object"
             },
             "nodeSelector": {
               "properties": {
@@ -5557,13 +5566,8 @@
         "enabled": {
           "type": "boolean"
         },
-        "packetizationLayerPMTUD": {
-          "properties": {
-            "enabled": {
-              "type": "boolean"
-            }
-          },
-          "type": "object"
+        "packetizationLayerPMTUDMode": {
+          "type": "string"
         }
       },
       "type": "object"
