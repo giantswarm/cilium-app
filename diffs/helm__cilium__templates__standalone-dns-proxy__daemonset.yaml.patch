@@ -1,0 +1,13 @@
+diff --git a/vendor/cilium/install/kubernetes/cilium/templates/standalone-dns-proxy/daemonset.yaml b/helm/cilium/templates/standalone-dns-proxy/daemonset.yaml
+index 7ea150a..b7234fc 100644
+--- a/vendor/cilium/install/kubernetes/cilium/templates/standalone-dns-proxy/daemonset.yaml
++++ b/helm/cilium/templates/standalone-dns-proxy/daemonset.yaml
+@@ -56,7 +56,7 @@ spec:
+       {{- end }}
+       containers:
+         - name: standalone-dns-proxy
+-          image: {{ include "cilium.image" .Values.standaloneDnsProxy.image | quote }}
++          image: {{ include "cilium.image" (list $ .Values.standaloneDnsProxy.image) | quote }}
+           args:
+           - --config-dir=/tmp/standalone-dns-proxy/config-map
+           imagePullPolicy: {{ .Values.standaloneDnsProxy.image.pullPolicy }}

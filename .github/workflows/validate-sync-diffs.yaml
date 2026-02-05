@@ -2,6 +2,8 @@ name: "Validate sync diffs"
 
 on: [pull_request]
 
+permissions: {}
+
 jobs:
   check:
     name: "Check sync.sh was called"
@@ -16,7 +18,7 @@ jobs:
         uses: giantswarm/install-binary-action@v4
         with:
           binary: "vendir"
-          version: "0.45.0"
+          version: "0.45.1"
           download_url: "https://github.com/carvel-dev/vendir/releases/download/v${version}/vendir-linux-amd64"
           smoke_test: "${binary} --version"
 
