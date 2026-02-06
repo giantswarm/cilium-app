@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update chart icon to use Giant Swarm-hosted Cilium icon.
+
 ## [1.3.4] - 2026-01-15
 
 ### Changed
