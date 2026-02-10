@@ -1,0 +1,13 @@
+diff --git a/vendor/cilium/install/kubernetes/cilium/templates/clustermesh-coredns-mcsapi/job.yaml b/helm/cilium/templates/clustermesh-coredns-mcsapi/job.yaml
+index 9f9c3cc..1ee0727 100644
+--- a/vendor/cilium/install/kubernetes/cilium/templates/clustermesh-coredns-mcsapi/job.yaml
++++ b/helm/cilium/templates/clustermesh-coredns-mcsapi/job.yaml
+@@ -30,7 +30,7 @@ spec:
+     spec:
+       containers:
+         - name: autoconfig
+-          image: {{ include "cilium.image" .Values.clustermesh.apiserver.image | quote }}
++          image: {{ include "cilium.image" (list $ .Values.clustermesh.apiserver.image) | quote }}
+           imagePullPolicy: {{ .Values.clustermesh.apiserver.image.pullPolicy }}
+           {{- with .Values.clustermesh.mcsapi.corednsAutoConfigure.resources }}
+           resources:

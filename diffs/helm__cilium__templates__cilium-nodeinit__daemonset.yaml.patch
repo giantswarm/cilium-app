@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-nodeinit/daemonset.yaml b/helm/cilium/templates/cilium-nodeinit/daemonset.yaml
-index add6ae5..465ca9e 100644
+index 4edbead..351fdbd 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-nodeinit/daemonset.yaml
 +++ b/helm/cilium/templates/cilium-nodeinit/daemonset.yaml
 @@ -64,7 +64,7 @@ spec:

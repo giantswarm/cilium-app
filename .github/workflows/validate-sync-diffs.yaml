@@ -2,6 +2,8 @@ name: "Validate sync diffs"
 
 on: [pull_request]
 
+permissions: {}
+
 jobs:
   check:
     name: "Check sync.sh was called"
