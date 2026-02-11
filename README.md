@@ -20,6 +20,7 @@ Update the version in `vendir.s1.yml` and run `./sync/sync.sh`. It's good to che
 
 | Cilium app | Cilium version | CAPA | CAPZ | CAPV | CAPVCD |
 | --- | --- | --- | --- | --- | --- |
+| 1.4.x | 1.19.x | -- | -- | -- | -- |
 | 1.3.x | 1.18.x | v32,v33 | v32,v33 | v32,v33 | v32,v33 |
 | 1.2.x | 1.17.x | v31 | v31 | v31 | v31 |
 | 1.1.x | 1.17.x | -- | -- | -- | -- |
