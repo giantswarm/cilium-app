@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrade Cilium to [v1.19.0](https://github.com/cilium/cilium/releases/tag/v1.19.0).
 - Update chart icon to use Giant Swarm-hosted Cilium icon.
 
+## [1.3.5] - 2026-02-17
+
+### Changed
+
+- Update chart icon to use Giant Swarm-hosted Cilium icon.
+- Upgrade Cilium to [v1.18.7](https://github.com/cilium/cilium/releases/tag/v1.18.7).
+
 ## [1.3.4] - 2026-01-15
 
 ### Changed
@@ -501,7 +508,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2022-03-25
 
 [Unreleased]: https://github.com/giantswarm/cilium-app/compare/v1.4.0...HEAD
-[1.4.0]: https://github.com/giantswarm/cilium-app/compare/v1.3.4...v1.4.0
+[1.4.0]: https://github.com/giantswarm/cilium-app/compare/v1.3.5...v1.4.0
+[1.3.5]: https://github.com/giantswarm/cilium-app/compare/v1.3.4...v1.3.5
 [1.3.4]: https://github.com/giantswarm/cilium-app/compare/v1.3.3...v1.3.4
 [1.3.3]: https://github.com/giantswarm/cilium-app/compare/v1.3.2...v1.3.3
 [1.3.2]: https://github.com/giantswarm/cilium-app/compare/v1.3.1...v1.3.2
