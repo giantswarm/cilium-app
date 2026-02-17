@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.5] - 2026-02-17
+
 ### Changed
 
 - Update chart icon to use Giant Swarm-hosted Cilium icon.
@@ -498,7 +500,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2022-03-25
 
-[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v1.3.4...HEAD
+[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v1.3.5...HEAD
+[1.3.5]: https://github.com/giantswarm/cilium-app/compare/v1.3.4...v1.3.5
 [1.3.4]: https://github.com/giantswarm/cilium-app/compare/v1.3.3...v1.3.4
 [1.3.3]: https://github.com/giantswarm/cilium-app/compare/v1.3.2...v1.3.3
 [1.3.2]: https://github.com/giantswarm/cilium-app/compare/v1.3.1...v1.3.2
