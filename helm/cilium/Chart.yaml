@@ -3,7 +3,7 @@ name: cilium
 displayName: Cilium
 home: https://cilium.io/
 version: 1.4.0
-appVersion: 1.19.0
+appVersion: 1.19.1
 kubeVersion: ">= 1.21.0-0"
 icon: https://s.giantswarm.io/app-icons/cilium/1/light.svg
 description: eBPF-based Networking, Security, and Observability
