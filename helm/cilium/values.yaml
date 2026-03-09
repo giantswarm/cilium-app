@@ -252,6 +252,12 @@ affinity:
         labelSelector:
           matchLabels:
             k8s-app: cilium
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/edge
+          operator: DoesNotExist
 # -- Node selector for cilium-agent.
 nodeSelector:
   kubernetes.io/os: linux
