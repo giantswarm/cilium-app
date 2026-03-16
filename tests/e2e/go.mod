@@ -6,14 +6,14 @@ replace github.com/imdario/mergo => github.com/imdario/mergo v0.3.16
 
 require (
 	github.com/cilium/cilium v1.18.0-pre.3
-	github.com/fluxcd/helm-controller/api v1.5.1
-	github.com/giantswarm/apptest-framework/v3 v3.1.1
+	github.com/fluxcd/helm-controller/api v1.5.3
+	github.com/giantswarm/apptest-framework/v3 v3.2.0
 	github.com/giantswarm/clustertest/v3 v3.3.0
 	github.com/onsi/ginkgo/v2 v2.28.1
 	github.com/onsi/gomega v1.39.1
 	k8s.io/api v0.35.2
 	k8s.io/apimachinery v0.35.2
-	sigs.k8s.io/controller-runtime v0.23.1
+	sigs.k8s.io/controller-runtime v0.23.3
 )
 
 require (
@@ -57,12 +57,12 @@ require (
 	github.com/evanphx/json-patch/v5 v5.9.11 // indirect
 	github.com/exponent-io/jsonpath v0.0.0-20210407135951-1de76d718b3f // indirect
 	github.com/fatih/color v1.18.0 // indirect
-	github.com/fluxcd/pkg/apis/kustomize v1.15.0 // indirect
-	github.com/fluxcd/pkg/apis/meta v1.25.0 // indirect
+	github.com/fluxcd/pkg/apis/kustomize v1.15.1 // indirect
+	github.com/fluxcd/pkg/apis/meta v1.25.1 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.9.0 // indirect
 	github.com/giantswarm/apiextensions-application v0.6.2 // indirect
-	github.com/giantswarm/cluster-standup-teardown/v4 v4.1.1 // indirect
+	github.com/giantswarm/cluster-standup-teardown/v4 v4.1.2 // indirect
 	github.com/giantswarm/k8smetadata v0.25.0 // indirect
 	github.com/giantswarm/kubectl-gs/v2 v2.57.0 // indirect
 	github.com/giantswarm/microerror v0.4.1 // indirect
@@ -209,8 +209,8 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	helm.sh/helm/v3 v3.20.0 // indirect
-	k8s.io/apiextensions-apiserver v0.35.1 // indirect
-	k8s.io/apiserver v0.35.1 // indirect
+	k8s.io/apiextensions-apiserver v0.35.2 // indirect
+	k8s.io/apiserver v0.35.2 // indirect
 	k8s.io/cli-runtime v0.35.2 // indirect
 	k8s.io/client-go v0.35.2 // indirect
 	k8s.io/cluster-bootstrap v0.35.1 // indirect
