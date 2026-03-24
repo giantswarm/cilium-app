@@ -1,0 +1,13 @@
+diff --git a/vendor/cilium/install/kubernetes/cilium/templates/ztunnel/daemonset.yaml b/helm/cilium/templates/ztunnel/daemonset.yaml
+index f936306..5d6e1ae 100644
+--- a/vendor/cilium/install/kubernetes/cilium/templates/ztunnel/daemonset.yaml
++++ b/helm/cilium/templates/ztunnel/daemonset.yaml
+@@ -51,7 +51,7 @@ spec:
+       dnsPolicy: ClusterFirst
+       containers:
+         - name: istio-proxy
+-          image: {{ include "cilium.image" .Values.encryption.ztunnel.image | quote }}
++          image: {{ include "cilium.image" (list $ .Values.encryption.ztunnel.image) | quote }}
+           imagePullPolicy: {{ .Values.encryption.ztunnel.image.pullPolicy }}
+           args:
+             - proxy
