@@ -7,7 +7,7 @@ directories:
         git:
           depth: 1
           url: https://github.com/cilium/cilium
-          ref: &version "v1.19.2"
+          ref: &version "v1.20.0-pre.1"
         includePaths:
           - install/kubernetes/**/*
           - CHANGELOG.md

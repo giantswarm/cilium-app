@@ -1560,10 +1560,10 @@
           },
           "type": "object"
         },
-        "enableEndpointSliceSynchronization": {
+        "defaultGlobalNamespace": {
           "type": "boolean"
         },
-        "enableMCSAPISupport": {
+        "enableEndpointSliceSynchronization": {
           "type": "boolean"
         },
         "maxConnectedClusters": {
@@ -1752,6 +1752,21 @@
         "object"
       ]
     },
+    "configDriftDetection": {
+      "properties": {
+        "driftChecker": {
+          "type": "boolean"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "ignoredKeys": {
+          "items": {},
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
     "connectivityProbeFrequencyRatio": {
       "type": [
         "null",
@@ -1934,9 +1949,6 @@
       "type": "boolean"
     },
     "enableNonDefaultDenyPolicies": {
-      "type": "boolean"
-    },
-    "enableTunnelBIGTCP": {
       "type": "boolean"
     },
     "enableXTSocketFallback": {
@@ -2214,6 +2226,9 @@
     },
     "endpointLockdownOnMapOverflow": {
       "type": "boolean"
+    },
+    "endpointPolicyUpdateTimeoutDuration": {
+      "type": "null"
     },
     "endpointRoutes": {
       "properties": {
@@ -2568,6 +2583,9 @@
                 "null",
                 "integer"
               ]
+            },
+            "accessLogEnabled": {
+              "type": "boolean"
             },
             "defaultLevel": {
               "oneOf": [
@@ -3164,6 +3182,12 @@
           },
           "type": "object"
         },
+        "hostUsers": {
+          "type": [
+            "null",
+            "boolean"
+          ]
+        },
         "listenAddress": {
           "type": "string"
         },
@@ -3391,14 +3415,6 @@
                   "type": "boolean"
                 },
                 "userInfo": {
-                  "type": "boolean"
-                }
-              },
-              "type": "object"
-            },
-            "kafka": {
-              "properties": {
-                "apiKey": {
                   "type": "boolean"
                 }
               },
@@ -3993,22 +4009,6 @@
                   },
                   "type": "object"
                 },
-                "livenessProbe": {
-                  "properties": {
-                    "enabled": {
-                      "type": "boolean"
-                    }
-                  },
-                  "type": "object"
-                },
-                "readinessProbe": {
-                  "properties": {
-                    "enabled": {
-                      "type": "boolean"
-                    }
-                  },
-                  "type": "object"
-                },
                 "resources": {
                   "properties": {
                     "limits": {
@@ -4312,9 +4312,6 @@
             },
             "securityContext": {
               "properties": {
-                "enabled": {
-                  "type": "boolean"
-                },
                 "fsGroup": {
                   "type": "integer"
                 },
@@ -4503,6 +4500,12 @@
             "enabled": {
               "type": "boolean"
             },
+            "httpPort": {
+              "type": "integer"
+            },
+            "httpsPort": {
+              "type": "integer"
+            },
             "nodes": {
               "properties": {
                 "matchLabels": {
@@ -4512,6 +4515,9 @@
               "type": "object"
             },
             "sharedListenerPort": {
+              "type": "integer"
+            },
+            "tlsPassthroughPort": {
               "type": "integer"
             }
           },
@@ -4803,6 +4809,14 @@
       },
       "type": "object"
     },
+    "k8sClusterNetworkPolicy": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
     "k8sNetworkPolicy": {
       "properties": {
         "enabled": {
@@ -5020,6 +5034,9 @@
           "type": "boolean"
         },
         "bindProtection": {
+          "type": "boolean"
+        },
+        "enableDynamicSourceLookup": {
           "type": "boolean"
         },
         "enableHealthCheck": {
@@ -5376,6 +5393,9 @@
           "type": "array"
         },
         "hostNetwork": {
+          "type": "boolean"
+        },
+        "hostUsers": {
           "type": "boolean"
         },
         "identityGCInterval": {
