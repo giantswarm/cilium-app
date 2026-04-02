@@ -209,12 +209,13 @@ spec:
         - --prometheus-serve-addr=:{{ .Values.clustermesh.apiserver.metrics.port }}
         - --controller-group-metrics=all
         {{- end }}
-        {{- if or .Values.clustermesh.mcsapi.enabled .Values.clustermesh.enableMCSAPISupport }}
+        {{- if .Values.clustermesh.mcsapi.enabled }}
         - --clustermesh-enable-mcs-api
         {{- end }}
         {{- if .Values.ciliumEndpointSlice.enabled }}
         - --enable-cilium-endpoint-slice
         {{- end }}
+        - --clustermesh-default-global-namespace={{ .Values.clustermesh.defaultGlobalNamespace }}
         {{- include "clustermesh.apiserver.args.extra" . | nindent 8 }}
         {{- with .Values.clustermesh.apiserver.extraArgs }}
         {{- toYaml . | trim | nindent 8 }}
@@ -507,7 +508,8 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if and .Values.clustermesh.config.enabled .Values.clustermesh.apiserver.kvstoremesh.enabled }}
+      {{/* TODO: remove hostAliases for the v1.21 release as this is now handled via a static dialer to avoid pod restart */}}
+      {{- if and .Values.clustermesh.config.enabled .Values.clustermesh.apiserver.kvstoremesh.enabled (not .Values.clustermesh.disableKubernetesHostAliases) }}
       hostAliases:
       {{- range $_, $cluster := (include "clustermesh-clusters" . | fromJson) }}
       {{- range $ip := $cluster.ips }}

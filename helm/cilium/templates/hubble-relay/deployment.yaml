@@ -50,6 +50,11 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      {{- if (semverCompare ">= 1.33-0" .Capabilities.KubeVersion.Version) }}
+      {{- if kindIs "bool" .Values.hubble.hostUsers }}
+      hostUsers: {{ .Values.hubble.hostUsers }}
+      {{- end }}
+      {{- end }}
       {{- with .Values.hubble.relay.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
@@ -122,6 +127,8 @@ spec:
             {{- toYaml . | trim | nindent 12 }}
           {{- end }}
           volumeMounts:
+          - name: tmp-volume
+            mountPath: /tmp
           - name: config
             mountPath: /etc/hubble-relay
             readOnly: true
@@ -164,6 +171,8 @@ spec:
         {{- toYaml . | trim | nindent 8 }}
       {{- end }}
       volumes:
+      - name: tmp-volume
+        emptyDir: {}
       - name: config
         configMap:
           name: hubble-relay-config

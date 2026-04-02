@@ -224,6 +224,22 @@ agent: true
 name: cilium
 # -- Roll out cilium agent pods automatically when configmap is updated.
 rollOutCiliumPods: false
+# -- Configuration for the ConfigMap drift detection feature.
+# When enabled, the agent continuously watches the cilium-config ConfigMap
+# and exposes a cilium_drift_checker_config_delta Prometheus metric reporting
+# the number of keys that differ between the ConfigMap and the agent's active
+# settings. A non-zero value indicates that the agent has not yet applied all
+# current ConfigMap changes and needs to be restarted.
+configDriftDetection:
+  # -- Enable watching of the cilium-config ConfigMap and reflecting its
+  # contents into the agent's internal DynamicConfig table.
+  enabled: true
+  # -- Enable the drift checker which compares the DynamicConfig table against
+  # the agent's active settings and publishes the
+  # cilium_drift_checker_config_delta metric.
+  driftChecker: true
+  # -- List of config-map keys to ignore when computing the drift delta.
+  ignoredKeys: []
 # -- Agent container image.
 image:
   registry: gsoci.azurecr.io
@@ -232,10 +248,10 @@ image:
   # @schema
   override: ~
   repository: "giantswarm/cilium"
-  tag: "v1.19.2"
-  pullPolicy: "IfNotPresent"
+  tag: "latest"
+  pullPolicy: "Always"
   # cilium-digest
-  digest: "sha256:7bc7e0be845cae0a70241e622cd03c3b169001c9383dd84329c59ca86a8b1341"
+  digest: "sha256:2c656b2870bdd008940997c97796834d033ae3962bdf1cc07b4b8b396547a937"
   useDigest: true
 # -- Scheduling configurations for cilium pods
 scheduling:
@@ -728,7 +744,7 @@ bpf:
   # supported kernels.
   # @default -- `true`
   enableTCX: true
-  # -- (string) Mode for Pod devices for the core datapath (veth, netkit, netkit-l2).
+  # -- (string) Mode for Pod devices for the core datapath (auto, veth, netkit, netkit-l2).
   # Note netkit is incompatible with TPROXY (`bpf.tproxy`).
   # @default -- `veth`
   datapathMode: veth
@@ -1038,6 +1054,15 @@ ingressController:
     enabled: false
     # -- Configure a specific port on the host network that gets used for the shared listener.
     sharedListenerPort: 8080
+    # -- Configure a specific port on the host network that gets used for the shared HTTP listener.
+    # If unset or 0, sharedListenerPort is used.
+    httpPort: 0
+    # -- Configure a specific port on the host network that gets used for the shared HTTPS listener.
+    # If unset or 0, sharedListenerPort is used.
+    httpsPort: 0
+    # -- Configure a specific port on the host network that gets used for the shared TLS passthrough listener.
+    # If unset or 0, sharedListenerPort is used.
+    tlsPassthroughPort: 0
     # Specify the nodes where the Ingress listeners should be exposed
     nodes:
       # -- Specify the labels of the nodes where the Ingress listeners should be exposed
@@ -1225,6 +1250,8 @@ encryption:
 endpointHealthChecking:
   # -- Enable connectivity health checking between virtual endpoints.
   enabled: true
+# -- Max duration to wait for envoy to respond to configuration changes. Default "10s".
+endpointPolicyUpdateTimeoutDuration: null
 endpointRoutes:
   # @schema
   # type: [boolean, string]
@@ -1235,6 +1262,9 @@ endpointRoutes:
 k8sNetworkPolicy:
   # -- Enable support for K8s NetworkPolicy
   enabled: true
+k8sClusterNetworkPolicy:
+  # -- Enable support for K8s Cluster Network Policy
+  enabled: false
 # -- Enable endpoint lockdown on policy map overflow.
 endpointLockdownOnMapOverflow: false
 eni:
@@ -1342,7 +1372,7 @@ certgen:
     tag: "v0.4.1"
     digest: "sha256:f0c656830e856d26b24b0e144df1f8b327d3b46748d76a630514111fc365b697"
     useDigest: true
-    pullPolicy: "IfNotPresent"
+    pullPolicy: "Always"
   # @schema
   # type: [null, integer]
   # @schema
@@ -1380,6 +1410,14 @@ certgen:
 hubble:
   # -- Enable Hubble (true by default).
   enabled: true
+  # @schema
+  # type: [null, boolean]
+  # @schema
+  # -- (bool) Enable hostUsers for Hubble.
+  # This will allow use of user-namespaces for hubble components. Not all
+  # clusters support user-namespaces.
+  # See: https://kubernetes.io/docs/concepts/workloads/pods/user-namespaces/
+  hostUsers: ~
   # -- Annotations to be added to all top-level hubble objects (resources under templates/hubble)
   annotations: {}
   # -- Buffer size of the channel Hubble uses to receive monitor events. If this
@@ -1583,20 +1621,6 @@ hubble:
         #   --set hubble.redact.enabled="true"
         #   --set hubble.redact.http.headers.deny="Authorization,Proxy-Authorization"
         deny: []
-    kafka:
-      # -- Enables redacting Kafka's API key (deprecated, will be removed in v1.19).
-      # Example:
-      #
-      #   redact:
-      #     enabled: true
-      #     kafka:
-      #       apiKey: true
-      #
-      # You can specify the options from the helm CLI:
-      #
-      #   --set hubble.redact.enabled="true"
-      #   --set hubble.redact.kafka.apiKey="true"
-      apiKey: true
   # -- An additional address for Hubble to listen to.
   # Set this field ":4244" if you are enabling Hubble Relay, as it assumes that
   # Hubble is listening on port 4244.
@@ -1688,11 +1712,11 @@ hubble:
       # @schema
       override: ~
       repository: "giantswarm/hubble-relay"
-      tag: "v1.19.2"
+      tag: "latest"
       # hubble-relay-digest
-      digest: "sha256:9987c73bad48c987fd065185535fd15a6717cbe8a8caf7fc7ef0413532cf490e"
+      digest: "sha256:14e2f8ed1e4ffef565a61b74d943f3166096e860e617edbe36be290b7b140591"
       useDigest: true
-      pullPolicy: "IfNotPresent"
+      pullPolicy: "Always"
     # -- Specifies the resources for the hubble-relay pods
     resources:
       requests:
@@ -1982,14 +2006,14 @@ hubble:
         tag: "v0.13.3"
         digest: "sha256:db1454e45dc39ca41fbf7cad31eec95d99e5b9949c39daaad0fa81ef29d56953"
         useDigest: true
-        pullPolicy: "IfNotPresent"
+        pullPolicy: "Always"
       # -- Hubble-ui backend security context.
       securityContext:
+        readOnlyRootFilesystem: true
         allowPrivilegeEscalation: false
         capabilities:
           drop:
             - ALL
-        readOnlyRootFilesystem: true
         runAsGroup: 65532
         runAsNonRoot: true
         runAsUser: 65532
@@ -2001,12 +2025,6 @@ hubble:
       extraVolumes: []
       # -- Additional hubble-ui backend volumeMounts.
       extraVolumeMounts: []
-      livenessProbe:
-        # -- Enable liveness probe for Hubble-ui backend (requires Hubble-ui 0.12+)
-        enabled: false
-      readinessProbe:
-        # -- Enable readiness probe for Hubble-ui backend (requires Hubble-ui 0.12+)
-        enabled: false
       # -- Resource requests and limits for the 'backend' container of the 'hubble-ui' deployment.
       resources:
         limits:
@@ -2027,14 +2045,14 @@ hubble:
         tag: "v0.13.3"
         digest: "sha256:661d5de7050182d495c6497ff0b007a7a1e379648e60830dd68c4d78ae21761d"
         useDigest: true
-        pullPolicy: "IfNotPresent"
+        pullPolicy: "Always"
       # -- Hubble-ui frontend security context.
       securityContext:
+        readOnlyRootFilesystem: true
         allowPrivilegeEscalation: false
         capabilities:
           drop:
             - ALL
-        readOnlyRootFilesystem: true
         runAsGroup: 101
         runAsNonRoot: true
         runAsUser: 101
@@ -2118,11 +2136,10 @@ hubble:
         maxUnavailable: 1
     # -- Security context to be added to Hubble UI pods
     securityContext:
-      enabled: true
+      runAsNonRoot: true
       runAsUser: 1001
       runAsGroup: 1001
       fsGroup: 1001
-      runAsNonRoot: true
       seccompProfile:
         type: RuntimeDefault
     # -- hubble-ui service configuration.
@@ -2440,8 +2457,6 @@ enableMasqueradeRouteSource: false
 enableIPv4BIGTCP: false
 # -- Enables IPv6 BIG TCP support which increases maximum IPv6 GSO/GRO limits for nodes and pods
 enableIPv6BIGTCP: false
-# -- Enable BIG TCP in tunneling mode and increase maximum GRO/GSO limits for VXLAN/GENEVE tunnels
-enableTunnelBIGTCP: false
 nat:
   # -- Number of the top-k SNAT map connections to track in Cilium statedb.
   mapStatsEntries: 32
@@ -2566,6 +2581,9 @@ nodePort:
   # -- Enable access of the healthcheck nodePort on the LoadBalancerIP. Needs
   # EnableHealthCheck to be enabled
   enableHealthCheckLoadBalancerIP: false
+  # -- Enable dynamic source IP resolution for SNAT via linux's routing table.
+  # The kernel must support this feature.
+  enableDynamicSourceLookup: false
 # policyAuditMode: false
 
 # -- The agent can be put into one of the three policy enforcement modes:
@@ -2707,6 +2725,8 @@ envoy:
     # Tune this value up if you encounter "Envoy: Discarded truncated access log message" errors.
     # Large request/response header sizes (e.g. 16KiB) will require a larger buffer size.
     accessLogBufferSize: 4096
+    # -- Enable access log forwarding for integration with Hubble.
+    accessLogEnabled: true
   # -- Time in seconds after which a TCP connection attempt times out
   connectTimeoutSeconds: 2
   # -- Time in seconds after which the initial fetch on an xDS stream is considered timed out
@@ -2752,9 +2772,9 @@ envoy:
     # @schema
     override: ~
     repository: "giantswarm/cilium-envoy"
-    tag: "v1.35.9-1773656288-7b052e66eb2cfc5ac130ce0a5be66202a10d83be"
-    pullPolicy: "IfNotPresent"
-    digest: "sha256:60031f39669542b21aedf05a3317d14e8d3ea48255790af039b315a1c9637361"
+    tag: "v1.36.5-1774358537-d5f886d03852f66d9afa960ddca364ac5c31d055"
+    pullPolicy: "Always"
+    digest: "sha256:c61f2c4e823d6d2f2b52a2012a29a7e7aedad43719e8f604108ff1764a884616"
     useDigest: true
   # -- Init containers added to the cilium Envoy DaemonSet.
   initContainers: []
@@ -3082,7 +3102,8 @@ tunnelProtocol: ""
 # Possible values:
 #   - "ipv4"
 #   - "ipv6"
-# @default -- `"ipv4"`
+#   - "auto"
+# @default -- `"auto"`
 underlayProtocol: ""
 # -- Enable native-routing mode or tunneling mode.
 # Possible values:
@@ -3137,18 +3158,18 @@ operator:
     # @schema
     override: ~
     repository: "giantswarm/cilium-operator"
-    tag: "v1.19.2"
+    tag: "latest"
     # operator-generic-digest
-    genericDigest: "sha256:e363f4f634c2a66a36e01618734ea17e7b541b949b9a5632f9c180ab16de23f0"
+    genericDigest: "sha256:9c8032bf08d37f9c1f05adfa373389f56567d808335d7c8b2431169ae4c3a9e5"
     # operator-azure-digest
-    azureDigest: "sha256:9c040a57f4584782eda9a91f7cf3292ca5d0fb41d75f4aa41ece29d66e145293"
+    azureDigest: "sha256:df4bdc7ff13e7d5954ab05766e3f7c356c95d4263836854d5a243655bcd7404a"
     # operator-aws-digest
-    awsDigest: "sha256:6eaa299ad267d7b8fcb4bb17ee1008b391052e2e35f690b21783b1b23b5c0bf2"
+    awsDigest: "sha256:8c22437c4659f1425e719a912ed2eb12823b9cb4225fa514f3e9bc3d54198dae"
     # operator-alibabacloud-digest
-    alibabacloudDigest: "sha256:90bdedf6b0d3108245f8194f8c69262af2c8d839480f99d2396deed057899142"
+    alibabacloudDigest: "sha256:0d7f25e13ef88984e8935acca781d3d7443b830961e657b46914a1ae6787cd47"
     useDigest: true
-    pullPolicy: "IfNotPresent"
-    suffix: ""
+    pullPolicy: "Always"
+    suffix: "-ci"
   # -- Number of replicas to run for the cilium-operator deployment
   replicas: 2
   # -- The priority class to use for cilium-operator
@@ -3221,6 +3242,8 @@ operator:
   annotations: {}
   # -- HostNetwork setting
   hostNetwork: true
+  # -- HostUsers setting (must be true if hostNetwork is true)
+  hostUsers: true
   # -- Security context to be added to cilium-operator pods
   podSecurityContext:
     runAsNonRoot: true
@@ -3385,10 +3408,10 @@ nodeinit:
     # @schema
     override: ~
     repository: "giantswarm/cilium-startup-script"
-    tag: "1763560095-8f36c34"
-    digest: "sha256:50b9cf9c280096b59b80d2fc8ee6638facef79ac18998a22f0cbc40d5d28c16f"
+    tag: "1773335249-e45b074"
+    digest: "sha256:bf1944bbdfd073bbb2b8d9c5baa315267a552aec6942102f930d2a7aa7ddc0e1"
     useDigest: true
-    pullPolicy: "IfNotPresent"
+    pullPolicy: "Always"
   # -- The priority class to use for the nodeinit pod.
   priorityClassName: ""
   # -- node-init update strategy
@@ -3476,11 +3499,11 @@ preflight:
     # @schema
     override: ~
     repository: "giantswarm/cilium"
-    tag: "v1.19.2"
+    tag: "latest"
     # cilium-digest
-    digest: "sha256:7bc7e0be845cae0a70241e622cd03c3b169001c9383dd84329c59ca86a8b1341"
+    digest: "sha256:2c656b2870bdd008940997c97796834d033ae3962bdf1cc07b4b8b396547a937"
     useDigest: true
-    pullPolicy: "IfNotPresent"
+    pullPolicy: "Always"
   envoy:
     # -- Envoy pre-flight image.
     image:
@@ -3489,9 +3512,9 @@ preflight:
       # @schema
       override: ~
       repository: "giantswarm/cilium-envoy"
-      tag: "v1.35.9-1773656288-7b052e66eb2cfc5ac130ce0a5be66202a10d83be"
-      pullPolicy: "IfNotPresent"
-      digest: "sha256:60031f39669542b21aedf05a3317d14e8d3ea48255790af039b315a1c9637361"
+      tag: "v1.36.5-1774358537-d5f886d03852f66d9afa960ddca364ac5c31d055"
+      pullPolicy: "Always"
+      digest: "sha256:c61f2c4e823d6d2f2b52a2012a29a7e7aedad43719e8f604108ff1764a884616"
       useDigest: true
   # -- The priority class to use for the preflight pod.
   priorityClassName: ""
@@ -3609,8 +3632,33 @@ clustermesh:
   # -- Enable the synchronization of Kubernetes EndpointSlices corresponding to
   # the remote endpoints of appropriately-annotated global services through ClusterMesh
   enableEndpointSliceSynchronization: false
-  # -- Enable Multi-Cluster Services API support (deprecated; use clustermesh.mcsapi.enabled)
-  enableMCSAPISupport: false
+  # -- Default behavior of namespaces in Clustermesh.
+  # 
+  # A "global" namespace means its resources (CiliumEndpoints, CiliumIdentities,
+  # and Services) are exported and shared across all connected clusters in the mesh.
+  # This enables:
+  # - Cross-cluster pod-to-pod connectivity
+  # - Cross-cluster network policy enforcement (policies can match labels on pods in remote clusters)
+  # - Global services and Multi-Cluster Services (MCS-API)
+  # 
+  # A "local" namespace means its resources stay within the cluster and are NOT
+  # exported to other clusters. Cross-cluster communication and network policies
+  # will not work for pods in local namespaces.
+  # 
+  # If set to true, all namespaces are considered global by default unless
+  # explicitly annotated with clustermesh.cilium.io/global=false.
+  # If set to false, all namespaces are considered local by default unless
+  # explicitly annotated with clustermesh.cilium.io/global=true.
+  # 
+  # Note: For cross-cluster communication to work, BOTH the source and destination
+  # namespaces must be global. Additionally, for a service to be a Global Service,
+  # it must both reside in a global namespace AND be annotated with
+  # service.cilium.io/global=true.
+  # This setting improves scalability by limiting the amount of state synchronized
+  # across clusters.
+  # 
+  # Defaults to true (preserves existing behavior where all namespaces are global).
+  defaultGlobalNamespace: true
   # -- Control whether policy rules assume by default the local cluster if not explicitly selected
   policyDefaultLocalCluster: true
   # -- Annotations to be added to all top-level clustermesh objects (resources under templates/clustermesh-apiserver and templates/clustermesh-config)
@@ -3735,11 +3783,11 @@ clustermesh:
       # @schema
       override: ~
       repository: "giantswarm/cilium-clustermesh-apiserver"
-      tag: "v1.19.2"
+      tag: "latest"
       # clustermesh-apiserver-digest
-      digest: "sha256:d1f44a78a0d0996ab1841f7564bc6fbd6e242d4ef673a2a8bfdd7385ef68018d"
+      digest: "sha256:ea3c073fb1098ce26d15bb6c9955ce51b09a5d6aafb908a879938fdc8327cb0c"
       useDigest: true
-      pullPolicy: "IfNotPresent"
+      pullPolicy: "Always"
     # -- TCP port for the clustermesh-apiserver health API.
     healthPort: 9880
     # -- Configuration for the clustermesh-apiserver readiness probe.
@@ -4274,7 +4322,7 @@ authentication:
           tag: "1.37.0"
           digest: "sha256:b3255e7dfbcd10cb367af0d409747d511aeb66dfac98cf30e97e87e4207dd76f"
           useDigest: true
-          pullPolicy: "IfNotPresent"
+          pullPolicy: "Always"
         # SPIRE agent configuration
         agent:
           # -- The priority class to use for the spire agent
@@ -4286,10 +4334,10 @@ authentication:
             # @schema
             override: ~
             repository: "ghcr.io/spiffe/spire-agent"
-            tag: "1.9.6"
-            digest: "sha256:5106ac601272a88684db14daf7f54b9a45f31f77bb16a906bd5e87756ee7b97c"
+            tag: "1.14.4"
+            digest: "sha256:f93996a9396ec4042a48042085c2abf1a0f8f0f3b339571e06ebfebbf94bb830"
             useDigest: true
-            pullPolicy: "IfNotPresent"
+            pullPolicy: "Always"
           # -- SPIRE agent service account
           serviceAccount:
             create: true
@@ -4341,10 +4389,10 @@ authentication:
             # @schema
             override: ~
             repository: "ghcr.io/spiffe/spire-server"
-            tag: "1.9.6"
-            digest: "sha256:59a0b92b39773515e25e68a46c40d3b931b9c1860bc445a79ceb45a805cab8b4"
+            tag: "1.14.4"
+            digest: "sha256:27c7d356768b8641c569745e1121328affeb4aaabe0c974d33ff92dddecf30ef"
             useDigest: true
-            pullPolicy: "IfNotPresent"
+            pullPolicy: "Always"
           # -- SPIRE server service account
           serviceAccount:
             create: true
@@ -4464,7 +4512,7 @@ standaloneDnsProxy:
     tag: ""
     digest: ""
     useDigest: true
-    pullPolicy: "IfNotPresent"
+    pullPolicy: "Always"
 # If true, it adds an initContainer to cilium-agent pods that cleans up any legacy kube-proxy iptables rules from the node before running cilium.
 # Only makes sense when `kubeProxyReplacement` is enabled (i.e. not set to 'disabled').
 cleanupKubeProxy: false
