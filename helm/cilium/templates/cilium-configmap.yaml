@@ -291,6 +291,9 @@ data:
   {{- end }}
   ingress-hostnetwork-enabled: {{ .Values.ingressController.hostNetwork.enabled | quote }}
   ingress-hostnetwork-shared-listener-port: {{ .Values.ingressController.hostNetwork.sharedListenerPort | quote }}
+  ingress-hostnetwork-http-listener-port: {{ .Values.ingressController.hostNetwork.httpPort | quote }}
+  ingress-hostnetwork-https-listener-port: {{ .Values.ingressController.hostNetwork.httpsPort | quote }}
+  ingress-hostnetwork-tls-passthrough-listener-port: {{ .Values.ingressController.hostNetwork.tlsPassthroughPort | quote }}
   ingress-hostnetwork-nodelabelselector: {{ include "mapToString" .Values.ingressController.hostNetwork.nodes.matchLabels | quote }}
 {{- end }}
 
@@ -738,9 +741,6 @@ data:
     {{- if and .Values.encryption.ipsec.mountPath .Values.encryption.ipsec.keyFile }}
   ipsec-key-file: {{ .Values.encryption.ipsec.mountPath }}/{{ .Values.encryption.ipsec.keyFile }}
     {{- end }}
-    {{- if .Values.encryption.ipsec.interface }}
-  encrypt-interface: {{ .Values.encryption.ipsec.interface }}
-    {{- end }}
     {{- if hasKey .Values.encryption.ipsec "keyWatcher" }}
   enable-ipsec-key-watcher: {{ .Values.encryption.ipsec.keyWatcher | quote }}
     {{- end }}
@@ -882,6 +882,9 @@ data:
 {{- if hasKey .Values.nodePort "enableHealthCheck" }}
   enable-health-check-nodeport: {{ .Values.nodePort.enableHealthCheck | quote}}
 {{- end }}
+{{- if hasKey .Values.nodePort "enableDynamicSourceLookup" }}
+  enable-dynamic-source-lookup-nodeport: {{ .Values.nodePort.enableDynamicSourceLookup | quote}}
+{{- end }}
 {{- if .Values.gke.enabled }}
   enable-health-check-loadbalancer-ip: "true"
 {{- else if hasKey .Values.nodePort "enableHealthCheckLoadBalancerIP" }}
@@ -967,6 +970,9 @@ data:
 {{- end }}
 {{- if hasKey .Values.k8sNetworkPolicy "enabled" }}
   enable-k8s-networkpolicy: {{ .Values.k8sNetworkPolicy.enabled | quote }}
+{{- end }}
+{{- if .Values.k8sClusterNetworkPolicy.enabled }}
+  enable-k8s-cluster-network-policy: "true"
 {{- end }}
   enable-endpoint-lockdown-on-policy-overflow: {{ .Values.endpointLockdownOnMapOverflow | quote }}
 {{- if .Values.cni.configMap }}
@@ -1485,6 +1491,7 @@ data:
 {{- if .Values.envoy.log.defaultLevel }}
   envoy-default-log-level: {{ .Values.envoy.log.defaultLevel | quote }}
 {{- end }}
+  envoy-access-log-enabled: {{ .Values.envoy.log.accessLogEnabled | quote }}
 {{- if .Values.envoy.log.accessLogBufferSize }}
   envoy-access-log-buffer-size: {{ .Values.envoy.log.accessLogBufferSize | quote }}
 {{- end }}
@@ -1495,8 +1502,9 @@ data:
 {{- end }}
   clustermesh-cache-ttl: {{ .Values.clustermesh.cacheTTL | quote }}
   clustermesh-enable-endpoint-sync: {{ .Values.clustermesh.enableEndpointSliceSynchronization | quote }}
-  clustermesh-enable-mcs-api: {{ (or .Values.clustermesh.mcsapi.enabled .Values.clustermesh.enableMCSAPISupport) | quote }}
+  clustermesh-enable-mcs-api: {{ .Values.clustermesh.mcsapi.enabled | quote }}
   clustermesh-mcs-api-install-crds: {{ .Values.clustermesh.mcsapi.installCRDs | quote }}
+  clustermesh-default-global-namespace: {{ .Values.clustermesh.defaultGlobalNamespace | quote }}
   policy-default-local-cluster: {{ .Values.clustermesh.policyDefaultLocalCluster | quote }}
 
   nat-map-stats-entries: {{ .Values.nat.mapStatsEntries | quote }}
