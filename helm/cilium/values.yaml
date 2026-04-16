@@ -212,6 +212,22 @@ agent: true
 name: cilium
 # -- Roll out cilium agent pods automatically when configmap is updated.
 rollOutCiliumPods: false
+# -- Configuration for the ConfigMap drift detection feature.
+# When enabled, the agent continuously watches the cilium-config ConfigMap
+# and exposes a cilium_drift_checker_config_delta Prometheus metric reporting
+# the number of keys that differ between the ConfigMap and the agent's active
+# settings. A non-zero value indicates that the agent has not yet applied all
+# current ConfigMap changes and needs to be restarted.
+configDriftDetection:
+  # -- Enable watching of the cilium-config ConfigMap and reflecting its
+  # contents into the agent's internal DynamicConfig table.
+  enabled: true
+  # -- Enable the drift checker which compares the DynamicConfig table against
+  # the agent's active settings and publishes the
+  # cilium_drift_checker_config_delta metric.
+  driftChecker: true
+  # -- List of config-map keys to ignore when computing the drift delta.
+  ignoredKeys: []
 # -- Agent container image.
 image:
   registry: gsoci.azurecr.io
@@ -220,10 +236,10 @@ image:
   # @schema
   override: ~
   repository: "giantswarm/cilium"
-  tag: "v1.18.8"
+  tag: "v1.18.9"
   pullPolicy: "IfNotPresent"
   # cilium-digest
-  digest: "sha256:070a63cc414869cf6c53202cb50929a87adb7d5b25de0f2f40ab39eb6434b706"
+  digest: "sha256:c9140c2ebcc636ba346a4152fb28d616a4a51586c22c72dcd6f273bed41053c0"
   useDigest: true
 # -- Scheduling configurations for cilium pods
 scheduling:
@@ -1084,6 +1100,8 @@ encryption:
 endpointHealthChecking:
   # -- Enable connectivity health checking between virtual endpoints.
   enabled: true
+# -- Max duration to wait for envoy to respond to configuration changes. Default "10s".
+endpointPolicyUpdateTimeoutDuration: null
 endpointRoutes:
   # @schema
   # type: [boolean, string]
@@ -1508,9 +1526,9 @@ hubble:
       # @schema
       override: ~
       repository: "giantswarm/hubble-relay"
-      tag: "v1.18.8"
+      tag: "v1.18.9"
       # hubble-relay-digest
-      digest: "sha256:dcf324aa35ab59c8fe6d002e3df6a63fff18280da464d09e4a97d58c085bb015"
+      digest: "sha256:031288422f2b0bfff3372fba9812d2867dd9262a6f12c6e6282cfebe54e5efe1"
       useDigest: true
       pullPolicy: "IfNotPresent"
     # -- Specifies the resources for the hubble-relay pods
@@ -2522,9 +2540,9 @@ envoy:
     # @schema
     override: ~
     repository: "giantswarm/cilium-envoy"
-    tag: "v1.35.9-1773656288-7b052e66eb2cfc5ac130ce0a5be66202a10d83be"
+    tag: "v1.36.6-1776000132-2437d2edeaf4d9b56ef279bd0d71127440c067aa"
     pullPolicy: "IfNotPresent"
-    digest: "sha256:60031f39669542b21aedf05a3317d14e8d3ea48255790af039b315a1c9637361"
+    digest: "sha256:ba0ab8adac082d50d525fd2c5ba096c8facea3a471561b7c61c7a5b9c2e0de0d"
     useDigest: true
   # -- Additional containers added to the cilium Envoy DaemonSet.
   extraContainers: []
@@ -2901,15 +2919,15 @@ operator:
     # @schema
     override: ~
     repository: "giantswarm/cilium-operator"
-    tag: "v1.18.8"
+    tag: "v1.18.9"
     # operator-generic-digest
-    genericDigest: "sha256:f9d1715932751b1454d0f59b492497cb1636dea6335beab0f9026fa8b5a6f62f"
+    genericDigest: "sha256:9094fe19965c558bc9361aa4f0d19fcc48f7377f835dc70f138bf4dc1db48ca4"
     # operator-azure-digest
-    azureDigest: "sha256:a4027d349e817bda9168af1e27231be491a3026c748128a79026e366321f6332"
+    azureDigest: "sha256:4523175c9452c2eab7fa537faa85654120e29b740843f72d55b43c5cbc774f71"
     # operator-aws-digest
-    awsDigest: "sha256:7ab154b269eae378456d63cc9085d96c4f472e11a1496ca4c62af68ff4b31da3"
+    awsDigest: "sha256:48d78a4d22fc055a2223019941fc30a51f8a980691e55225bfd6b9cffb164a45"
     # operator-alibabacloud-digest
-    alibabacloudDigest: "sha256:36c1702c8afd0b0221e3d88ca08537100caef509de6a6bb7244d5fa4643a7252"
+    alibabacloudDigest: "sha256:2116cd9ec94484a1bb7f5cb9703fb6d7c4e63b11431cf145280abda218f3e8b9"
     useDigest: true
     pullPolicy: "IfNotPresent"
     suffix: ""
@@ -3214,9 +3232,9 @@ preflight:
     # @schema
     override: ~
     repository: "giantswarm/cilium"
-    tag: "v1.18.8"
+    tag: "v1.18.9"
     # cilium-digest
-    digest: "sha256:070a63cc414869cf6c53202cb50929a87adb7d5b25de0f2f40ab39eb6434b706"
+    digest: "sha256:c9140c2ebcc636ba346a4152fb28d616a4a51586c22c72dcd6f273bed41053c0"
     useDigest: true
     pullPolicy: "IfNotPresent"
   envoy:
@@ -3227,9 +3245,9 @@ preflight:
       # @schema
       override: ~
       repository: "giantswarm/cilium-envoy"
-      tag: "v1.35.9-1773656288-7b052e66eb2cfc5ac130ce0a5be66202a10d83be"
+      tag: "v1.36.6-1776000132-2437d2edeaf4d9b56ef279bd0d71127440c067aa"
       pullPolicy: "IfNotPresent"
-      digest: "sha256:60031f39669542b21aedf05a3317d14e8d3ea48255790af039b315a1c9637361"
+      digest: "sha256:ba0ab8adac082d50d525fd2c5ba096c8facea3a471561b7c61c7a5b9c2e0de0d"
       useDigest: true
   # -- The priority class to use for the preflight pod.
   priorityClassName: ""
@@ -3383,9 +3401,9 @@ clustermesh:
       # @schema
       override: ~
       repository: "giantswarm/cilium-clustermesh-apiserver"
-      tag: "v1.18.8"
+      tag: "v1.18.9"
       # clustermesh-apiserver-digest
-      digest: "sha256:5cb08daad7397f52ce5c36fcbfe83c56494f340d9b8f10f8bc7a3f2a812c33d5"
+      digest: "sha256:140bbb0433dbdb12e3ab0aaca0cb6fd1a8430812816ccff54c0d7f0adb713175"
       useDigest: true
       pullPolicy: "IfNotPresent"
     # -- TCP port for the clustermesh-apiserver health API.
@@ -3915,7 +3933,7 @@ authentication:
           override: ~
           repository: "docker.io/library/busybox"
           tag: "1.37.0"
-          digest: "sha256:b3255e7dfbcd10cb367af0d409747d511aeb66dfac98cf30e97e87e4207dd76f"
+          digest: "sha256:1487d0af5f52b4ba31c7e465126ee2123fe3f2305d638e7827681e7cf6c83d5e"
           useDigest: true
           pullPolicy: "IfNotPresent"
         # SPIRE agent configuration
