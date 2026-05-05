@@ -54,6 +54,7 @@ export OPERATOR_AZURE_DIGEST := "$(yq '.operator.image.azureDigest' "$ORIGINAL_Y
 export OPERATOR_ALIBABACLOUD_DIGEST := "$(yq '.operator.image.alibabacloudDigest' "$ORIGINAL_YAML_FILE")"
 export OPERATOR_GENERIC_DIGEST := "$(yq '.operator.image.genericDigest' "$ORIGINAL_YAML_FILE")"
 export OPERATOR_DIGEST := ""
+export RELEASE := yes
 EOF
 
 cd ./helm && make ; cd -
