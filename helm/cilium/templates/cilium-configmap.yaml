@@ -335,6 +335,10 @@ data:
   # address.
   enable-ipv6: {{ .Values.ipv6.enabled | quote }}
 
+{{- if eq .Values.preferIpv6 true }}
+  prefer-ipv6: "true"
+{{- end }}
+
 {{- if .Values.cleanState }}
   # If a serious issue occurs during Cilium startup, this
   # invasive option may be set to true to remove all persistent
@@ -747,7 +751,6 @@ data:
     {{- if .Values.encryption.ipsec.keyRotationDuration }}
   ipsec-key-rotation-duration: {{ include "validateDuration" .Values.encryption.ipsec.keyRotationDuration | quote }}
     {{- end }}
-  enable-ipsec-encrypted-overlay: {{ .Values.encryption.ipsec.encryptedOverlay | quote }}
   {{- else if eq .Values.encryption.type "wireguard" }}
   enable-wireguard: {{ .Values.encryption.enabled | quote }}
     {{- if .Values.encryption.wireguard.persistentKeepalive }}
@@ -759,13 +762,6 @@ data:
   {{- if .Values.encryption.nodeEncryption }}
   encrypt-node: {{ .Values.encryption.nodeEncryption | quote }}
   {{- end }}
-{{- end }}
-
-{{- if .Values.encryption.strictMode.enabled }}
-  # --- DEPRECATED: Please use encryption.strictMode.egress.enabled instead
-  enable-encryption-strict-mode-egress: {{ .Values.encryption.strictMode.enabled | quote }}
-  encryption-strict-egress-cidr: {{ .Values.encryption.strictMode.cidr | quote }}
-  encryption-strict-egress-allow-remote-node-identities: {{ .Values.encryption.strictMode.allowRemoteNodeIdentities | quote }}
 {{- end }}
 
 {{- if .Values.encryption.strictMode.ingress.enabled }}
@@ -959,7 +955,7 @@ data:
 {{- if hasKey .Values.k8s "requireIPv6PodCIDR" }}
   k8s-require-ipv6-pod-cidr: {{ .Values.k8s.requireIPv6PodCIDR | quote }}
 {{- end }}
-{{- if hasKey .Values.k8s "apiServerURLs" }}
+{{- if (not (kindIs "invalid" .Values.k8s.apiServerURLs)) }}
   k8s-api-server-urls: {{ .Values.k8s.apiServerURLs | quote }}
 {{- end }}
 {{- if and .Values.endpointRoutes .Values.endpointRoutes.enabled }}
@@ -1151,7 +1147,7 @@ data:
   hubble-drop-events-interval: {{ .Values.hubble.dropEventEmitter.interval | quote }}
   hubble-drop-events-reasons: {{ .Values.hubble.dropEventEmitter.reasons | join " " | quote }}
 {{- end }}
-{{- if or (eq .Values.hubble.preferIpv6 true) (eq .Values.ipv4.enabled false) }}
+{{- if or (eq .Values.hubble.preferIpv6 true) (eq .Values.preferIpv6 true) (eq .Values.ipv4.enabled false) }}
   hubble-prefer-ipv6: "true"
 {{- end }}
 {{- if (not (kindIs "invalid" .Values.hubble.skipUnknownCGroupIDs)) }}
@@ -1473,6 +1469,7 @@ data:
   proxy-cluster-max-requests: {{ .Values.envoy.clusterMaxRequests | quote }}
   http-retry-count: {{ .Values.envoy.httpRetryCount | quote }}
   http-stream-idle-timeout: {{ .Values.envoy.streamIdleTimeoutDurationSeconds | quote }}
+  envoy-node-locality-enabled: {{ .Values.envoy.nodeLocality.enabled | quote }}
 
   external-envoy-proxy: {{ include "envoyDaemonSetEnabled" . | quote }}
   envoy-base-id: {{ .Values.envoy.baseID | quote }}
@@ -1527,6 +1524,9 @@ data:
   ignore-flags-drift-checker: {{ join "," .Values.configDriftDetection.ignoredKeys | quote }}
   {{- end }}
 {{- end }}
+
+  enable-datapath-plugins: {{ .Values.datapathPlugins.enabled | quote }}
+  datapath-plugins-state-dir: {{ .Values.datapathPlugins.stateDir | quote }}
 
 # Extra config allows adding arbitrary properties to the cilium config.
 # By putting it at the end of the ConfigMap, it's also possible to override existing properties.

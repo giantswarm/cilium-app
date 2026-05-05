@@ -872,6 +872,12 @@ conntrackGCMaxInterval: ""
 # -- (string) Configure timeout in which Cilium will exit if CRDs are not available
 # @default -- `"5m"`
 crdWaitTimeout: ""
+# -- Plugins to inject custom BPF into the datapath.
+datapathPlugins:
+  # -- Enable datapath plugins.
+  enabled: false
+  # -- Parent directory for per-plugin state directories.
+  stateDir: /var/run/cilium/plugins
 daemon:
   # -- Configure where Cilium runtime state should be stored.
   runPath: "/var/run/cilium"
@@ -1140,13 +1146,6 @@ encryption:
   nodeEncryption: false
   # -- Configure the Encryption Pod2Pod strict mode.
   strictMode:
-    # -- Enable Encryption Pod2Pod strict mode. (deprecated: please use encryption.strictMode.egress.enabled)
-    enabled: false
-    # -- CIDR for the Encryption Pod2Pod strict mode. (deprecated: please use encryption.strictMode.egress.cidr)
-    cidr: ""
-    # -- Allow dynamic lookup of remote node identities. (deprecated: please use encryption.strictMode.egress.allowRemoteNodeIdentities)
-    # This is required when tunneling is used or direct routing is used and the node CIDR and pod CIDR overlap.
-    allowRemoteNodeIdentities: false
     egress:
       # -- Enable strict egress encryption.
       enabled: false
@@ -1175,8 +1174,6 @@ encryption:
     # -- Maximum duration of the IPsec key rotation. The previous key will be
     # removed after that delay.
     keyRotationDuration: "5m"
-    # -- Enable IPsec encrypted overlay
-    encryptedOverlay: false
   wireguard:
     # -- Controls WireGuard PersistentKeepalive option. Set 0s to disable.
     persistentKeepalive: 0s
@@ -1190,14 +1187,11 @@ encryption:
       # type: [null, string]
       # @schema
       override: ~
-      repository: "docker.io/istio/ztunnel"
-      tag: "1.28.0-distroless"
-      pullPolicy: "IfNotPresent"
-      # @schema
-      # type: [null, string]
-      # @schema
-      digest: ~
-      useDigest: false
+      repository: "${ZTUNNEL_REPO}"
+      tag: "${ZTUNNEL_VERSION}"
+      pullPolicy: "${PULL_POLICY}"
+      digest: "${ZTUNNEL_DIGEST}"
+      useDigest: true
     # -- CA server address for certificate requests.
     caAddress: "https://localhost:15012"
     # -- TCP port for the health API.
@@ -1346,6 +1340,9 @@ eni:
 gke:
   # -- Enable Google Kubernetes Engine integration
   enabled: false
+# -- Prefer IPv6 addresses over IPv4 when both are available for health probes
+# and Hubble peer communication.
+preferIpv6: false
 # -- Enable connectivity health checking.
 healthChecking: true
 # -- TCP port for the agent health API. This is not the port for cilium-health.
@@ -1640,6 +1637,7 @@ hubble:
   # Hubble is listening on port 4244.
   listenAddress: ":4244"
   # -- Whether Hubble should prefer to announce IPv6 or IPv4 addresses if both are available.
+  # Deprecated: use top-level preferIpv6 instead.
   preferIpv6: false
   # @schema
   # type: [null, boolean]
@@ -2391,9 +2389,12 @@ k8s:
   # -- requireIPv6PodCIDR enables waiting for Kubernetes to provide the PodCIDR
   # range via the Kubernetes node resource
   requireIPv6PodCIDR: false
+  # @schema
+  # type: [null, string]
+  # @schema
   # -- A space separated list of Kubernetes API server URLs to use with the client.
   # For example "https://192.168.0.1:6443 https://192.168.0.2:6443"
-  # apiServerURLs: ""
+  apiServerURLs: ~
 
 # -- Keep the deprecated selector labels when deploying Cilium DaemonSet.
 keepDeprecatedLabels: false
@@ -2850,6 +2851,12 @@ envoy:
   # type: [null, string]
   # @schema
   bootstrapConfigMap: ~
+  # Enable node locality lookup and pass resolved zone to cilium-envoy via `--service-zone`.
+  nodeLocality:
+    # -- Enable node-locality support for cilium-envoy.
+    # When enabled, Cilium looks up the node zone from the topology label and passes it to the Envoy process via `--service-zone`.
+    # Startup fails if the zone cannot be resolved or the label is empty.
+    enabled: false
   # -- Annotations to be added to all top-level cilium-envoy objects (resources under templates/cilium-envoy)
   annotations: {}
   # -- Security Context for cilium-envoy pods.
@@ -2879,6 +2886,10 @@ envoy:
     failureThreshold: 105
     # -- interval between checks of the startup probe
     periodSeconds: 2
+    # -- Initial delay before the startup probe begins
+    initialDelaySeconds: 5
+    # -- Timeout for the startup probe
+    timeoutSeconds: 5
   livenessProbe:
     # -- Enable liveness probe for cilium-envoy
     enabled: true
@@ -2886,11 +2897,19 @@ envoy:
     failureThreshold: 10
     # -- interval between checks of the liveness probe
     periodSeconds: 30
+    # -- Initial delay before the liveness probe begins
+    initialDelaySeconds: 0
+    # -- Timeout for the liveness probe
+    timeoutSeconds: 5
   readinessProbe:
     # -- failure threshold of readiness probe
     failureThreshold: 3
     # -- interval between checks of the readiness probe
     periodSeconds: 30
+    # -- Initial delay before the readiness probe begins
+    initialDelaySeconds: 0
+    # -- Timeout for the readiness probe
+    timeoutSeconds: 5
   securityContext:
     # -- User to run the pod with
     # runAsUser: 0

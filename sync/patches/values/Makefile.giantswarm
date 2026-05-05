@@ -10,3 +10,4 @@ export HUBBLE_UI_FRONTEND_REPO:=giantswarm/hubble-ui
 export SPIRE_INIT_REPO:=docker.io/library/busybox
 export SPIRE_SERVER_REPO:=ghcr.io/spiffe/spire-server
 export SPIRE_AGENT_REPO:=ghcr.io/spiffe/spire-agent
+export ZTUNNEL_REPO=giantswarm/cilium-ztunnel
