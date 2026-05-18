@@ -1,6 +1,6 @@
 # cilium
 
-![AppVersion: 1.18.9](https://img.shields.io/badge/AppVersion-1.18.9-informational?style=flat-square)
+![AppVersion: 1.18.10](https://img.shields.io/badge/AppVersion-1.18.10-informational?style=flat-square)
 
 Cilium is open source software for providing and transparently securing
 network connectivity and loadbalancing between application workloads such as
@@ -169,7 +169,7 @@ contributors across the globe, there is almost always someone available to help.
 | bpf.tproxy | bool | `false` | Configure the eBPF-based TPROXY (beta) to reduce reliance on iptables rules for implementing Layer 7 policy. |
 | bpf.vlanBypass | list | `[]` | Configure explicitly allowed VLAN id's for bpf logic bypass. [0] will allow all VLAN id's without any filtering. |
 | bpfClockProbe | bool | `false` | Enable BPF clock source probing for more efficient tick retrieval. |
-| certgen | object | `{"affinity":{},"annotations":{"cronJob":{},"job":{}},"extraVolumeMounts":[],"extraVolumes":[],"generateCA":true,"image":{"digest":"sha256:f0c656830e856d26b24b0e144df1f8b327d3b46748d76a630514111fc365b697","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-certgen","tag":"v0.4.1","useDigest":true},"nodeSelector":{},"podLabels":{},"priorityClassName":"","resources":{},"tolerations":[],"ttlSecondsAfterFinished":1800}` | Configure certificate generation for Hubble integration. If hubble.tls.auto.method=cronJob, these values are used for the Kubernetes CronJob which will be scheduled regularly to (re)generate any certificates not provided manually. |
+| certgen | object | `{"affinity":{},"annotations":{"cronJob":{},"job":{}},"extraVolumeMounts":[],"extraVolumes":[],"generateCA":true,"image":{"digest":"sha256:d63d1cb3ee6db2167cb1ca9e7e31f30b6197846fcf42505d8f59e2f090a42c86","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-certgen","tag":"v0.4.3","useDigest":true},"nodeSelector":{},"podLabels":{},"priorityClassName":"","resources":{},"tolerations":[],"ttlSecondsAfterFinished":1800}` | Configure certificate generation for Hubble integration. If hubble.tls.auto.method=cronJob, these values are used for the Kubernetes CronJob which will be scheduled regularly to (re)generate any certificates not provided manually. |
 | certgen.affinity | object | `{}` | Affinity for certgen |
 | certgen.annotations | object | `{"cronJob":{},"job":{}}` | Annotations to be added to the hubble-certgen initial Job and CronJob |
 | certgen.extraVolumeMounts | list | `[]` | Additional certgen volumeMounts. |
@@ -207,7 +207,7 @@ contributors across the globe, there is almost always someone available to help.
 | clustermesh.apiserver.extraVolumeMounts | list | `[]` | Additional clustermesh-apiserver volumeMounts. |
 | clustermesh.apiserver.extraVolumes | list | `[]` | Additional clustermesh-apiserver volumes. |
 | clustermesh.apiserver.healthPort | int | `9880` | TCP port for the clustermesh-apiserver health API. |
-| clustermesh.apiserver.image | object | `{"digest":"sha256:140bbb0433dbdb12e3ab0aaca0cb6fd1a8430812816ccff54c0d7f0adb713175","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-clustermesh-apiserver","tag":"v1.18.9","useDigest":true}` | Clustermesh API server image. |
+| clustermesh.apiserver.image | object | `{"digest":"sha256:59f806137c7b153504d4352254e48a03714e924e797c89a7e6f18c6f9c39f80a","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-clustermesh-apiserver","tag":"v1.18.10","useDigest":true}` | Clustermesh API server image. |
 | clustermesh.apiserver.kvstoremesh.enabled | bool | `true` | Enable KVStoreMesh. KVStoreMesh caches the information retrieved from the remote clusters in the local etcd instance (deprecated - KVStoreMesh will always be enabled once the option is removed). |
 | clustermesh.apiserver.kvstoremesh.extraArgs | list | `[]` | Additional KVStoreMesh arguments. |
 | clustermesh.apiserver.kvstoremesh.extraEnv | list | `[]` | Additional KVStoreMesh environment variables. |
@@ -401,7 +401,7 @@ contributors across the globe, there is almost always someone available to help.
 | envoy.httpRetryCount | int | `3` | Maximum number of retries for each HTTP request |
 | envoy.httpUpstreamLingerTimeout | string | `nil` | Time in seconds to block Envoy worker thread while an upstream HTTP connection is closing. If set to 0, the connection is closed immediately (with TCP RST). If set to -1, the connection is closed asynchronously in the background. |
 | envoy.idleTimeoutDurationSeconds | int | `60` | Set Envoy upstream HTTP idle connection timeout seconds. Does not apply to connections with pending requests. Default 60s |
-| envoy.image | object | `{"digest":"sha256:ba0ab8adac082d50d525fd2c5ba096c8facea3a471561b7c61c7a5b9c2e0de0d","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-envoy","tag":"v1.36.6-1776000132-2437d2edeaf4d9b56ef279bd0d71127440c067aa","useDigest":true}` | Envoy container image. |
+| envoy.image | object | `{"digest":"sha256:71d4fa0ec45e8d546dbd5604e169dc77fe92be63b799313bff031d00d89762e3","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-envoy","tag":"v1.36.6-1778235340-b87d1e32f522b33bd51701c6476d199326f01496","useDigest":true}` | Envoy container image. |
 | envoy.initialFetchTimeoutSeconds | int | `30` | Time in seconds after which the initial fetch on an xDS stream is considered timed out |
 | envoy.livenessProbe.enabled | bool | `true` | Enable liveness probe for cilium-envoy |
 | envoy.livenessProbe.failureThreshold | int | `10` | failure threshold of liveness probe |
@@ -543,7 +543,7 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.relay.extraVolumes | list | `[{"emptyDir":{},"name":"tmp-dir"}]` | Additional hubble-relay volumes. |
 | hubble.relay.gops.enabled | bool | `true` | Enable gops for hubble-relay |
 | hubble.relay.gops.port | int | `9893` | Configure gops listen port for hubble-relay |
-| hubble.relay.image | object | `{"digest":"sha256:031288422f2b0bfff3372fba9812d2867dd9262a6f12c6e6282cfebe54e5efe1","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/hubble-relay","tag":"v1.18.9","useDigest":true}` | Hubble-relay container image. |
+| hubble.relay.image | object | `{"digest":"sha256:6f320095640b8e7bb4c1c9efdd0ed46302d0d684c3ea04eb341ca7e0618ef740","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/hubble-relay","tag":"v1.18.10","useDigest":true}` | Hubble-relay container image. |
 | hubble.relay.listenHost | string | `""` | Host to listen to. Specify an empty string to bind to all the interfaces. |
 | hubble.relay.listenPort | string | `"4245"` | Port to listen to. |
 | hubble.relay.logOptions | object | `{"format":null,"level":null}` | Logging configuration for hubble-relay. |
@@ -615,7 +615,7 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.ui.backend.extraEnv | list | `[]` | Additional hubble-ui backend environment variables. |
 | hubble.ui.backend.extraVolumeMounts | list | `[]` | Additional hubble-ui backend volumeMounts. |
 | hubble.ui.backend.extraVolumes | list | `[]` | Additional hubble-ui backend volumes. |
-| hubble.ui.backend.image | object | `{"digest":"sha256:db1454e45dc39ca41fbf7cad31eec95d99e5b9949c39daaad0fa81ef29d56953","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/hubble-ui-backend","tag":"v0.13.3","useDigest":true}` | Hubble-ui backend image. |
+| hubble.ui.backend.image | object | `{"digest":"sha256:fac0c300ae119274edca11fd89b1ad23c788792d8bc4ea2ba631c709e8d3c688","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/hubble-ui-backend","tag":"v0.13.5","useDigest":true}` | Hubble-ui backend image. |
 | hubble.ui.backend.livenessProbe.enabled | bool | `false` | Enable liveness probe for Hubble-ui backend (requires Hubble-ui 0.12+) |
 | hubble.ui.backend.readinessProbe.enabled | bool | `false` | Enable readiness probe for Hubble-ui backend (requires Hubble-ui 0.12+) |
 | hubble.ui.backend.resources | object | `{"limits":{"ephemeral-storage":"4Gi","memory":"1024M"},"requests":{"cpu":"100m","ephemeral-storage":"4Gi","memory":"64Mi"}}` | Resource requests and limits for the 'backend' container of the 'hubble-ui' deployment. |
@@ -625,7 +625,7 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.ui.frontend.extraEnv | list | `[]` | Additional hubble-ui frontend environment variables. |
 | hubble.ui.frontend.extraVolumeMounts | list | `[]` | Additional hubble-ui frontend volumeMounts. |
 | hubble.ui.frontend.extraVolumes | list | `[]` | Additional hubble-ui frontend volumes. |
-| hubble.ui.frontend.image | object | `{"digest":"sha256:661d5de7050182d495c6497ff0b007a7a1e379648e60830dd68c4d78ae21761d","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/hubble-ui","tag":"v0.13.3","useDigest":true}` | Hubble-ui frontend image. |
+| hubble.ui.frontend.image | object | `{"digest":"sha256:f7d514fc54d784ed6df9d58cf0e97648b143f92b766dd1780ed3fc845bd4c516","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/hubble-ui","tag":"v0.13.5","useDigest":true}` | Hubble-ui frontend image. |
 | hubble.ui.frontend.resources | object | `{"limits":{"ephemeral-storage":"4Gi","memory":"1024M"},"requests":{"cpu":"100m","ephemeral-storage":"4Gi","memory":"64Mi"}}` | Resource requests and limits for the 'frontend' container of the 'hubble-ui' deployment. |
 | hubble.ui.frontend.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":101,"runAsNonRoot":true,"runAsUser":101,"seccompProfile":{"type":"RuntimeDefault"}}` | Hubble-ui frontend security context. |
 | hubble.ui.frontend.server.ipv6 | object | `{"enabled":true}` | Controls server listener for ipv6 |
@@ -658,7 +658,7 @@ contributors across the globe, there is almost always someone available to help.
 | identityAllocationMode | string | `"crd"` | Method to use for identity allocation (`crd`, `kvstore` or `doublewrite-readkvstore` / `doublewrite-readcrd` for migrating between identity backends). |
 | identityChangeGracePeriod | string | `"5s"` | Time to wait before using new identity on endpoint identity change. |
 | identityManagementMode | string | `"agent"` | Control whether CiliumIdentities are created by the agent ("agent"), the operator ("operator") or both ("both"). "Both" should be used only to migrate between "agent" and "operator". Operator-managed identities is a beta feature. |
-| image | object | `{"digest":"sha256:c9140c2ebcc636ba346a4152fb28d616a4a51586c22c72dcd6f273bed41053c0","override":null,"pullPolicy":"IfNotPresent","registry":"gsoci.azurecr.io","repository":"giantswarm/cilium","tag":"v1.18.9","useDigest":true}` | Agent container image. |
+| image | object | `{"digest":"sha256:dd573bc2f7213dbd978e564a363ecaad060e9578ed557b92b53e42eeeb0f2294","override":null,"pullPolicy":"IfNotPresent","registry":"gsoci.azurecr.io","repository":"giantswarm/cilium","tag":"v1.18.10","useDigest":true}` | Agent container image. |
 | imagePullSecrets | list | `[]` | Configure image pull secrets for pulling container images |
 | ingressController.default | bool | `false` | Set cilium ingress controller to be the default ingress controller This will let cilium ingress controller route entries without ingress class set |
 | ingressController.defaultSecretName | string | `nil` | Default secret name for ingresses without .spec.tls[].secretName set. |
@@ -805,7 +805,7 @@ contributors across the globe, there is almost always someone available to help.
 | operator.hostNetwork | bool | `true` | HostNetwork setting |
 | operator.identityGCInterval | string | `"15m0s"` | Interval for identity garbage collection. |
 | operator.identityHeartbeatTimeout | string | `"30m0s"` | Timeout for identity heartbeats. |
-| operator.image | object | `{"alibabacloudDigest":"sha256:2116cd9ec94484a1bb7f5cb9703fb6d7c4e63b11431cf145280abda218f3e8b9","awsDigest":"sha256:48d78a4d22fc055a2223019941fc30a51f8a980691e55225bfd6b9cffb164a45","azureDigest":"sha256:4523175c9452c2eab7fa537faa85654120e29b740843f72d55b43c5cbc774f71","genericDigest":"sha256:9094fe19965c558bc9361aa4f0d19fcc48f7377f835dc70f138bf4dc1db48ca4","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-operator","suffix":"","tag":"v1.18.9","useDigest":true}` | cilium-operator image. |
+| operator.image | object | `{"alibabacloudDigest":"sha256:ed72bbf23849ea772acda3960d060200d7893b41c2228b2805706a608e0e2ee9","awsDigest":"sha256:9bb1f11266ee9ee85a218206c47bc180a62c168ea295834149c05f54b76a44c1","azureDigest":"sha256:997ffc723ab7a542e86558721de8167a24e7a45a6c9caba9a74ab3b427620562","genericDigest":"sha256:ab08d58fd12e98d9a9601d4b52beee839ff2537fba73d262aabad222454a16b3","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-operator","suffix":"","tag":"v1.18.10","useDigest":true}` | cilium-operator image. |
 | operator.nodeGCInterval | string | `"5m0s"` | Interval for cilium node garbage collection. |
 | operator.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for cilium-operator pod assignment ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
 | operator.podAnnotations | object | `{}` | Annotations to be added to cilium-operator pods |
@@ -854,11 +854,11 @@ contributors across the globe, there is almost always someone available to help.
 | preflight.affinity | object | `{"podAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"k8s-app":"cilium"}},"topologyKey":"kubernetes.io/hostname"}]}}` | Affinity for cilium-preflight |
 | preflight.annotations | object | `{}` | Annotations to be added to all top-level preflight objects (resources under templates/cilium-preflight) |
 | preflight.enabled | bool | `false` | Enable Cilium pre-flight resources (required for upgrade) |
-| preflight.envoy.image | object | `{"digest":"sha256:ba0ab8adac082d50d525fd2c5ba096c8facea3a471561b7c61c7a5b9c2e0de0d","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-envoy","tag":"v1.36.6-1776000132-2437d2edeaf4d9b56ef279bd0d71127440c067aa","useDigest":true}` | Envoy pre-flight image. |
+| preflight.envoy.image | object | `{"digest":"sha256:71d4fa0ec45e8d546dbd5604e169dc77fe92be63b799313bff031d00d89762e3","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium-envoy","tag":"v1.36.6-1778235340-b87d1e32f522b33bd51701c6476d199326f01496","useDigest":true}` | Envoy pre-flight image. |
 | preflight.extraEnv | list | `[]` | Additional preflight environment variables. |
 | preflight.extraVolumeMounts | list | `[]` | Additional preflight volumeMounts. |
 | preflight.extraVolumes | list | `[]` | Additional preflight volumes. |
-| preflight.image | object | `{"digest":"sha256:c9140c2ebcc636ba346a4152fb28d616a4a51586c22c72dcd6f273bed41053c0","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium","tag":"v1.18.9","useDigest":true}` | Cilium pre-flight image. |
+| preflight.image | object | `{"digest":"sha256:dd573bc2f7213dbd978e564a363ecaad060e9578ed557b92b53e42eeeb0f2294","override":null,"pullPolicy":"IfNotPresent","repository":"giantswarm/cilium","tag":"v1.18.10","useDigest":true}` | Cilium pre-flight image. |
 | preflight.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Node labels for preflight pod assignment ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
 | preflight.podAnnotations | object | `{}` | Annotations to be added to preflight pods |
 | preflight.podDisruptionBudget.enabled | bool | `false` | enable PodDisruptionBudget ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/ |
