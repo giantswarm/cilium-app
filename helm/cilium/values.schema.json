@@ -3508,37 +3508,11 @@
               "type": "array"
             },
             "extraVolumeMounts": {
-              "items": {
-                "anyOf": [
-                  {
-                    "properties": {
-                      "mountPath": {
-                        "type": "string"
-                      },
-                      "name": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                ]
-              },
+              "items": {},
               "type": "array"
             },
             "extraVolumes": {
-              "items": {
-                "anyOf": [
-                  {
-                    "properties": {
-                      "emptyDir": {
-                        "type": "object"
-                      },
-                      "name": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                ]
-              },
+              "items": {},
               "type": "array"
             },
             "gops": {

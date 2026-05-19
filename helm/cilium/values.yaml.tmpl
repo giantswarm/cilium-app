@@ -1806,13 +1806,9 @@ hubble:
         # @schema
         maxUnavailable: 1
     # -- Additional hubble-relay volumes.
-    extraVolumes:
-      - emptyDir: {}
-        name: tmp-dir
+    extraVolumes: []
     # -- Additional hubble-relay volumeMounts.
-    extraVolumeMounts:
-      - name: tmp-dir
-        mountPath: /tmp
+    extraVolumeMounts: []
     # -- hubble-relay pod security context
     podSecurityContext:
       fsGroup: 65532
