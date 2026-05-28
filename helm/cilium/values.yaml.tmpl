@@ -747,7 +747,7 @@ bpf:
   # supported kernels.
   # @default -- `true`
   enableTCX: true
-  # -- (string) Mode for Pod devices for the core datapath (veth, netkit, netkit-l2).
+  # -- (string) Mode for Pod devices for the core datapath (auto, veth, netkit, netkit-l2).
   # Note netkit is incompatible with TPROXY (`bpf.tproxy`).
   # @default -- `veth`
   datapathMode: veth
@@ -872,6 +872,12 @@ conntrackGCMaxInterval: ""
 # -- (string) Configure timeout in which Cilium will exit if CRDs are not available
 # @default -- `"5m"`
 crdWaitTimeout: ""
+# -- Plugins to inject custom BPF into the datapath.
+datapathPlugins:
+  # -- Enable datapath plugins.
+  enabled: false
+  # -- Parent directory for per-plugin state directories.
+  stateDir: /var/run/cilium/plugins
 daemon:
   # -- Configure where Cilium runtime state should be stored.
   runPath: "/var/run/cilium"
@@ -1062,6 +1068,15 @@ ingressController:
     enabled: false
     # -- Configure a specific port on the host network that gets used for the shared listener.
     sharedListenerPort: 8080
+    # -- Configure a specific port on the host network that gets used for the shared HTTP listener.
+    # If unset or 0, sharedListenerPort is used.
+    httpPort: 0
+    # -- Configure a specific port on the host network that gets used for the shared HTTPS listener.
+    # If unset or 0, sharedListenerPort is used.
+    httpsPort: 0
+    # -- Configure a specific port on the host network that gets used for the shared TLS passthrough listener.
+    # If unset or 0, sharedListenerPort is used.
+    tlsPassthroughPort: 0
     # Specify the nodes where the Ingress listeners should be exposed
     nodes:
       # -- Specify the labels of the nodes where the Ingress listeners should be exposed
@@ -1131,13 +1146,6 @@ encryption:
   nodeEncryption: false
   # -- Configure the Encryption Pod2Pod strict mode.
   strictMode:
-    # -- Enable Encryption Pod2Pod strict mode. (deprecated: please use encryption.strictMode.egress.enabled)
-    enabled: false
-    # -- CIDR for the Encryption Pod2Pod strict mode. (deprecated: please use encryption.strictMode.egress.cidr)
-    cidr: ""
-    # -- Allow dynamic lookup of remote node identities. (deprecated: please use encryption.strictMode.egress.allowRemoteNodeIdentities)
-    # This is required when tunneling is used or direct routing is used and the node CIDR and pod CIDR overlap.
-    allowRemoteNodeIdentities: false
     egress:
       # -- Enable strict egress encryption.
       enabled: false
@@ -1166,8 +1174,6 @@ encryption:
     # -- Maximum duration of the IPsec key rotation. The previous key will be
     # removed after that delay.
     keyRotationDuration: "5m"
-    # -- Enable IPsec encrypted overlay
-    encryptedOverlay: false
   wireguard:
     # -- Controls WireGuard PersistentKeepalive option. Set 0s to disable.
     persistentKeepalive: 0s
@@ -1181,14 +1187,11 @@ encryption:
       # type: [null, string]
       # @schema
       override: ~
-      repository: "docker.io/istio/ztunnel"
-      tag: "1.28.0-distroless"
-      pullPolicy: "IfNotPresent"
-      # @schema
-      # type: [null, string]
-      # @schema
-      digest: ~
-      useDigest: false
+      repository: "${ZTUNNEL_REPO}"
+      tag: "${ZTUNNEL_VERSION}"
+      pullPolicy: "${PULL_POLICY}"
+      digest: "${ZTUNNEL_DIGEST}"
+      useDigest: true
     # -- CA server address for certificate requests.
     caAddress: "https://localhost:15012"
     # -- TCP port for the health API.
@@ -1264,6 +1267,9 @@ endpointRoutes:
 k8sNetworkPolicy:
   # -- Enable support for K8s NetworkPolicy
   enabled: true
+k8sClusterNetworkPolicy:
+  # -- Enable support for K8s Cluster Network Policy
+  enabled: false
 # -- Enable endpoint lockdown on policy map overflow.
 endpointLockdownOnMapOverflow: false
 eni:
@@ -1334,6 +1340,9 @@ eni:
 gke:
   # -- Enable Google Kubernetes Engine integration
   enabled: false
+# -- Prefer IPv6 addresses over IPv4 when both are available for health probes
+# and Hubble peer communication.
+preferIpv6: false
 # -- Enable connectivity health checking.
 healthChecking: true
 # -- TCP port for the agent health API. This is not the port for cilium-health.
@@ -1410,6 +1419,16 @@ certgen:
 hubble:
   # -- Enable Hubble (true by default).
   enabled: true
+
+  # @schema
+  # type: [null, boolean]
+  # @schema
+  # -- (bool) Enable hostUsers for Hubble.
+  # This will allow use of user-namespaces for hubble components. Not all
+  # clusters support user-namespaces.
+  # See: https://kubernetes.io/docs/concepts/workloads/pods/user-namespaces/
+  hostUsers: ~
+
   # -- Annotations to be added to all top-level hubble objects (resources under templates/hubble)
   annotations: {}
   # -- Buffer size of the channel Hubble uses to receive monitor events. If this
@@ -1613,25 +1632,12 @@ hubble:
         #   --set hubble.redact.enabled="true"
         #   --set hubble.redact.http.headers.deny="Authorization,Proxy-Authorization"
         deny: []
-    kafka:
-      # -- Enables redacting Kafka's API key (deprecated, will be removed in v1.19).
-      # Example:
-      #
-      #   redact:
-      #     enabled: true
-      #     kafka:
-      #       apiKey: true
-      #
-      # You can specify the options from the helm CLI:
-      #
-      #   --set hubble.redact.enabled="true"
-      #   --set hubble.redact.kafka.apiKey="true"
-      apiKey: true
   # -- An additional address for Hubble to listen to.
   # Set this field ":4244" if you are enabling Hubble Relay, as it assumes that
   # Hubble is listening on port 4244.
   listenAddress: ":4244"
   # -- Whether Hubble should prefer to announce IPv6 or IPv4 addresses if both are available.
+  # Deprecated: use top-level preferIpv6 instead.
   preferIpv6: false
   # @schema
   # type: [null, boolean]
@@ -1800,13 +1806,9 @@ hubble:
         # @schema
         maxUnavailable: 1
     # -- Additional hubble-relay volumes.
-    extraVolumes:
-      - emptyDir: {}
-        name: tmp-dir
+    extraVolumes: []
     # -- Additional hubble-relay volumeMounts.
-    extraVolumeMounts:
-      - name: tmp-dir
-        mountPath: /tmp
+    extraVolumeMounts: []
     # -- hubble-relay pod security context
     podSecurityContext:
       fsGroup: 65532
@@ -2015,11 +2017,11 @@ hubble:
         pullPolicy: "${PULL_POLICY}"
       # -- Hubble-ui backend security context.
       securityContext:
+        readOnlyRootFilesystem: true
         allowPrivilegeEscalation: false
         capabilities:
           drop:
             - ALL
-        readOnlyRootFilesystem: true
         runAsGroup: 65532
         runAsNonRoot: true
         runAsUser: 65532
@@ -2031,12 +2033,6 @@ hubble:
       extraVolumes: []
       # -- Additional hubble-ui backend volumeMounts.
       extraVolumeMounts: []
-      livenessProbe:
-        # -- Enable liveness probe for Hubble-ui backend (requires Hubble-ui 0.12+)
-        enabled: false
-      readinessProbe:
-        # -- Enable readiness probe for Hubble-ui backend (requires Hubble-ui 0.12+)
-        enabled: false
       # -- Resource requests and limits for the 'backend' container of the 'hubble-ui' deployment.
       resources:
         limits:
@@ -2060,11 +2056,11 @@ hubble:
         pullPolicy: "${PULL_POLICY}"
       # -- Hubble-ui frontend security context.
       securityContext:
+        readOnlyRootFilesystem: true
         allowPrivilegeEscalation: false
         capabilities:
           drop:
             - ALL
-        readOnlyRootFilesystem: true
         runAsGroup: 101
         runAsNonRoot: true
         runAsUser: 101
@@ -2148,11 +2144,10 @@ hubble:
         maxUnavailable: 1
     # -- Security context to be added to Hubble UI pods
     securityContext:
-      enabled: true
+      runAsNonRoot: true
       runAsUser: 1001
       runAsGroup: 1001
       fsGroup: 1001
-      runAsNonRoot: true
       seccompProfile:
         type: RuntimeDefault
     # -- hubble-ui service configuration.
@@ -2390,9 +2385,12 @@ k8s:
   # -- requireIPv6PodCIDR enables waiting for Kubernetes to provide the PodCIDR
   # range via the Kubernetes node resource
   requireIPv6PodCIDR: false
+  # @schema
+  # type: [null, string]
+  # @schema
   # -- A space separated list of Kubernetes API server URLs to use with the client.
   # For example "https://192.168.0.1:6443 https://192.168.0.2:6443"
-  # apiServerURLs: ""
+  apiServerURLs: ~
 
 # -- Keep the deprecated selector labels when deploying Cilium DaemonSet.
 keepDeprecatedLabels: false
@@ -2609,6 +2607,9 @@ nodePort:
   # -- Enable access of the healthcheck nodePort on the LoadBalancerIP. Needs
   # EnableHealthCheck to be enabled
   enableHealthCheckLoadBalancerIP: false
+  # -- Enable dynamic source IP resolution for SNAT via linux's routing table.
+  # The kernel must support this feature.
+  enableDynamicSourceLookup: false
 # policyAuditMode: false
 
 # -- The agent can be put into one of the three policy enforcement modes:
@@ -2750,6 +2751,8 @@ envoy:
     # Tune this value up if you encounter "Envoy: Discarded truncated access log message" errors.
     # Large request/response header sizes (e.g. 16KiB) will require a larger buffer size.
     accessLogBufferSize: 4096
+    # -- Enable access log forwarding for integration with Hubble.
+    accessLogEnabled: true
   # -- Time in seconds after which a TCP connection attempt times out
   connectTimeoutSeconds: 2
   # -- Time in seconds after which the initial fetch on an xDS stream is considered timed out
@@ -2844,6 +2847,12 @@ envoy:
   # type: [null, string]
   # @schema
   bootstrapConfigMap: ~
+  # Enable node locality lookup and pass resolved zone to cilium-envoy via `--service-zone`.
+  nodeLocality:
+    # -- Enable node-locality support for cilium-envoy.
+    # When enabled, Cilium looks up the node zone from the topology label and passes it to the Envoy process via `--service-zone`.
+    # Startup fails if the zone cannot be resolved or the label is empty.
+    enabled: false
   # -- Annotations to be added to all top-level cilium-envoy objects (resources under templates/cilium-envoy)
   annotations: {}
   # -- Security Context for cilium-envoy pods.
@@ -2873,6 +2882,10 @@ envoy:
     failureThreshold: 105
     # -- interval between checks of the startup probe
     periodSeconds: 2
+    # -- Initial delay before the startup probe begins
+    initialDelaySeconds: 5
+    # -- Timeout for the startup probe
+    timeoutSeconds: 5
   livenessProbe:
     # -- Enable liveness probe for cilium-envoy
     enabled: true
@@ -2880,11 +2893,19 @@ envoy:
     failureThreshold: 10
     # -- interval between checks of the liveness probe
     periodSeconds: 30
+    # -- Initial delay before the liveness probe begins
+    initialDelaySeconds: 0
+    # -- Timeout for the liveness probe
+    timeoutSeconds: 5
   readinessProbe:
     # -- failure threshold of readiness probe
     failureThreshold: 3
     # -- interval between checks of the readiness probe
     periodSeconds: 30
+    # -- Initial delay before the readiness probe begins
+    initialDelaySeconds: 0
+    # -- Timeout for the readiness probe
+    timeoutSeconds: 5
   securityContext:
     # -- User to run the pod with
     # runAsUser: 0
@@ -3128,7 +3149,8 @@ tunnelProtocol: ""
 # Possible values:
 #   - "ipv4"
 #   - "ipv6"
-# @default -- `"ipv4"`
+#   - "auto"
+# @default -- `"auto"`
 underlayProtocol: ""
 # -- Enable native-routing mode or tunneling mode.
 # Possible values:
@@ -3267,6 +3289,8 @@ operator:
   annotations: {}
   # -- HostNetwork setting
   hostNetwork: true
+  # -- HostUsers setting (must be true if hostNetwork is true)
+  hostUsers: true
   # -- Security context to be added to cilium-operator pods
   podSecurityContext:
     runAsNonRoot: true
@@ -3657,8 +3681,33 @@ clustermesh:
   # -- Enable the synchronization of Kubernetes EndpointSlices corresponding to
   # the remote endpoints of appropriately-annotated global services through ClusterMesh
   enableEndpointSliceSynchronization: false
-  # -- Enable Multi-Cluster Services API support (deprecated; use clustermesh.mcsapi.enabled)
-  enableMCSAPISupport: false
+  # -- Default behavior of namespaces in Clustermesh.
+  # 
+  # A "global" namespace means its resources (CiliumEndpoints, CiliumIdentities,
+  # and Services) are exported and shared across all connected clusters in the mesh.
+  # This enables:
+  # - Cross-cluster pod-to-pod connectivity
+  # - Cross-cluster network policy enforcement (policies can match labels on pods in remote clusters)
+  # - Global services and Multi-Cluster Services (MCS-API)
+  # 
+  # A "local" namespace means its resources stay within the cluster and are NOT
+  # exported to other clusters. Cross-cluster communication and network policies
+  # will not work for pods in local namespaces.
+  # 
+  # If set to true, all namespaces are considered global by default unless
+  # explicitly annotated with clustermesh.cilium.io/global=false.
+  # If set to false, all namespaces are considered local by default unless
+  # explicitly annotated with clustermesh.cilium.io/global=true.
+  # 
+  # Note: For cross-cluster communication to work, BOTH the source and destination
+  # namespaces must be global. Additionally, for a service to be a Global Service,
+  # it must both reside in a global namespace AND be annotated with
+  # service.cilium.io/global=true.
+  # This setting improves scalability by limiting the amount of state synchronized
+  # across clusters.
+  # 
+  # Defaults to true (preserves existing behavior where all namespaces are global).
+  defaultGlobalNamespace: true
   # -- Control whether policy rules assume by default the local cluster if not explicitly selected
   policyDefaultLocalCluster: true
 
