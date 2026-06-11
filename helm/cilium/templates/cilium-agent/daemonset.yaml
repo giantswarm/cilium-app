@@ -858,6 +858,9 @@ spec:
       automountServiceAccountToken: {{ .Values.serviceAccounts.cilium.automount }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       hostNetwork: true
+      {{- if (semverCompare ">= 1.33-0" .Capabilities.KubeVersion.Version) }}
+      hostUsers: true
+      {{- end }}
       {{- include "cilium-agent.dnsPolicy" . | nindent 6 }}
       {{- if (eq .Values.scheduling.mode "anti-affinity")  }}
       {{- with .Values.affinity }}
@@ -873,7 +876,8 @@ spec:
       tolerations:
         {{- toYaml . | trim | nindent 8 }}
       {{- end }}
-      {{- if and .Values.clustermesh.config.enabled (not (and .Values.clustermesh.useAPIServer .Values.clustermesh.apiserver.kvstoremesh.enabled )) }}
+      {{/* TODO: remove hostAliases for the v1.21 release as this is now handled via a static dialer to avoid pod restart */}}
+      {{- if and .Values.clustermesh.config.enabled (not (and .Values.clustermesh.useAPIServer .Values.clustermesh.apiserver.kvstoremesh.enabled )) (not .Values.clustermesh.disableKubernetesHostAliases) }}
       hostAliases:
       {{- range $_, $cluster := (include "clustermesh-clusters" . | fromJson) }}
       {{- range $ip := $cluster.ips }}
