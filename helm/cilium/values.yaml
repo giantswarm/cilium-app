@@ -236,10 +236,10 @@ image:
   # @schema
   override: ~
   repository: "giantswarm/cilium"
-  tag: "v1.18.10"
+  tag: "v1.18.11"
   pullPolicy: "IfNotPresent"
   # cilium-digest
-  digest: "sha256:dd573bc2f7213dbd978e564a363ecaad060e9578ed557b92b53e42eeeb0f2294"
+  digest: "sha256:e6945db60ad6d3b384e06ed678dbcee65f57f2f9fdcc64e976e7319f3db2b485"
   useDigest: true
 # -- Scheduling configurations for cilium pods
 scheduling:
@@ -1188,8 +1188,8 @@ certgen:
     # @schema
     override: ~
     repository: "giantswarm/cilium-certgen"
-    tag: "v0.4.3"
-    digest: "sha256:d63d1cb3ee6db2167cb1ca9e7e31f30b6197846fcf42505d8f59e2f090a42c86"
+    tag: "v0.4.5"
+    digest: "sha256:f107522ed4dcea62f918b8eb836142875a9b3e3cb2b2d728dc680f76cdbde6cf"
     useDigest: true
     pullPolicy: "IfNotPresent"
   # -- Seconds after which the completed job pod will be deleted
@@ -1526,9 +1526,9 @@ hubble:
       # @schema
       override: ~
       repository: "giantswarm/hubble-relay"
-      tag: "v1.18.10"
+      tag: "v1.18.11"
       # hubble-relay-digest
-      digest: "sha256:6f320095640b8e7bb4c1c9efdd0ed46302d0d684c3ea04eb341ca7e0618ef740"
+      digest: "sha256:6ec25d68c8cc0bf9c5d2f321149016eaa7d4a371475805b0b7fb61bcebad972c"
       useDigest: true
       pullPolicy: "IfNotPresent"
     # -- Specifies the resources for the hubble-relay pods
@@ -2540,9 +2540,9 @@ envoy:
     # @schema
     override: ~
     repository: "giantswarm/cilium-envoy"
-    tag: "v1.36.6-1778235340-b87d1e32f522b33bd51701c6476d199326f01496"
+    tag: "v1.36.8-1781157951-a7f42a3390781539911b5b9107881b35ecc4e752"
     pullPolicy: "IfNotPresent"
-    digest: "sha256:71d4fa0ec45e8d546dbd5604e169dc77fe92be63b799313bff031d00d89762e3"
+    digest: "sha256:326f872e19ce8aa45170efbf583b3f301586ba3feead14b864676d4baf3b45ed"
     useDigest: true
   # -- Additional containers added to the cilium Envoy DaemonSet.
   extraContainers: []
@@ -2919,15 +2919,15 @@ operator:
     # @schema
     override: ~
     repository: "giantswarm/cilium-operator"
-    tag: "v1.18.10"
+    tag: "v1.18.11"
     # operator-generic-digest
-    genericDigest: "sha256:ab08d58fd12e98d9a9601d4b52beee839ff2537fba73d262aabad222454a16b3"
+    genericDigest: "sha256:00d6032de7b3e6ff8a1a990d29beaef5f9d01e40e87dc49b6c9b6c1fe080a327"
     # operator-azure-digest
-    azureDigest: "sha256:997ffc723ab7a542e86558721de8167a24e7a45a6c9caba9a74ab3b427620562"
+    azureDigest: "sha256:c520cddc03a0ad7a4f5e45be644ebb29eb28fce1efdb373952c045f7dab9232c"
     # operator-aws-digest
-    awsDigest: "sha256:9bb1f11266ee9ee85a218206c47bc180a62c168ea295834149c05f54b76a44c1"
+    awsDigest: "sha256:75803337f8aa78caa543404775ec4fcdc55d6e856fedbacf1ade9e105f80fe00"
     # operator-alibabacloud-digest
-    alibabacloudDigest: "sha256:ed72bbf23849ea772acda3960d060200d7893b41c2228b2805706a608e0e2ee9"
+    alibabacloudDigest: "sha256:b30b486ea7eb23a37c947e4606ccb1bc484ea31e9a236363fe696de0f174e1fb"
     useDigest: true
     pullPolicy: "IfNotPresent"
     suffix: ""
@@ -3232,9 +3232,9 @@ preflight:
     # @schema
     override: ~
     repository: "giantswarm/cilium"
-    tag: "v1.18.10"
+    tag: "v1.18.11"
     # cilium-digest
-    digest: "sha256:dd573bc2f7213dbd978e564a363ecaad060e9578ed557b92b53e42eeeb0f2294"
+    digest: "sha256:e6945db60ad6d3b384e06ed678dbcee65f57f2f9fdcc64e976e7319f3db2b485"
     useDigest: true
     pullPolicy: "IfNotPresent"
   envoy:
@@ -3245,9 +3245,9 @@ preflight:
       # @schema
       override: ~
       repository: "giantswarm/cilium-envoy"
-      tag: "v1.36.6-1778235340-b87d1e32f522b33bd51701c6476d199326f01496"
+      tag: "v1.36.8-1781157951-a7f42a3390781539911b5b9107881b35ecc4e752"
       pullPolicy: "IfNotPresent"
-      digest: "sha256:71d4fa0ec45e8d546dbd5604e169dc77fe92be63b799313bff031d00d89762e3"
+      digest: "sha256:326f872e19ce8aa45170efbf583b3f301586ba3feead14b864676d4baf3b45ed"
       useDigest: true
   # -- The priority class to use for the preflight pod.
   priorityClassName: ""
@@ -3401,9 +3401,9 @@ clustermesh:
       # @schema
       override: ~
       repository: "giantswarm/cilium-clustermesh-apiserver"
-      tag: "v1.18.10"
+      tag: "v1.18.11"
       # clustermesh-apiserver-digest
-      digest: "sha256:59f806137c7b153504d4352254e48a03714e924e797c89a7e6f18c6f9c39f80a"
+      digest: "sha256:c78852680bab64e114fe3b89c8025f57e0a5ad3a302cd43fc4eb7e013f30cd05"
       useDigest: true
       pullPolicy: "IfNotPresent"
     # -- TCP port for the clustermesh-apiserver health API.
@@ -3933,7 +3933,7 @@ authentication:
           override: ~
           repository: "docker.io/library/busybox"
           tag: "1.37.0"
-          digest: "sha256:1487d0af5f52b4ba31c7e465126ee2123fe3f2305d638e7827681e7cf6c83d5e"
+          digest: "sha256:9532d8c39891ca2ecde4d30d7710e01fb739c87a8b9299685c63704296b16028"
           useDigest: true
           pullPolicy: "IfNotPresent"
         # SPIRE agent configuration

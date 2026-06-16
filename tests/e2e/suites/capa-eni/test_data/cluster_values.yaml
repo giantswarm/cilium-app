@@ -8,3 +8,7 @@ global:
           - 10.1.0.0/16
     cilium:
       ipamMode: eni
+  nodePools:
+    def00:
+      minSize: 3
+      maxSize: 3

@@ -1,0 +1,5 @@
+global:
+  nodePools:
+    def00:
+      minSize: 3
+      maxSize: 3
