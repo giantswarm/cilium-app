@@ -1463,6 +1463,12 @@
                     },
                     "method": {
                       "type": "string"
+                    },
+                    "privateKey": {
+                      "type": "object"
+                    },
+                    "subject": {
+                      "type": "object"
                     }
                   },
                   "type": "object"
@@ -1871,6 +1877,13 @@
     "defaultLBServiceIPAM": {
       "type": "string"
     },
+    "devices": {
+      "type": [
+        "null",
+        "string",
+        "array"
+      ]
+    },
     "directRoutingSkipUnreachable": {
       "type": "boolean"
     },
@@ -2042,6 +2055,17 @@
             "annotations": {
               "type": "object"
             },
+            "ca": {
+              "properties": {
+                "type": {
+                  "enum": [
+                    "spire",
+                    "internal"
+                  ]
+                }
+              },
+              "type": "object"
+            },
             "caAddress": {
               "type": "string"
             },
@@ -2085,6 +2109,9 @@
                 }
               },
               "type": "object"
+            },
+            "minReadySeconds": {
+              "type": "integer"
             },
             "nodeSelector": {
               "properties": {
@@ -2637,6 +2664,9 @@
         "maxRequestsPerConnection": {
           "type": "integer"
         },
+        "minReadySeconds": {
+          "type": "integer"
+        },
         "nodeLocality": {
           "properties": {
             "enabled": {
@@ -2985,7 +3015,10 @@
         "gatewayClass": {
           "properties": {
             "create": {
-              "type": "string"
+              "type": [
+                "boolean",
+                "string"
+              ]
             }
           },
           "type": "object"
@@ -3923,8 +3956,14 @@
                 "method": {
                   "type": "string"
                 },
+                "privateKey": {
+                  "type": "object"
+                },
                 "schedule": {
                   "type": "string"
+                },
+                "subject": {
+                  "type": "object"
                 }
               },
               "type": "object"
@@ -4904,7 +4943,7 @@
         "enabled": {
           "type": "boolean"
         },
-        "interface": {
+        "interfacePattern": {
           "type": "string"
         }
       },
@@ -4978,6 +5017,9 @@
     },
     "maglev": {
       "type": "object"
+    },
+    "minReadySeconds": {
+      "type": "integer"
     },
     "monitor": {
       "properties": {
@@ -5112,6 +5154,9 @@
             }
           },
           "type": "object"
+        },
+        "minReadySeconds": {
+          "type": "integer"
         },
         "nodeSelector": {
           "properties": {
@@ -6025,9 +6070,6 @@
         "terminationGracePeriodSeconds": {
           "type": "integer"
         },
-        "tofqdnsPreCache": {
-          "type": "string"
-        },
         "tolerations": {
           "items": {
             "anyOf": [
@@ -6639,6 +6681,9 @@
             }
           },
           "type": "object"
+        },
+        "minReadySeconds": {
+          "type": "integer"
         },
         "nodeSelector": {
           "properties": {

@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-envoy/daemonset.yaml b/helm/cilium/templates/cilium-envoy/daemonset.yaml
-index a8e2859..b3514d1 100644
+index 941fc64..eae454c 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-envoy/daemonset.yaml
 +++ b/helm/cilium/templates/cilium-envoy/daemonset.yaml
-@@ -77,7 +77,7 @@ spec:
+@@ -82,7 +82,7 @@ spec:
        initContainers:
        {{- end }}
        - name: lookup-bootstrap-locality
@@ -11,7 +11,7 @@ index a8e2859..b3514d1 100644
          imagePullPolicy: {{ .Values.image.pullPolicy }}
          command:
            - /usr/bin/cilium-envoy-bootstrap-locality
-@@ -117,7 +117,7 @@ spec:
+@@ -122,7 +122,7 @@ spec:
        {{- end }}
        containers:
        - name: cilium-envoy

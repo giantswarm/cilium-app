@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/clustermesh-coredns-mcsapi/job.yaml b/helm/cilium/templates/clustermesh-coredns-mcsapi/job.yaml
-index c956cc3..acd7482 100644
+index bcfcb75..f3483fc 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/clustermesh-coredns-mcsapi/job.yaml
 +++ b/helm/cilium/templates/clustermesh-coredns-mcsapi/job.yaml
-@@ -30,7 +30,7 @@ spec:
+@@ -31,7 +31,7 @@ spec:
      spec:
        containers:
          - name: autoconfig

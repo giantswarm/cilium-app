@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-preflight/deployment.yaml b/helm/cilium/templates/cilium-preflight/deployment.yaml
-index ce06e9c..abe3240 100644
+index 01f473a..7a40aa8 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-preflight/deployment.yaml
 +++ b/helm/cilium/templates/cilium-preflight/deployment.yaml
-@@ -43,7 +43,7 @@ spec:
+@@ -45,7 +45,7 @@ spec:
        {{- end }}
        containers:
          - name: cnp-validator
@@ -11,7 +11,7 @@ index ce06e9c..abe3240 100644
            imagePullPolicy: {{ .Values.preflight.image.pullPolicy }}
            command: ["/bin/sh"]
            args:
-@@ -87,7 +87,7 @@ spec:
+@@ -89,7 +89,7 @@ spec:
            {{- end }}
            terminationMessagePolicy: FallbackToLogsOnError
          - name: configmap-validator
