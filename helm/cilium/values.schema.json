@@ -4903,7 +4903,7 @@
         "enabled": {
           "type": "boolean"
         },
-        "interface": {
+        "interfacePattern": {
           "type": "string"
         }
       },
