@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Relax `hubble-relay` `podAffinity` to `preferredDuringSchedulingIgnoredDuringExecution` so Karpenter can drain the last cilium-agent-bearing node during upgrades/consolidation instead of getting stuck on a required co-location with cilium.
+
 ## [1.4.4] - 2026-05-18
 
 ### Changed
