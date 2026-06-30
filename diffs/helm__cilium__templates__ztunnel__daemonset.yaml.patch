@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/ztunnel/daemonset.yaml b/helm/cilium/templates/ztunnel/daemonset.yaml
-index f936306..5d6e1ae 100644
+index cff646d..cc76324 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/ztunnel/daemonset.yaml
 +++ b/helm/cilium/templates/ztunnel/daemonset.yaml
-@@ -51,7 +51,7 @@ spec:
+@@ -56,7 +56,7 @@ spec:
        dnsPolicy: ClusterFirst
        containers:
          - name: istio-proxy

@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/standalone-dns-proxy/daemonset.yaml b/helm/cilium/templates/standalone-dns-proxy/daemonset.yaml
-index 7ea150a..b7234fc 100644
+index 499104c..fdc6ad9 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/standalone-dns-proxy/daemonset.yaml
 +++ b/helm/cilium/templates/standalone-dns-proxy/daemonset.yaml
-@@ -56,7 +56,7 @@ spec:
+@@ -63,7 +63,7 @@ spec:
        {{- end }}
        containers:
          - name: standalone-dns-proxy
