@@ -4,7 +4,7 @@ go 1.26.3
 
 require (
 	github.com/cilium/cilium v1.18.0-pre.3
-	github.com/fluxcd/helm-controller/api v1.6.0
+	github.com/fluxcd/helm-controller/api v1.6.1
 	github.com/giantswarm/apptest-framework/v5 v5.2.0
 	github.com/giantswarm/clustertest/v5 v5.4.0
 	github.com/onsi/ginkgo/v2 v2.32.0
@@ -63,8 +63,8 @@ require (
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/fluxcd/cli-utils v1.2.0 // indirect
 	github.com/fluxcd/pkg/apis/acl v0.10.0 // indirect
-	github.com/fluxcd/pkg/apis/kustomize v1.19.0 // indirect
-	github.com/fluxcd/pkg/apis/meta v1.30.0 // indirect
+	github.com/fluxcd/pkg/apis/kustomize v1.19.1 // indirect
+	github.com/fluxcd/pkg/apis/meta v1.30.1 // indirect
 	github.com/fluxcd/source-controller/api v1.9.0 // indirect
 	github.com/fsnotify/fsnotify v1.10.1 // indirect
 	github.com/fxamacker/cbor/v2 v2.9.2 // indirect
