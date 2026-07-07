@@ -768,6 +768,9 @@
           },
           "type": "object"
         },
+        "enforceCAValidityThroughoutLeavesDuration": {
+          "type": "boolean"
+        },
         "extraVolumeMounts": {
           "items": {},
           "type": "array"
@@ -1053,6 +1056,9 @@
               },
               "type": "object"
             },
+            "etcdQPS": {
+              "type": "integer"
+            },
             "extraArgs": {
               "items": {},
               "type": "array"
@@ -1102,6 +1108,9 @@
               "properties": {
                 "enabled": {
                   "type": "boolean"
+                },
+                "etcdQPS": {
+                  "type": "integer"
                 },
                 "extraArgs": {
                   "items": {},
@@ -1436,17 +1445,6 @@
             },
             "tls": {
               "properties": {
-                "admin": {
-                  "properties": {
-                    "cert": {
-                      "type": "string"
-                    },
-                    "key": {
-                      "type": "string"
-                    }
-                  },
-                  "type": "object"
-                },
                 "authMode": {
                   "type": "string"
                 },
@@ -1467,41 +1465,24 @@
                     "privateKey": {
                       "type": "object"
                     },
+                    "schedule": {
+                      "type": "string"
+                    },
+                    "server": {
+                      "properties": {
+                        "extraDnsNames": {
+                          "items": {},
+                          "type": "array"
+                        },
+                        "extraIpAddresses": {
+                          "items": {},
+                          "type": "array"
+                        }
+                      },
+                      "type": "object"
+                    },
                     "subject": {
                       "type": "object"
-                    }
-                  },
-                  "type": "object"
-                },
-                "enableSecrets": {
-                  "type": "boolean"
-                },
-                "remote": {
-                  "properties": {
-                    "cert": {
-                      "type": "string"
-                    },
-                    "key": {
-                      "type": "string"
-                    }
-                  },
-                  "type": "object"
-                },
-                "server": {
-                  "properties": {
-                    "cert": {
-                      "type": "string"
-                    },
-                    "extraDnsNames": {
-                      "items": {},
-                      "type": "array"
-                    },
-                    "extraIpAddresses": {
-                      "items": {},
-                      "type": "array"
-                    },
-                    "key": {
-                      "type": "string"
                     }
                   },
                   "type": "object"
@@ -2482,6 +2463,9 @@
         "clusterMaxConnections": {
           "type": "integer"
         },
+        "clusterMaxPendingRequests": {
+          "type": "integer"
+        },
         "clusterMaxRequests": {
           "type": "integer"
         },
@@ -2909,6 +2893,20 @@
         "useOriginalSourceAddress": {
           "type": "boolean"
         },
+        "xdsMode": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "enum": [
+                "split",
+                "ads",
+                "strict-ads"
+              ]
+            }
+          ]
+        },
         "xffNumTrustedHopsL7PolicyEgress": {
           "type": "integer"
         },
@@ -3052,6 +3050,12 @@
             }
           },
           "type": "object"
+        },
+        "useRemoteAddress": {
+          "type": [
+            "null",
+            "boolean"
+          ]
         },
         "xffNumTrustedHops": {
           "type": "integer"
@@ -4646,6 +4650,15 @@
             }
           },
           "type": "object"
+        },
+        "useRemoteAddress": {
+          "type": [
+            "null",
+            "boolean"
+          ]
+        },
+        "xffNumTrustedHops": {
+          "type": "integer"
         }
       },
       "type": "object"
@@ -5056,6 +5069,9 @@
         }
       },
       "type": "object"
+    },
+    "nativeRoutingCIDRFromClusterPool": {
+      "type": "boolean"
     },
     "nodeIPAM": {
       "properties": {
