@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Switch Hubble TLS certificate provisioning from `hubble.tls.auto.method: helm` to `cronJob` ([giantswarm#37201](https://github.com/giantswarm/giantswarm/issues/37201)). The helm method minted certificates once and never renewed them, deterministically breaking hubble-relay when the leaf certs (1 year) or the CA (3 years) expired. With the cronJob method a `hubble-generate-certs` CronJob re-issues the leaf certificates every 4 months. **On upgrade, the Helm-owned `cilium-ca`, `hubble-server-certs` and `hubble-relay-client-certs` secrets are deleted and re-created by a one-shot certgen job with a fresh 3-year CA; agents and hubble-relay hot-reload the new certificates without restarts.**
+- Wire certgen's `--ca-enforce-validity-throughout-leaves-duration` flag (new value `certgen.enforceCAValidityThroughoutLeavesDuration`, default `true`): the certgen job now fails roughly one year before the CA would no longer cover new leaf certificates, instead of silently issuing leafs that outlive the CA. certgen never rotates an existing CA on its own ([cilium/certgen#500](https://github.com/cilium/certgen/issues/500)).
+
+### Fixed
+
+- Fix rendering of the certgen job specs (`hubble/tls-cronjob` and `clustermesh-apiserver/tls-cronjob`): the image reference was not converted to the Giant Swarm `cilium.image` helper signature because the image-registries sync patch only processed `*.yaml` templates, so enabling the cronJob method failed with `required list, but got "map"`.
+
 ## [1.4.5] - 2026-06-17
 
 ### Changed
