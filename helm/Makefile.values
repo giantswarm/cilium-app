@@ -1,7 +1,9 @@
 # Copyright Authors of Cilium
 # SPDX-License-Identifier: Apache-2.0
 
-DIGESTS_PATH:=Makefile.digests
+-include Makefile.values.override
+
+DIGESTS_PATH ?= Makefile.digests
 include $(DIGESTS_PATH)
 export USE_DIGESTS ?= $(shell if grep -q '""' $(DIGESTS_PATH); then echo "false"; else echo "true"; fi)
 export RELEASE_REGISTRY ?= quay.io
@@ -30,18 +32,18 @@ endif
 
 # renovate: datasource=docker
 export CERTGEN_REPO?=quay.io/cilium/certgen
-export CERTGEN_VERSION?=v0.4.5
-export CERTGEN_DIGEST?=sha256:f107522ed4dcea62f918b8eb836142875a9b3e3cb2b2d728dc680f76cdbde6cf
+export CERTGEN_VERSION?=v0.4.6
+export CERTGEN_DIGEST?=sha256:511cedee817713fdf72db7e32fffb4b90da7747661b95180064f18198877626c
 
 # renovate: datasource=docker
 export CILIUM_NODEINIT_REPO?=quay.io/cilium/startup-script
-export CILIUM_NODEINIT_VERSION?=1763560095-8f36c34
-export CILIUM_NODEINIT_DIGEST?=sha256:50b9cf9c280096b59b80d2fc8ee6638facef79ac18998a22f0cbc40d5d28c16f
+export CILIUM_NODEINIT_VERSION?=1782916218-36ae25f
+export CILIUM_NODEINIT_DIGEST?=sha256:f99e2beda7324e93ba04d6240d9626a6b9ab023d7d56e3b029d3d9c823ce63ef
 
 # renovate: datasource=docker
 export CILIUM_ENVOY_REPO?=quay.io/cilium/cilium-envoy
-export CILIUM_ENVOY_VERSION?=v1.36.8-1781157951-a7f42a3390781539911b5b9107881b35ecc4e752
-export CILIUM_ENVOY_DIGEST?=sha256:326f872e19ce8aa45170efbf583b3f301586ba3feead14b864676d4baf3b45ed
+export CILIUM_ENVOY_VERSION?=v1.37.5-1782911245-7cffc778c923f68a77954a53b1a98d6b5353f004
+export CILIUM_ENVOY_DIGEST?=sha256:583057dd4f7d54cd41efff3c413aa0b148ac201f522e2c3336851fa89c78b039
 
 # renovate: datasource=docker
 export HUBBLE_UI_BACKEND_REPO?=quay.io/cilium/hubble-ui-backend
@@ -55,15 +57,20 @@ export HUBBLE_UI_FRONTEND_DIGEST?=sha256:f7d514fc54d784ed6df9d58cf0e97648b143f92
 
 # renovate: datasource=docker
 export SPIRE_INIT_REPO?=docker.io/library/busybox
-export SPIRE_INIT_VERSION?=1.37.0
-export SPIRE_INIT_DIGEST?=sha256:9532d8c39891ca2ecde4d30d7710e01fb739c87a8b9299685c63704296b16028
+export SPIRE_INIT_VERSION?=1.38.0
+export SPIRE_INIT_DIGEST?=sha256:fd8d9aa63ba2f0982b5304e1ee8d3b90a210bc1ffb5314d980eb6962f1a9715d
 
 # renovate: datasource=docker
 export SPIRE_SERVER_REPO?=ghcr.io/spiffe/spire-server
-export SPIRE_SERVER_VERSION?=1.9.6
-export SPIRE_SERVER_DIGEST?=sha256:59a0b92b39773515e25e68a46c40d3b931b9c1860bc445a79ceb45a805cab8b4
+export SPIRE_SERVER_VERSION?=1.15.2
+export SPIRE_SERVER_DIGEST?=sha256:aa74ef1be86bc8e0684007d84a4d9859d294384d842c30425048d73429f3216e
 
 # renovate: datasource=docker
 export SPIRE_AGENT_REPO?=ghcr.io/spiffe/spire-agent
-export SPIRE_AGENT_VERSION?=1.9.6
-export SPIRE_AGENT_DIGEST?=sha256:5106ac601272a88684db14daf7f54b9a45f31f77bb16a906bd5e87756ee7b97c
+export SPIRE_AGENT_VERSION?=1.15.2
+export SPIRE_AGENT_DIGEST?=sha256:1d042e4040466686e0ee46f74981ff2167c86adfadca19b3835946f4d6047536
+
+# renovate: datasource=docker
+export ZTUNNEL_REPO?=quay.io/cilium/ztunnel
+export ZTUNNEL_VERSION?=v1.0.0
+export ZTUNNEL_DIGEST?=sha256:884de5adde400e39f58e36c7a729f7690466ca4a8eb4c2a8daa9c1c025115b24

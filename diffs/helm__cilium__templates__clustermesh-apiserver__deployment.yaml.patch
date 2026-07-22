@@ -1,8 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/clustermesh-apiserver/deployment.yaml b/helm/cilium/templates/clustermesh-apiserver/deployment.yaml
-index 1146209..f0fff25 100644
+index a0cc703..4afd22e 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/clustermesh-apiserver/deployment.yaml
 +++ b/helm/cilium/templates/clustermesh-apiserver/deployment.yaml
-@@ -63,7 +63,7 @@ spec:
+@@ -65,7 +65,7 @@ spec:
        {{- if eq .Values.clustermesh.apiserver.kvstoremesh.kvstoreMode "internal" }}
        initContainers:
        - name: etcd-init
@@ -11,7 +11,7 @@ index 1146209..f0fff25 100644
          imagePullPolicy: {{ .Values.clustermesh.apiserver.image.pullPolicy }}
          command:
          - /usr/bin/clustermesh-apiserver
-@@ -118,7 +118,7 @@ spec:
+@@ -120,7 +120,7 @@ spec:
        {{- if eq .Values.clustermesh.apiserver.kvstoremesh.kvstoreMode "internal" }}
        - name: etcd
          # The clustermesh-apiserver container image includes an etcd binary.
@@ -20,7 +20,7 @@ index 1146209..f0fff25 100644
          imagePullPolicy: {{ .Values.clustermesh.apiserver.image.pullPolicy }}
          command:
          - /usr/bin/etcd
-@@ -183,7 +183,7 @@ spec:
+@@ -185,7 +185,7 @@ spec:
        {{- end }}
        {{- if eq "true" (include "identityAllocationCRD" .) }}
        - name: apiserver
@@ -29,7 +29,7 @@ index 1146209..f0fff25 100644
          imagePullPolicy: {{ .Values.clustermesh.apiserver.image.pullPolicy }}
          command:
          - /usr/bin/clustermesh-apiserver
-@@ -284,7 +284,7 @@ spec:
+@@ -287,7 +287,7 @@ spec:
        {{- end }}
        {{- if .Values.clustermesh.apiserver.kvstoremesh.enabled }}
        - name: kvstoremesh
