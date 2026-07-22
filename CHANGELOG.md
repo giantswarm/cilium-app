@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix rendering of the certgen job specs (`hubble/tls-cronjob` and `clustermesh-apiserver/tls-cronjob`): the image reference was not converted to the Giant Swarm `cilium.image` helper signature because the image-registries sync patch only processed `*.yaml` templates, so enabling the cronJob method failed with `required list, but got "map"`.
+- Add NetworkPolicies allowing the `hubble-generate-certs` and `clustermesh-apiserver-generate-certs` certgen pods egress to the Kubernetes API.
 
 ## [1.4.5] - 2026-06-17
 
