@@ -1,6 +1,7 @@
 package basic
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -20,9 +21,11 @@ import (
 	"github.com/giantswarm/cilium-app/tests/e2e/internal/polex"
 
 	helmv2 "github.com/fluxcd/helm-controller/api/v2"
+	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	cr "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
@@ -103,6 +106,93 @@ func TestBasic(t *testing.T) {
 				By("Running connectivity tests")
 				err = connectivity.Run(wcNamespace, wcName)
 				Expect(err).ShouldNot(HaveOccurred())
+			})
+
+			It("should create the hubble-generate-certs CronJob and renew the Hubble certificates", func() {
+				const (
+					certgenNamespace = "kube-system"
+					cronJobName      = "hubble-generate-certs"
+					serverCertSecret = "hubble-server-certs"
+					expectedSchedule = "*/1 * * * *"
+
+					// The renewal CronJob runs every minute, so a few minutes is plenty
+					// of headroom for a scheduled run to complete and rotate the certs.
+					waitTimeout  = 6 * time.Minute
+					pollInterval = 15 * time.Second
+				)
+
+				ctx := state.GetContext()
+				wcName := state.GetCluster().Name
+				wcClient, err := state.GetFramework().WC(wcName)
+				Expect(err).ShouldNot(HaveOccurred())
+
+				By("Ensuring the hubble-generate-certs CronJob is created")
+				cronJob := &batchv1.CronJob{}
+				Eventually(func() error {
+					return wcClient.Get(ctx, types.NamespacedName{Name: cronJobName, Namespace: certgenNamespace}, cronJob)
+				}).
+					WithTimeout(waitTimeout).
+					WithPolling(pollInterval).
+					Should(Succeed(), "expected the hubble-generate-certs CronJob to be created")
+				Expect(cronJob.Spec.Schedule).To(Equal(expectedSchedule))
+
+				By("Recording the initially generated hubble-server-certs certificate")
+				var initialCert []byte
+				Eventually(func() (bool, error) {
+					secret := &corev1.Secret{}
+					if getErr := wcClient.Get(ctx, types.NamespacedName{Name: serverCertSecret, Namespace: certgenNamespace}, secret); getErr != nil {
+						return false, getErr
+					}
+					crt, ok := secret.Data["tls.crt"]
+					if !ok || len(crt) == 0 {
+						return false, nil
+					}
+					initialCert = crt
+					return true, nil
+				}).
+					WithTimeout(waitTimeout).
+					WithPolling(pollInterval).
+					Should(BeTrue(), "expected the hubble-server-certs Secret to hold a certificate")
+
+				By("Waiting for a CronJob-triggered certgen Job to complete successfully")
+				Eventually(func() (bool, error) {
+					jobs := &batchv1.JobList{}
+					if listErr := wcClient.List(ctx, jobs, cr.InNamespace(certgenNamespace)); listErr != nil {
+						return false, listErr
+					}
+					for _, job := range jobs.Items {
+						// Only count Jobs owned by the CronJob (scheduled runs), not the
+						// one-shot install Job that Helm creates at release time (that Job
+						// has no CronJob owner reference). Note the k8s-app label lives on
+						// the pod template, not the Job object, so we match on the owner.
+						for _, owner := range job.OwnerReferences {
+							if owner.Kind == "CronJob" && owner.Name == cronJobName && job.Status.Succeeded > 0 {
+								logger.Log("Certgen Job %q (owned by CronJob %q) succeeded", job.Name, owner.Name)
+								return true, nil
+							}
+						}
+					}
+					return false, nil
+				}).
+					WithTimeout(waitTimeout).
+					WithPolling(pollInterval).
+					Should(BeTrue(), "expected the hubble-generate-certs CronJob to spawn a successful certgen Job")
+
+				By("Verifying the hubble-server-certs certificate has been renewed")
+				Eventually(func() (bool, error) {
+					secret := &corev1.Secret{}
+					if getErr := wcClient.Get(ctx, types.NamespacedName{Name: serverCertSecret, Namespace: certgenNamespace}, secret); getErr != nil {
+						return false, getErr
+					}
+					crt, ok := secret.Data["tls.crt"]
+					if !ok || len(crt) == 0 {
+						return false, nil
+					}
+					return !bytes.Equal(crt, initialCert), nil
+				}).
+					WithTimeout(waitTimeout).
+					WithPolling(pollInterval).
+					Should(BeTrue(), "expected the CronJob to rotate the hubble server certificate")
 			})
 
 			It("ensure key metrics are available on mimir", func() {
