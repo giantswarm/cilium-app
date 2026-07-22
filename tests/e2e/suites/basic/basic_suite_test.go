@@ -23,6 +23,7 @@ import (
 	helmv2 "github.com/fluxcd/helm-controller/api/v2"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	cr "sigs.k8s.io/controller-runtime/pkg/client"
@@ -136,24 +137,6 @@ func TestBasic(t *testing.T) {
 					Should(Succeed(), "expected the hubble-generate-certs CronJob to be created")
 				Expect(cronJob.Spec.Schedule).To(Equal(expectedSchedule))
 
-				By("Recording the initially generated hubble-server-certs certificate")
-				var initialCert []byte
-				Eventually(func() (bool, error) {
-					secret := &corev1.Secret{}
-					if getErr := wcClient.Get(ctx, types.NamespacedName{Name: serverCertSecret, Namespace: certgenNamespace}, secret); getErr != nil {
-						return false, getErr
-					}
-					crt, ok := secret.Data["tls.crt"]
-					if !ok || len(crt) == 0 {
-						return false, nil
-					}
-					initialCert = crt
-					return true, nil
-				}).
-					WithTimeout(waitTimeout).
-					WithPolling(pollInterval).
-					Should(BeTrue(), "expected the hubble-server-certs Secret to hold a certificate")
-
 				By("Waiting for a CronJob-triggered certgen Job to complete successfully")
 				Eventually(func() (bool, error) {
 					jobs := &batchv1.JobList{}
@@ -178,7 +161,14 @@ func TestBasic(t *testing.T) {
 					WithPolling(pollInterval).
 					Should(BeTrue(), "expected the hubble-generate-certs CronJob to spawn a successful certgen Job")
 
-				By("Verifying the hubble-server-certs certificate has been renewed")
+				// certgen reuses a still-valid leaf certificate on every run (it only
+				// (re)generates certs that are missing or expiring), so a scheduled run
+				// on its own does not rotate the cert material. To prove the CronJob
+				// actually renews certificates, we record the current cert, delete the
+				// Secret, and confirm a subsequent scheduled run regenerates it with
+				// fresh material.
+				By("Recording the current hubble-server-certs certificate")
+				var previousCert []byte
 				Eventually(func() (bool, error) {
 					secret := &corev1.Secret{}
 					if getErr := wcClient.Get(ctx, types.NamespacedName{Name: serverCertSecret, Namespace: certgenNamespace}, secret); getErr != nil {
@@ -188,11 +178,38 @@ func TestBasic(t *testing.T) {
 					if !ok || len(crt) == 0 {
 						return false, nil
 					}
-					return !bytes.Equal(crt, initialCert), nil
+					previousCert = crt
+					return true, nil
 				}).
 					WithTimeout(waitTimeout).
 					WithPolling(pollInterval).
-					Should(BeTrue(), "expected the CronJob to rotate the hubble server certificate")
+					Should(BeTrue(), "expected the hubble-server-certs Secret to hold a certificate")
+
+				By("Deleting the hubble-server-certs Secret so the CronJob has to renew it")
+				Expect(wcClient.Delete(ctx, &corev1.Secret{
+					ObjectMeta: metav1.ObjectMeta{Name: serverCertSecret, Namespace: certgenNamespace},
+				})).To(Succeed())
+
+				By("Verifying a scheduled CronJob run renews the hubble-server-certs certificate")
+				Eventually(func() (bool, error) {
+					secret := &corev1.Secret{}
+					if getErr := wcClient.Get(ctx, types.NamespacedName{Name: serverCertSecret, Namespace: certgenNamespace}, secret); getErr != nil {
+						if apierrors.IsNotFound(getErr) {
+							return false, nil
+						}
+						return false, getErr
+					}
+					crt, ok := secret.Data["tls.crt"]
+					if !ok || len(crt) == 0 {
+						return false, nil
+					}
+					// A freshly generated cert uses a new key pair, so it must differ
+					// from the one we deleted.
+					return !bytes.Equal(crt, previousCert), nil
+				}).
+					WithTimeout(waitTimeout).
+					WithPolling(pollInterval).
+					Should(BeTrue(), "expected the CronJob to regenerate the deleted hubble server certificate")
 			})
 
 			It("ensure key metrics are available on mimir", func() {
