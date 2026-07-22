@@ -4,7 +4,7 @@ go 1.26.3
 
 require (
 	github.com/cilium/cilium v1.18.0-pre.3
-	github.com/fluxcd/helm-controller/api v1.6.1
+	github.com/fluxcd/helm-controller/api v1.6.2
 	github.com/giantswarm/apptest-framework/v5 v5.2.1
 	github.com/giantswarm/clustertest/v5 v5.4.0
 	github.com/onsi/ginkgo/v2 v2.32.0
