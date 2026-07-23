@@ -1749,11 +1749,13 @@ hubble:
     # -- Affinity for hubble-replay
     affinity:
       podAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          - topologyKey: kubernetes.io/hostname
-            labelSelector:
-              matchLabels:
-                k8s-app: cilium
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  k8s-app: cilium
     # -- Pod topology spread constraints for hubble-relay
     topologySpreadConstraints: []
     #   - maxSkew: 1
