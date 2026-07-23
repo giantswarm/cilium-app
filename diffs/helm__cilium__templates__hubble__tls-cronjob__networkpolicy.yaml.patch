@@ -1,0 +1,32 @@
+diff --git a/helm/cilium/templates/hubble/tls-cronjob/networkpolicy.yaml b/helm/cilium/templates/hubble/tls-cronjob/networkpolicy.yaml
+new file mode 100644
+index 0000000..c97dfc0
+--- /dev/null
++++ b/helm/cilium/templates/hubble/tls-cronjob/networkpolicy.yaml
+@@ -0,0 +1,26 @@
++{{- if and .Values.hubble.enabled .Values.hubble.tls.enabled .Values.hubble.tls.auto.enabled (eq .Values.hubble.tls.auto.method "cronJob") }}
++---
++apiVersion: networking.k8s.io/v1
++kind: NetworkPolicy
++metadata:
++  name: hubble-generate-certs
++  namespace: {{ .Release.Namespace }}
++  labels:
++    k8s-app: hubble-generate-certs
++    app.kubernetes.io/name: hubble-generate-certs
++    app.kubernetes.io/part-of: cilium
++  {{- with .Values.commonLabels }}
++    {{- toYaml . | nindent 4 }}
++  {{- end }}
++spec:
++  # The certgen Job/CronJob needs to reach the Kubernetes API to read the CA
++  # and write the generated certificate Secrets. On clusters that enforce a
++  # default-deny policy in this namespace it would otherwise be blocked.
++  egress:
++    - {}
++  podSelector:
++    matchLabels:
++      k8s-app: hubble-generate-certs
++  policyTypes:
++    - Egress
++{{- end }}

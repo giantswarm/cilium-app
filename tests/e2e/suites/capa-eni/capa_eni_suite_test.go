@@ -10,14 +10,15 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/giantswarm/apptest-framework/v4/pkg/state"
-	"github.com/giantswarm/apptest-framework/v4/pkg/suite"
-	"github.com/giantswarm/clustertest/v4/pkg/logger"
-	"github.com/giantswarm/clustertest/v4/pkg/wait"
+	"github.com/giantswarm/apptest-framework/v5/pkg/state"
+	"github.com/giantswarm/apptest-framework/v5/pkg/suite"
+	"github.com/giantswarm/clustertest/v5/pkg/logger"
+	"github.com/giantswarm/clustertest/v5/pkg/wait"
 
 	"github.com/giantswarm/cilium-app/tests/e2e/internal/connectivity"
 	"github.com/giantswarm/cilium-app/tests/e2e/internal/metrics"
 	"github.com/giantswarm/cilium-app/tests/e2e/internal/polex"
+	"github.com/giantswarm/cilium-app/tests/e2e/internal/readiness"
 
 	helmv2 "github.com/fluxcd/helm-controller/api/v2"
 	corev1 "k8s.io/api/core/v1"
@@ -84,12 +85,17 @@ func TestBasic(t *testing.T) {
 				wcName := state.GetCluster().Name
 				wcClient, _ := state.GetFramework().WC(wcName)
 
-				By("Waiting for all DaemonSets to be ready")
+				By("Waiting for all Nodes and DaemonSets to be ready and stable")
+				// A stricter gate than wait.AreAllDaemonSetsReady: it requires every
+				// Node to be Ready and every DaemonSet pod to be available (not just
+				// scheduled), held consistently over a ~60s window. This guards against
+				// transient CAPA worker-node churn that would otherwise delete a Cilium
+				// agent pod out from under the connectivity test.
 				Eventually(
 					wait.ConsistentWaitCondition(
-						wait.AreAllDaemonSetsReady(state.GetContext(), wcClient),
-						10,
-						time.Second,
+						readiness.AllNodesAndDaemonSetsReady(state.GetContext(), wcClient),
+						30,
+						2*time.Second,
 					)).
 					WithTimeout(15 * time.Minute).
 					WithPolling(wait.DefaultInterval).
@@ -101,8 +107,16 @@ func TestBasic(t *testing.T) {
 				Expect(err).ShouldNot(HaveOccurred())
 
 				By("Running connectivity tests")
-				err = connectivity.Run(wcNamespace, wcName)
-				Expect(err).ShouldNot(HaveOccurred())
+				// cilium-cli snapshots the agent pod list once at init and execs into
+				// those pods seconds later. If a node vanishes in that window the run
+				// fails with `pods "<node>" not found`. That staleness is self-healing on
+				// a fresh attempt, so retry the whole run a few times before failing.
+				Eventually(func() error {
+					return connectivity.Run(wcNamespace, wcName)
+				}).
+					WithTimeout(15 * time.Minute).
+					WithPolling(30 * time.Second).
+					Should(Succeed())
 			})
 
 			It("ensure key metrics are available on mimir", func() {

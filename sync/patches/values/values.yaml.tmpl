@@ -509,10 +509,8 @@ l2announcements:
 l2podAnnouncements:
   # -- Enable L2 pod announcements
   enabled: false
-  # -- Interface used for sending Gratuitous ARP pod announcements
-  interface: "eth0"
   # -- A regular expression matching interfaces used for sending Gratuitous ARP pod announcements
-  # interfacePattern: ""
+  interfacePattern: ""
 # -- This feature set enables virtual BGP routers to be created via BGP CRDs.
 bgpControlPlane:
   # -- Enables the BGP control plane.
@@ -1363,6 +1361,15 @@ socketLB:
 certgen:
   # -- When set to true the certificate authority secret is created.
   generateCA: true
+  # -- When set to true the certgen job fails when the CA certificate would
+  # expire before any of the requested leaf certificates' validity ends,
+  # instead of silently issuing leafs that outlive the CA. With 365-day leaf
+  # certs this makes the scheduled job fail (and alert) roughly one year
+  # before the CA must be rotated — certgen never rotates an existing CA
+  # (see https://github.com/cilium/certgen/issues/500).
+  # Giant Swarm addition, wired by sync/patches/certgen/patch.sh; upstream
+  # ships this value starting with the chart on upstream main.
+  enforceCAValidityThroughoutLeavesDuration: true
   image:
     # @schema
     # type: [null, string]
@@ -1670,7 +1677,12 @@ hubble:
       #                 certificates not provided by the user at installation
       #                 time.
       # - certmanager:  This method use cert-manager to generate & rotate certificates.
-      method: helm
+      #
+      # Giant Swarm default is cronJob (upstream defaults to helm): the helm
+      # method mints certificates once and never renews them, deterministically
+      # breaking hubble-relay when the leaf certs (1y) or the CA (3y) expire.
+      # See https://github.com/giantswarm/giantswarm/issues/37201
+      method: cronJob
       # -- Generated certificates validity duration in days.
       #
       # Defaults to 365 days (1 year) because MacOS does not accept
@@ -2538,10 +2550,6 @@ monitor:
   enabled: false
 # -- Configure service load balancing
 loadBalancer:
-  # -- standalone enables the standalone L4LB which does not connect to
-  # kube-apiserver.
-  # standalone: false
-
   # -- algorithm is the name of the load balancing algorithm for backend
   # selection e.g. random or maglev
   # algorithm: random

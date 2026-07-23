@@ -1,0 +1,9 @@
+hubble:
+  tls:
+    auto:
+      # Provision the Hubble TLS certificates via the certgen CronJob (the PR default)
+      # instead of Helm, so the e2e run exercises the renewal path.
+      method: cronJob
+      # Very low schedule (every minute) so the renewal CronJob fires quickly during the
+      # test run, letting us verify the certgen Job succeeds and rotates the certificates.
+      schedule: "*/1 * * * *"
