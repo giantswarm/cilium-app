@@ -1704,7 +1704,12 @@ hubble:
       #                 certificates not provided by the user at installation
       #                 time.
       # - certmanager:  This method use cert-manager to generate & rotate certificates.
-      method: helm
+      #
+      # Giant Swarm default is cronJob (upstream defaults to helm): the helm
+      # method mints certificates once and never renews them, deterministically
+      # breaking hubble-relay when the leaf certs (1y) or the CA (3y) expire.
+      # See https://github.com/giantswarm/giantswarm/issues/37201
+      method: cronJob
       # -- Generated certificates validity duration in days.
       #
       # Defaults to 365 days (1 year) because MacOS does not accept
@@ -1786,11 +1791,13 @@ hubble:
     # -- Affinity for hubble-replay
     affinity:
       podAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          - topologyKey: kubernetes.io/hostname
-            labelSelector:
-              matchLabels:
-                k8s-app: cilium
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  k8s-app: cilium
     # -- Pod topology spread constraints for hubble-relay
     topologySpreadConstraints: []
     #   - maxSkew: 1

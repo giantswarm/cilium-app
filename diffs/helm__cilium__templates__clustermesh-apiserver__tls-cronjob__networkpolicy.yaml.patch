@@ -1,0 +1,31 @@
+diff --git a/helm/cilium/templates/clustermesh-apiserver/tls-cronjob/networkpolicy.yaml b/helm/cilium/templates/clustermesh-apiserver/tls-cronjob/networkpolicy.yaml
+new file mode 100644
+index 0000000..bb4ad15
+--- /dev/null
++++ b/helm/cilium/templates/clustermesh-apiserver/tls-cronjob/networkpolicy.yaml
+@@ -0,0 +1,25 @@
++{{- if and .Values.clustermesh.useAPIServer .Values.clustermesh.apiserver.tls.auto.enabled (eq .Values.clustermesh.apiserver.tls.auto.method "cronJob") }}
++---
++apiVersion: networking.k8s.io/v1
++kind: NetworkPolicy
++metadata:
++  name: clustermesh-apiserver-generate-certs
++  namespace: {{ .Release.Namespace }}
++  labels:
++    k8s-app: clustermesh-apiserver-generate-certs
++    app.kubernetes.io/part-of: cilium
++  {{- with .Values.commonLabels }}
++    {{- toYaml . | nindent 4 }}
++  {{- end }}
++spec:
++  # The certgen Job/CronJob needs to reach the Kubernetes API to read the CA
++  # and write the generated certificate Secrets. On clusters that enforce a
++  # default-deny policy in this namespace it would otherwise be blocked.
++  egress:
++    - {}
++  podSelector:
++    matchLabels:
++      k8s-app: clustermesh-apiserver-generate-certs
++  policyTypes:
++    - Egress
++{{- end }}

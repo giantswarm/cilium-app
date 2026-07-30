@@ -14,5 +14,7 @@ readonly script_dir_rel=".${script_dir#"${repo_dir}"}"
 set -x
 cp "${script_dir_rel}/hubble-ui-networkpolicy.yaml" "./helm/cilium/templates/hubble-ui/networkpolicy.yaml"
 cp "${script_dir_rel}/hubble-relay-networkpolicy.yaml" "./helm/cilium/templates/hubble-relay/networkpolicy.yaml"
+cp "${script_dir_rel}/hubble-generate-certs-networkpolicy.yaml" "./helm/cilium/templates/hubble/tls-cronjob/networkpolicy.yaml"
+cp "${script_dir_rel}/clustermesh-apiserver-generate-certs-networkpolicy.yaml" "./helm/cilium/templates/clustermesh-apiserver/tls-cronjob/networkpolicy.yaml"
 
 { set +x; } 2>/dev/null

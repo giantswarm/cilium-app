@@ -34,7 +34,10 @@ set -x
 #    - image: {{ include "cilium.operator.image" .Values.preflight.image | quote }}
 #    + image: {{ include "cilium.oprator.image" (list $ .Values.preflight.image) | quote }}
 #
-find ./helm/cilium/templates -type f -name '*.yaml' -exec \
+# Also processes *.tpl files: the certgen job specs (hubble/tls-cronjob and
+# clustermesh-apiserver/tls-cronjob _job-spec.tpl) reference the image the same
+# way and would fail to render with the patched "cilium.image" helper otherwise.
+find ./helm/cilium/templates -type f \( -name '*.yaml' -o -name '*.tpl' \) -exec \
         sed -i 's/\({{ include "cilium[^"]*\.image"[[:space:]]\+\)\([^ ]*\)/\1(list $ \2)/' "{}" \;
 
 { set +x; } 2>/dev/null
