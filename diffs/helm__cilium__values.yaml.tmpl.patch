@@ -1,16 +1,8 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index fa9d0cc..e946f09 100644
+index fa9d0cc..5da9c95 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
-@@ -245,6 +245,7 @@ configDriftDetection:
-   ignoredKeys: []
- # -- Agent container image.
- image:
-+  registry: gsoci.azurecr.io
-   # @schema
-   # type: [null, string]
-   # @schema
-@@ -568,7 +569,7 @@ bpf:
+@@ -568,7 +568,7 @@ bpf:
    # @default -- `524288`
    authMapMax: ~
    # -- Enable CT accounting for packets and bytes
@@ -19,7 +11,7 @@ index fa9d0cc..e946f09 100644
    # @schema
    # type: [null, integer]
    # @schema
-@@ -653,7 +654,7 @@ bpf:
+@@ -653,7 +653,7 @@ bpf:
    # @schema
    # type: [null, integer]
    # @schema
@@ -28,7 +20,7 @@ index fa9d0cc..e946f09 100644
    # -- (float64) Configure threshold for emitting pressure metrics of policy maps.
    # @schema
    # type: [null, number]
-@@ -1348,7 +1349,7 @@ socketLB:
+@@ -1348,7 +1348,7 @@ socketLB:
    # -- Enable socket LB
    enabled: false
    # -- Disable socket lb for non-root ns. This is used to enable Istio routing rules.
@@ -37,7 +29,7 @@ index fa9d0cc..e946f09 100644
    # -- Enable terminating pod connections to deleted service backends.
    # terminatePodConnections: true
    # -- Enables tracing for socket-based load balancing.
-@@ -1360,6 +1361,15 @@ socketLB:
+@@ -1360,6 +1360,15 @@ socketLB:
  certgen:
    # -- When set to true the certificate authority secret is created.
    generateCA: true
@@ -53,7 +45,7 @@ index fa9d0cc..e946f09 100644
    image:
      # @schema
      # type: [null, string]
-@@ -1667,7 +1677,12 @@ hubble:
+@@ -1667,7 +1676,12 @@ hubble:
        #                 certificates not provided by the user at installation
        #                 time.
        # - certmanager:  This method use cert-manager to generate & rotate certificates.
@@ -67,7 +59,7 @@ index fa9d0cc..e946f09 100644
        # -- Generated certificates validity duration in days.
        #
        # Defaults to 365 days (1 year) because MacOS does not accept
-@@ -1705,7 +1720,7 @@ hubble:
+@@ -1705,7 +1719,7 @@ hubble:
        extraIpAddresses: []
    relay:
      # -- Enable Hubble Relay (requires hubble.enabled=true)
@@ -76,7 +68,7 @@ index fa9d0cc..e946f09 100644
      # -- Roll out Hubble Relay pods automatically when configmap is updated.
      rollOutPods: false
      # -- Hubble-relay container image.
-@@ -1721,17 +1736,26 @@ hubble:
+@@ -1721,17 +1735,26 @@ hubble:
        useDigest: ${USE_DIGESTS}
        pullPolicy: "${PULL_POLICY}"
      # -- Specifies the resources for the hubble-relay pods
@@ -109,7 +101,7 @@ index fa9d0cc..e946f09 100644
      # -- Pod topology spread constraints for hubble-relay
      topologySpreadConstraints: []
      #   - maxSkew: 1
-@@ -1746,11 +1770,14 @@ hubble:
+@@ -1746,11 +1769,14 @@ hubble:
      # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
      tolerations: []
      # -- Additional hubble-relay environment variables.
@@ -126,7 +118,7 @@ index fa9d0cc..e946f09 100644
      # -- Labels to be added to hubble-relay pods
      podLabels: {}
      # PodDisruptionBudget settings
-@@ -1787,9 +1814,13 @@ hubble:
+@@ -1787,9 +1813,13 @@ hubble:
          # @schema
          maxUnavailable: 1
      # -- Additional hubble-relay volumes.
@@ -142,7 +134,7 @@ index fa9d0cc..e946f09 100644
      # -- hubble-relay pod security context
      podSecurityContext:
        fsGroup: 65532
-@@ -1797,7 +1828,7 @@ hubble:
+@@ -1797,7 +1827,7 @@ hubble:
          type: RuntimeDefault
      # -- hubble-relay container security context
      securityContext:
@@ -151,7 +143,7 @@ index fa9d0cc..e946f09 100644
        allowPrivilegeEscalation: false
        runAsNonRoot: true
        runAsUser: 65532
-@@ -1886,7 +1917,7 @@ hubble:
+@@ -1886,7 +1916,7 @@ hubble:
      # -- Enable prometheus metrics for hubble-relay on the configured port at
      # /metrics
      prometheus:
@@ -160,7 +152,7 @@ index fa9d0cc..e946f09 100644
        port: 9966
        serviceMonitor:
          # -- Enable service monitors.
-@@ -1948,7 +1979,7 @@ hubble:
+@@ -1948,7 +1978,7 @@ hubble:
        level: ~
    ui:
      # -- Whether to enable the Hubble UI.
@@ -169,7 +161,7 @@ index fa9d0cc..e946f09 100644
      standalone:
        # -- When true, it will allow installing the Hubble UI only, without checking dependencies.
        # It is useful if a cluster already has cilium and Hubble relay installed and you just
-@@ -1999,6 +2030,15 @@ hubble:
+@@ -1999,6 +2029,15 @@ hubble:
        # -- Hubble-ui backend security context.
        securityContext:
          allowPrivilegeEscalation: false
@@ -185,7 +177,7 @@ index fa9d0cc..e946f09 100644
        # -- Additional hubble-ui backend environment variables.
        extraEnv: []
        # -- Additional hubble-ui backend volumes.
-@@ -2012,13 +2052,14 @@ hubble:
+@@ -2012,13 +2051,14 @@ hubble:
          # -- Enable readiness probe for Hubble-ui backend (requires Hubble-ui 0.12+)
          enabled: false
        # -- Resource requests and limits for the 'backend' container of the 'hubble-ui' deployment.
@@ -207,7 +199,7 @@ index fa9d0cc..e946f09 100644
      frontend:
        # -- Hubble-ui frontend image.
        image:
-@@ -2034,6 +2075,15 @@ hubble:
+@@ -2034,6 +2074,15 @@ hubble:
        # -- Hubble-ui frontend security context.
        securityContext:
          allowPrivilegeEscalation: false
@@ -223,7 +215,7 @@ index fa9d0cc..e946f09 100644
        # -- Additional hubble-ui frontend environment variables.
        extraEnv: []
        # -- Additional hubble-ui frontend volumes.
-@@ -2041,13 +2091,14 @@ hubble:
+@@ -2041,13 +2090,14 @@ hubble:
        # -- Additional hubble-ui frontend volumeMounts.
        extraVolumeMounts: []
        # -- Resource requests and limits for the 'frontend' container of the 'hubble-ui' deployment.
@@ -245,7 +237,7 @@ index fa9d0cc..e946f09 100644
        server:
          # -- Controls server listener for ipv6
          ipv6:
-@@ -2059,7 +2110,8 @@ hubble:
+@@ -2059,7 +2109,8 @@ hubble:
      # -- Additional labels to be added to 'hubble-ui' deployment object
      labels: {}
      # -- Annotations to be added to hubble-ui pods
@@ -255,7 +247,7 @@ index fa9d0cc..e946f09 100644
      # -- Labels to be added to hubble-ui pods
      podLabels: {}
      # PodDisruptionBudget settings
-@@ -2110,9 +2162,13 @@ hubble:
+@@ -2110,9 +2161,13 @@ hubble:
          maxUnavailable: 1
      # -- Security context to be added to Hubble UI pods
      securityContext:
@@ -269,7 +261,7 @@ index fa9d0cc..e946f09 100644
      # -- hubble-ui service configuration.
      service:
        # -- Annotations to be added for the Hubble UI service
-@@ -2398,7 +2454,7 @@ localRedirectPolicy: false
+@@ -2398,7 +2453,7 @@ localRedirectPolicy: false
  
  localRedirectPolicies:
    # -- Enable local redirect policies.
@@ -278,7 +270,7 @@ index fa9d0cc..e946f09 100644
  
    # -- Limit the allowed addresses in Address Matcher rule of
    # Local Redirect Policies to the given CIDRs.
-@@ -2408,7 +2464,7 @@ localRedirectPolicies:
+@@ -2408,7 +2463,7 @@ localRedirectPolicies:
    addressMatcherCIDRs: ~
  
  # To include or exclude matched resources from cilium identity evaluation
@@ -287,7 +279,7 @@ index fa9d0cc..e946f09 100644
  
  # logOptions allows you to define logging options. eg:
  # logOptions:
-@@ -2588,8 +2644,8 @@ pprof:
+@@ -2588,8 +2643,8 @@ pprof:
    blockProfileRate: 0
  # -- Configure prometheus metrics on the configured port at /metrics
  prometheus:
@@ -298,7 +290,7 @@ index fa9d0cc..e946f09 100644
    port: 9962
    serviceMonitor:
      # -- Enable service monitors.
-@@ -3193,18 +3249,13 @@ operator:
+@@ -3193,18 +3248,13 @@ operator:
    # type: [null, array]
    # @schema
    tolerations:
@@ -321,7 +313,7 @@ index fa9d0cc..e946f09 100644
    # -- Additional cilium-operator hostPath mounts.
    extraHostPathMounts: []
    # - name: host-mnt-data
-@@ -3215,15 +3266,20 @@ operator:
+@@ -3215,15 +3265,20 @@ operator:
    #   mountPropagation: HostToContainer
  
    # -- Additional cilium-operator volumes.
@@ -344,7 +336,7 @@ index fa9d0cc..e946f09 100644
      seccompProfile:
        type: RuntimeDefault
    # -- Annotations to be added to cilium-operator pods
-@@ -3234,7 +3290,7 @@ operator:
+@@ -3234,7 +3289,7 @@ operator:
    podDisruptionBudget:
      # -- enable PodDisruptionBudget
      # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
@@ -353,7 +345,7 @@ index fa9d0cc..e946f09 100644
      # @schema
      # type: [null, integer, string]
      # @schema
-@@ -3253,13 +3309,14 @@ operator:
+@@ -3253,13 +3308,14 @@ operator:
      unhealthyPodEvictionPolicy: null
    # -- cilium-operator resource limits & requests
    # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -375,7 +367,7 @@ index fa9d0cc..e946f09 100644
  
    # -- Security context to be added to cilium-operator pods
    securityContext:
-@@ -3267,7 +3324,12 @@ operator:
+@@ -3267,7 +3323,12 @@ operator:
        drop:
        - ALL
      allowPrivilegeEscalation: false
@@ -389,7 +381,7 @@ index fa9d0cc..e946f09 100644
  
    # -- Interval for endpoint garbage collection.
    endpointGCInterval: "5m0s"
-@@ -3291,7 +3353,7 @@ operator:
+@@ -3291,7 +3352,7 @@ operator:
    # -- Enable prometheus metrics for cilium-operator on the configured port at
    # /metrics
    prometheus:
@@ -398,7 +390,7 @@ index fa9d0cc..e946f09 100644
      enabled: true
      port: 9963
      serviceMonitor:
-@@ -4238,7 +4300,7 @@ authentication:
+@@ -4238,7 +4299,7 @@ authentication:
    # -- Enable authentication processing and garbage collection.
    # Note that if disabled, policy enforcement will still block requests that require authentication.
    # But the resulting authentication requests for these requests will not be processed, therefore the requests not be allowed.
@@ -407,7 +399,7 @@ index fa9d0cc..e946f09 100644
    # -- Buffer size of the channel Cilium uses to receive authentication events from the signal map.
    queueSize: 1024
    # -- Buffer size of the channel Cilium uses to receive certificate expiration events from auth handlers.
-@@ -4469,3 +4531,12 @@ standaloneDnsProxy:
+@@ -4469,3 +4530,12 @@ standaloneDnsProxy:
      digest: "${STANDALONE_DNS_PROXY_DIGEST}"
      useDigest: ${USE_DIGESTS}
      pullPolicy: "${PULL_POLICY}"

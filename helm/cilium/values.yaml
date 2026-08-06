@@ -242,12 +242,11 @@ configDriftDetection:
   ignoredKeys: []
 # -- Agent container image.
 image:
-  registry: gsoci.azurecr.io
   # @schema
   # type: [null, string]
   # @schema
   override: ~
-  repository: "giantswarm/cilium"
+  repository: "gsoci.azurecr.io/giantswarm/cilium"
   tag: "v1.19.6"
   pullPolicy: "IfNotPresent"
   # cilium-digest
@@ -1363,7 +1362,7 @@ certgen:
     # type: [null, string]
     # @schema
     override: ~
-    repository: "giantswarm/cilium-certgen"
+    repository: "gsoci.azurecr.io/giantswarm/cilium-certgen"
     tag: "v0.4.6"
     digest: "sha256:511cedee817713fdf72db7e32fffb4b90da7747661b95180064f18198877626c"
     useDigest: true
@@ -1717,7 +1716,7 @@ hubble:
       # type: [null, string]
       # @schema
       override: ~
-      repository: "giantswarm/hubble-relay"
+      repository: "gsoci.azurecr.io/giantswarm/hubble-relay"
       tag: "v1.19.6"
       # hubble-relay-digest
       digest: "sha256:6782a49e3f28eba015701c4410a5ec7fa096fe9a562f879b4372dbecd827ea44"
@@ -2010,7 +2009,7 @@ hubble:
         # type: [null, string]
         # @schema
         override: ~
-        repository: "giantswarm/hubble-ui-backend"
+        repository: "gsoci.azurecr.io/giantswarm/hubble-ui-backend"
         tag: "v0.13.5"
         digest: "sha256:fac0c300ae119274edca11fd89b1ad23c788792d8bc4ea2ba631c709e8d3c688"
         useDigest: true
@@ -2055,7 +2054,7 @@ hubble:
         # type: [null, string]
         # @schema
         override: ~
-        repository: "giantswarm/hubble-ui"
+        repository: "gsoci.azurecr.io/giantswarm/hubble-ui"
         tag: "v0.13.5"
         digest: "sha256:f7d514fc54d784ed6df9d58cf0e97648b143f92b766dd1780ed3fc845bd4c516"
         useDigest: true
@@ -2777,7 +2776,7 @@ envoy:
     # type: [null, string]
     # @schema
     override: ~
-    repository: "giantswarm/cilium-envoy"
+    repository: "gsoci.azurecr.io/giantswarm/cilium-envoy"
     tag: "v1.36.9-1782267392-edeb3f2af56c37c407efa1f63f0b32f595399bbc"
     pullPolicy: "IfNotPresent"
     digest: "sha256:767101fb8a5e38f055778cb43b7aa8eed80450b37f8121effac3d9de9e06dc99"
@@ -3162,7 +3161,7 @@ operator:
     # type: [null, string]
     # @schema
     override: ~
-    repository: "giantswarm/cilium-operator"
+    repository: "gsoci.azurecr.io/giantswarm/cilium-operator"
     tag: "v1.19.6"
     # operator-generic-digest
     genericDigest: "sha256:0db4ca4e06969d8904ee036617795d0e9c3228cf7b8d902ba74fc2bb98d2d665"
@@ -3410,7 +3409,7 @@ nodeinit:
     # type: [null, string]
     # @schema
     override: ~
-    repository: "giantswarm/cilium-startup-script"
+    repository: "gsoci.azurecr.io/giantswarm/cilium-startup-script"
     tag: "1763560095-8f36c34"
     digest: "sha256:50b9cf9c280096b59b80d2fc8ee6638facef79ac18998a22f0cbc40d5d28c16f"
     useDigest: true
@@ -3501,7 +3500,7 @@ preflight:
     # type: [null, string]
     # @schema
     override: ~
-    repository: "giantswarm/cilium"
+    repository: "gsoci.azurecr.io/giantswarm/cilium"
     tag: "v1.19.6"
     # cilium-digest
     digest: "sha256:0df5b2750b64c49843aba1d649e9eaf61467cb0645ad3171db6f6962c095ac92"
@@ -3514,7 +3513,7 @@ preflight:
       # type: [null, string]
       # @schema
       override: ~
-      repository: "giantswarm/cilium-envoy"
+      repository: "gsoci.azurecr.io/giantswarm/cilium-envoy"
       tag: "v1.36.9-1782267392-edeb3f2af56c37c407efa1f63f0b32f595399bbc"
       pullPolicy: "IfNotPresent"
       digest: "sha256:767101fb8a5e38f055778cb43b7aa8eed80450b37f8121effac3d9de9e06dc99"
@@ -3760,7 +3759,7 @@ clustermesh:
       # type: [null, string]
       # @schema
       override: ~
-      repository: "giantswarm/cilium-clustermesh-apiserver"
+      repository: "gsoci.azurecr.io/giantswarm/cilium-clustermesh-apiserver"
       tag: "v1.19.6"
       # clustermesh-apiserver-digest
       digest: "sha256:accab5fe6ab7134fcd6f916acc9e4c785382a022128ae5495ec4a45fbe18c9a6"

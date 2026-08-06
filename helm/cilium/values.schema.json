@@ -4479,9 +4479,6 @@
         "pullPolicy": {
           "type": "string"
         },
-        "registry": {
-          "type": "string"
-        },
         "repository": {
           "type": "string"
         },

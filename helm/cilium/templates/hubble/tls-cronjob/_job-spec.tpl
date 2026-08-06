@@ -14,7 +14,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: certgen
-          image: {{ include "cilium.image" (list $ .Values.certgen.image) | quote }}
+          image: {{ include "cilium.image" .Values.certgen.image | quote }}
           imagePullPolicy: {{ .Values.certgen.image.pullPolicy }}
           securityContext:
             capabilities:

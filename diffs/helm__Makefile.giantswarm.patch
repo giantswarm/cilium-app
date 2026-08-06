@@ -1,18 +1,28 @@
 diff --git a/helm/Makefile.giantswarm b/helm/Makefile.giantswarm
 new file mode 100644
-index 0000000..52a5651
+index 0000000..ff9ffec
 --- /dev/null
 +++ b/helm/Makefile.giantswarm
-@@ -0,0 +1,12 @@
-+export CILIUM_REPO:=giantswarm/cilium
-+export CILIUM_OPERATOR_BASE_REPO:=giantswarm/cilium-operator
-+export CLUSTERMESH_APISERVER_REPO:=giantswarm/cilium-clustermesh-apiserver
-+export HUBBLE_RELAY_REPO:=giantswarm/hubble-relay
-+export CERTGEN_REPO:=giantswarm/cilium-certgen
-+export CILIUM_NODEINIT_REPO:=giantswarm/cilium-startup-script
-+export CILIUM_ENVOY_REPO:=giantswarm/cilium-envoy
-+export HUBBLE_UI_BACKEND_REPO:=giantswarm/hubble-ui-backend
-+export HUBBLE_UI_FRONTEND_REPO:=giantswarm/hubble-ui
+@@ -0,0 +1,22 @@
++# Point every image at the Giant Swarm mirror. The registry is part of the
++# repository here, exactly as upstream does it (see Makefile.values), so the
++# chart needs no template patching to address our registry.
++#
++# Images we mirror into gsoci under our own names:
++export CILIUM_REPO:=gsoci.azurecr.io/giantswarm/cilium
++export CILIUM_OPERATOR_BASE_REPO:=gsoci.azurecr.io/giantswarm/cilium-operator
++export CLUSTERMESH_APISERVER_REPO:=gsoci.azurecr.io/giantswarm/cilium-clustermesh-apiserver
++export HUBBLE_RELAY_REPO:=gsoci.azurecr.io/giantswarm/hubble-relay
++export CERTGEN_REPO:=gsoci.azurecr.io/giantswarm/cilium-certgen
++export CILIUM_NODEINIT_REPO:=gsoci.azurecr.io/giantswarm/cilium-startup-script
++export CILIUM_ENVOY_REPO:=gsoci.azurecr.io/giantswarm/cilium-envoy
++export HUBBLE_UI_BACKEND_REPO:=gsoci.azurecr.io/giantswarm/hubble-ui-backend
++export HUBBLE_UI_FRONTEND_REPO:=gsoci.azurecr.io/giantswarm/hubble-ui
++
++# The SPIRE images stay on their upstream registries on purpose. They are
++# listed in sync/unmirrored-images.txt so sync/verify-images.sh does not flag
++# them. See that file for what it would take to move them to gsoci; note that
++# the chart pins these by digest, so mirroring the tag is not enough.
 +export SPIRE_INIT_REPO:=docker.io/library/busybox
 +export SPIRE_SERVER_REPO:=ghcr.io/spiffe/spire-server
 +export SPIRE_AGENT_REPO:=ghcr.io/spiffe/spire-agent

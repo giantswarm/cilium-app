@@ -1,0 +1,27 @@
+# Image repositories that sync/verify-images.sh accepts even though they are
+# not served from gsoci.azurecr.io/giantswarm.
+#
+# Every entry here is an image we pull from a third-party registry. Adding one
+# should be a deliberate decision, not a way to silence the check: prefer
+# mirroring the image via giantswarm/retagger and pointing its *_REPO in
+# sync/patches/values/Makefile.giantswarm at gsoci.
+#
+# Note that the chart pins most images by digest, so moving one to gsoci needs
+# the mirrored *digest* to match, not just the tag. giantswarm/busybox:1.37.0
+# exists, for example, but does not carry the digest this chart pins -- pointing
+# at it would render an unpullable reference. This is the same trap that
+# produced "Don't use digest for hubble-ui image because it doesn't match in our
+# registry" in the past.
+
+# SPIRE, used only by mutual authentication (authentication.mutual.spire),
+# which is disabled by default and not something we support today. Mirroring
+# these is tracked as a follow-up to
+# https://github.com/giantswarm/roadmap/issues/3264.
+docker.io/library/busybox
+ghcr.io/spiffe/spire-server
+ghcr.io/spiffe/spire-agent
+
+# ztunnel, used only by encryption.type=ztunnel, which we do not support.
+# gsoci.azurecr.io/giantswarm/cilium-ztunnel exists but carries only v1.0.0
+# tags, not the istio/ztunnel tag this chart pins.
+docker.io/istio/ztunnel
