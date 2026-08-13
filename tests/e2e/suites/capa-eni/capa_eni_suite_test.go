@@ -24,6 +24,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	cr "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
@@ -155,19 +156,22 @@ func TestBasic(t *testing.T) {
 			wcName := state.GetCluster().Name
 			wcClient, _ := state.GetFramework().WC(wcName)
 
-			By("Deleting cilium-test-1 namespace")
+			// Both resources are created by the connectivity test, which never runs
+			// if BeforeSuite fails. Tolerate NotFound so cleanup doesn't mask the
+			// original failure with a 404.
+			By("Deleting cilium-test PolicyException")
 			p := polex.New()
 			err := wcClient.Delete(context.Background(), p)
-			Expect(err).ShouldNot(HaveOccurred())
+			Expect(cr.IgnoreNotFound(err)).ShouldNot(HaveOccurred())
 
-			By("Deleting cilium-test PolicyException")
+			By("Deleting cilium-test-1 namespace")
 			testNamespace := &corev1.Namespace{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: "cilium-test-1",
 				},
 			}
 			err = wcClient.Delete(context.Background(), testNamespace)
-			Expect(err).ShouldNot(HaveOccurred())
+			Expect(cr.IgnoreNotFound(err)).ShouldNot(HaveOccurred())
 		}).
 		Run(t, "CAPA ENI mode Test")
 }
