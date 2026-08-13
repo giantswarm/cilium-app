@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- **Removed the `image.registry` value and the sync patch behind it** ([roadmap#3264](https://github.com/giantswarm/roadmap/issues/3264)). The registry is now part of each image's `repository` value, exactly as upstream ships it, so the chart no longer patches upstream's `cilium.image`/`cilium.operator.image` helpers into a `(list $ <image>)` signature and no longer rewrites all 35 call sites with `sed`. `helm/cilium/templates/_helpers.tpl` and `helm/cilium/templates/cilium-operator/_helpers.tpl` are now byte-identical to upstream, and 15 template patches disappear from `diffs/`.
+
+  Rendered images are unchanged for every image we mirror. To point the chart at a different registry, use upstream's per-image `repository`/`override` values; for whole-cluster registry redirection use the containerd mirrors configured by the `cluster` chart (`global.components.containerd.containerRegistries`), which is how China and air-gapped installations already work. A leftover `image.registry` in existing values is silently ignored.
+
+### Fixed
+
+- Fix four image references that were rendered as unpullable double-prefixed paths, because their `repository` already carried a registry while the removed patch prefixed `image.registry` on top: `gsoci.azurecr.io/ghcr.io/spiffe/spire-server`, `.../spire-agent`, `.../docker.io/library/busybox` (SPIRE mutual authentication) and `.../docker.io/istio/ztunnel` (`encryption.type=ztunnel`). All four now resolve. Latent until now because both features are disabled by default.
+
+### Added
+
+- `sync/verify-images.sh`, run as the last step of `sync/sync.sh` and therefore in CI: renders the chart across four scenarios covering every image-bearing component and fails the sync unless each image is served from `gsoci.azurecr.io/giantswarm/` or is explicitly listed in `sync/unmirrored-images.txt`. It also asserts that every configured image actually appears in a render, so a scenario that stops covering an image fails instead of silently narrowing the check. This replaces the removed patch's `fail` guards, which were the only thing that made image drift visible on an upstream bump.
+
 ## [1.5.0] - 2026-07-23
 
 ### Changed

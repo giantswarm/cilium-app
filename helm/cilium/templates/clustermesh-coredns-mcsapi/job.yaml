@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: autoconfig
-          image: {{ include "cilium.image" (list $ .Values.clustermesh.apiserver.image) | quote }}
+          image: {{ include "cilium.image" .Values.clustermesh.apiserver.image | quote }}
           imagePullPolicy: {{ .Values.clustermesh.apiserver.image.pullPolicy }}
           {{- with .Values.clustermesh.mcsapi.corednsAutoConfigure.resources }}
           resources:

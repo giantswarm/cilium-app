@@ -15,7 +15,6 @@ helm dependency update helm/cilium/
 
 # Patches
 ./sync/patches/eni/patch.sh
-./sync/patches/image_registries/patch.sh
 ./sync/patches/certgen/patch.sh
 ./sync/patches/networkpolicies/patch.sh
 ./sync/patches/chart_yaml/patch.sh
@@ -48,6 +47,11 @@ for f in $(git --no-pager diff --no-exit-code --no-color --no-index vendor/ciliu
                 exit $ret
         fi
 done
+
+# Fail the sync if any image is not addressed through our registry. Upstream
+# adds and renames images regularly and, since we no longer patch the image
+# templates, nothing else would notice.
+./sync/verify-images.sh
 
 # Print upstream changelog
 awk '/^##/ { if (++count == 2) exit } count >= 1' vendor/cilium/CHANGELOG.md

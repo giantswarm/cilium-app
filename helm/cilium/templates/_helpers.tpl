@@ -28,21 +28,12 @@ your container engine doesn't support specifying both the tag and digest for
 instance).
 */}}
 {{- define "cilium.image" -}}
-{{- if not (kindIs "slice" .) }}
-{{- (fail (printf "required list, but got %q" (kindOf .))) }}
-{{- end }}
-{{- if (ne (len .) 2) }}
-{{- (fail (printf "required list of 2 arguments, but got %d" (len .))) }}
-{{- end }}
-{{- $ := index . 0 }}
-{{- with index . 1 }}
 {{- $digest := (.useDigest | default false) | ternary (printf "@%s" .digest) "" -}}
 {{- $tag := .tag | default "" | eq "" | ternary "" (printf ":%s" .tag) -}}
 {{- if .override -}}
 {{- printf "%s" .override -}}
 {{- else -}}
-{{- printf "%s/%s%s%s" $.Values.image.registry .repository $tag $digest -}}
-{{- end -}}
+{{- printf "%s%s%s" .repository $tag $digest -}}
 {{- end -}}
 {{- end -}}
 

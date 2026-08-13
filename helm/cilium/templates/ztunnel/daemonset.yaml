@@ -51,7 +51,7 @@ spec:
       dnsPolicy: ClusterFirst
       containers:
         - name: istio-proxy
-          image: {{ include "cilium.image" (list $ .Values.encryption.ztunnel.image) | quote }}
+          image: {{ include "cilium.image" .Values.encryption.ztunnel.image | quote }}
           imagePullPolicy: {{ .Values.encryption.ztunnel.image.pullPolicy }}
           args:
             - proxy
