@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Run the E2E test suites automatically on release PRs by adding `.github/release-pr-body.md`.
+
 ### Removed
 
 - **Removed the `image.registry` value and the sync patch behind it** ([roadmap#3264](https://github.com/giantswarm/roadmap/issues/3264)). The registry is now part of each image's `repository` value, exactly as upstream ships it, so the chart no longer patches upstream's `cilium.image`/`cilium.operator.image` helpers into a `(list $ <image>)` signature and no longer rewrites all 35 call sites with `sed`. `helm/cilium/templates/_helpers.tpl` and `helm/cilium/templates/cilium-operator/_helpers.tpl` are now byte-identical to upstream, and 15 template patches disappear from `diffs/`.
