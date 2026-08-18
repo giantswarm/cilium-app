@@ -1,9 +1,9 @@
 diff --git a/helm/Makefile.giantswarm b/helm/Makefile.giantswarm
 new file mode 100644
-index 0000000..ff9ffec
+index 0000000..7cbb75f
 --- /dev/null
 +++ b/helm/Makefile.giantswarm
-@@ -0,0 +1,22 @@
+@@ -0,0 +1,26 @@
 +# Point every image at the Giant Swarm mirror. The registry is part of the
 +# repository here, exactly as upstream does it (see Makefile.values), so the
 +# chart needs no template patching to address our registry.
@@ -18,6 +18,10 @@ index 0000000..ff9ffec
 +export CILIUM_ENVOY_REPO:=gsoci.azurecr.io/giantswarm/cilium-envoy
 +export HUBBLE_UI_BACKEND_REPO:=gsoci.azurecr.io/giantswarm/hubble-ui-backend
 +export HUBBLE_UI_FRONTEND_REPO:=gsoci.azurecr.io/giantswarm/hubble-ui
++# Used only by encryption.type=ztunnel, which we do not support. Mirrorable
++# since Cilium v1.20 moved this image from docker.io/istio/ztunnel to
++# quay.io/cilium/ztunnel:v1.0.0, whose digest our cilium-ztunnel mirror carries.
++export ZTUNNEL_REPO:=gsoci.azurecr.io/giantswarm/cilium-ztunnel
 +
 +# The SPIRE images stay on their upstream registries on purpose. They are
 +# listed in sync/unmirrored-images.txt so sync/verify-images.sh does not flag
