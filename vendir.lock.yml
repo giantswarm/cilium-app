@@ -2,14 +2,14 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Prepare for release v1.19.6...
-      sha: 9a8982433e18019e290b8199c0c4ad24f66befe8
+      commitTitle: Prepare for release v1.19.7...
+      sha: 704b537b83f456fc199f48c2f1781beb0d679c87
       tags:
-      - v1.19.6
+      - 1.19.7
     path: cilium
   - helmChart:
-      appVersion: 1.19.6
-      version: 1.19.6
+      appVersion: 1.19.7
+      version: 1.19.7
     path: cilium-chart
   path: vendor
 - contents:
