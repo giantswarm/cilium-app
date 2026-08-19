@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Upgrade Cilium to [v1.19.7](https://github.com/cilium/cilium/releases/tag/v1.19.7).
 - Run the E2E test suites automatically on release PRs by adding `.github/release-pr-body.md`.
 
 ### Removed
