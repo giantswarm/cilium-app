@@ -821,7 +821,17 @@
           "type": "object"
         },
         "tolerations": {
-          "items": {},
+          "items": {
+            "anyOf": [
+              {
+                "properties": {
+                  "operator": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          },
           "type": "array"
         },
         "ttlSecondsAfterFinished": {

@@ -1386,7 +1386,13 @@ certgen:
   priorityClassName: ""
   # -- Node tolerations for pod assignment on nodes with taints
   # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
-  tolerations: []
+  #
+  # Giant Swarm tolerates any node startup taints here to avoid chicken-and-egg
+  # situations. For example, `NoExecute / ebs.csi.aws.com/agent-not-ready` is set
+  # for all nodes before the AWS EBS CSI driver HelmRelease is even installed, which
+  # depends on Cilium to be installed first.
+  tolerations:
+    - operator: Exists
   # -- Resource limits for certgen
   # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
   resources: {}

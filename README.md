@@ -13,7 +13,7 @@ There are several ways to install this app onto a workload cluster.
 
 ## Upgrading cilium version
 
-Update the version in `vendir.s1.yml` and run `./sync/sync.sh`. It's good to check the diffs from upstream. They are stored in the `./diffs` directory.
+Update the version in `vendir.yml` and run `./sync/sync.sh`. It's good to check the diffs from upstream. They are stored in the `./diffs` directory.
 
 
 ## Version compatibility
@@ -24,7 +24,7 @@ Update the version in `vendir.s1.yml` and run `./sync/sync.sh`. It's good to che
 | 1.3.x | 1.18.x | v32,v33 | v32,v33 | v32,v33 | v32,v33 |
 | 1.2.x | 1.17.x | v31 | v31 | v31 | v31 |
 | 1.1.x | 1.17.x | -- | -- | -- | -- |
-| 1.0.x | 1.17.x | -- | -- | -- | -- | 
+| 1.0.x | 1.17.x | -- | -- | -- | -- |
 | 0.32.x | 1.17.x | -- | -- | -- | -- |
 | 0.31.x | 1.16.x | v30 | v30 | v30 | v30 |
 | 0.30.x | 1.16.x | -- | -- | -- | -- |

@@ -8,6 +8,8 @@ repo_dir=$(git rev-parse --show-toplevel) ; readonly repo_dir
 
 cd "${repo_dir}"
 
+source ./sync/util.sh
+
 # Wire certgen's CA expiry early-warning flag into the certgen job specs.
 # Upstream wires this on main, but not yet in the vendored chart version.
 #
@@ -28,7 +30,8 @@ for f in \
         fi
 
         set -x
-        sed -i 's/^\([[:space:]]*\)- "--ca-common-name=Cilium CA"$/&\n\1- "--ca-enforce-validity-throughout-leaves-duration={{ .Values.certgen.enforceCAValidityThroughoutLeavesDuration }}"/' "$f"
+        sed_inplace 's/^\([[:space:]]*\)- "--ca-common-name=Cilium CA"$/&\
+\1- "--ca-enforce-validity-throughout-leaves-duration={{ .Values.certgen.enforceCAValidityThroughoutLeavesDuration }}"/' "$f"
         { set +x; } 2>/dev/null
 
         grep -q 'ca-enforce-validity-throughout-leaves-duration' "$f" || {

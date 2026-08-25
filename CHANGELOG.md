@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Make certgen jobs also tolerate any taint, to avoid stumbling over `ebs.csi.aws.com/agent-not-ready` before AWS EBS CSI driver is installed.
+
 ## [1.5.1] - 2026-08-19
 
 ### Changed
