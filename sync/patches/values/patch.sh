@@ -9,6 +9,8 @@ script_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) ; readonly script_d
 
 cd "${repo_dir}"
 
+source ./sync/util.sh
+
 readonly script_dir_rel=".${script_dir#"${repo_dir}"}"
 
 set -x
@@ -20,20 +22,21 @@ cp "${script_dir_rel}/Makefile.giantswarm" "./helm/Makefile.giantswarm"
 # directory.
 cp ./vendor/cilium/{Makefile.defs,Makefile.quiet,VERSION} ./helm/
 # replace "include ../../Makefile.defs" with "include Makefile.defs"
-sed -i 's#include \.\./\.\./Makefile.defs#include Makefile.defs#g' ./helm/Makefile
+sed_inplace 's#include \.\./\.\./Makefile.defs#include Makefile.defs#g' ./helm/Makefile
 # replace "--workdir /src/install/kubernetes" with "--workdir /src"
-sed -i 's#--workdir /src/install/kubernetes#--workdir /src#g' ./helm/Makefile
+sed_inplace 's#--workdir /src/install/kubernetes#--workdir /src#g' ./helm/Makefile
 # replace "--volume $(CURDIR)/../..:/src" with "--volume $(CURDIR):/src"
-sed -i 's#\(--volume .*\)\.\./\.\.:/src#\1:/src#g' ./helm/Makefile
+sed_inplace 's#\(--volume .*\)\.\./\.\.:/src#\1:/src#g' ./helm/Makefile
 
 # We also need to remove changes to Chart.yaml because it's maintained by us.
 # The regexp makes sure the target starts with a letter so it doesn't match
 # .PHONY.
-sed -i 's/\(^[-_a-z]\+:.*\) update-chart/\1/g' ./helm/Makefile
+sed_inplace 's/\(^[-_a-z][-_a-z]*:.*\) update-chart/\1/g' ./helm/Makefile
 
 # We also need to include our own Makefile.giantswarm into the main Makefile
 # to override image names
-sed -i '/include $(MAKEFILE_VALUES)/a include Makefile.giantswarm' ./helm/Makefile
+sed_inplace '/include $(MAKEFILE_VALUES)/a\
+include Makefile.giantswarm' ./helm/Makefile
 
 # Obtain release container image digests from original upstream values.yaml
 # and construct the Makefile.digests from it
