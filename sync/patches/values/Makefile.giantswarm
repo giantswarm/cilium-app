@@ -12,6 +12,10 @@ export CILIUM_NODEINIT_REPO:=gsoci.azurecr.io/giantswarm/cilium-startup-script
 export CILIUM_ENVOY_REPO:=gsoci.azurecr.io/giantswarm/cilium-envoy
 export HUBBLE_UI_BACKEND_REPO:=gsoci.azurecr.io/giantswarm/hubble-ui-backend
 export HUBBLE_UI_FRONTEND_REPO:=gsoci.azurecr.io/giantswarm/hubble-ui
+# Used only by encryption.type=ztunnel, which we do not support. Mirrorable
+# since Cilium v1.20 moved this image from docker.io/istio/ztunnel to
+# quay.io/cilium/ztunnel:v1.0.0, whose digest our cilium-ztunnel mirror carries.
+export ZTUNNEL_REPO:=gsoci.azurecr.io/giantswarm/cilium-ztunnel
 
 # The SPIRE images stay on their upstream registries on purpose. They are
 # listed in sync/unmirrored-images.txt so sync/verify-images.sh does not flag
