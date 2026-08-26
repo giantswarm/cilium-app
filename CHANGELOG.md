@@ -9,8 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgrade Cilium to [v1.20.1](https://github.com/cilium/cilium/releases/tag/v1.20.1) from v1.19.6. Please review the upstream [1.20 upgrade notes](https://docs.cilium.io/en/v1.20/operations/upgrade/) before rolling this out.
+- Upgrade Cilium to [v1.20.1](https://github.com/cilium/cilium/releases/tag/v1.20.1) from v1.19.7. Please review the upstream [1.20 upgrade notes](https://docs.cilium.io/en/v1.20/operations/upgrade/) before rolling this out.
 - Serve the ztunnel image from `gsoci.azurecr.io/giantswarm/cilium-ztunnel` instead of pulling it from upstream. Cilium v1.20 moved this image from `docker.io/istio/ztunnel` to `quay.io/cilium/ztunnel:v1.0.0`, and our mirror carries exactly that digest, so it no longer has to be allow-listed in `sync/unmirrored-images.txt`. Only used by `encryption.type=ztunnel`, which we do not support.
+
+## [1.5.1] - 2026-08-19
+
+### Changed
+
+- Upgrade Cilium to [v1.19.7](https://github.com/cilium/cilium/releases/tag/v1.19.7).
 - Run the E2E test suites automatically on release PRs by adding `.github/release-pr-body.md`.
 
 ### Removed
@@ -582,7 +588,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2022-03-25
 
-[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v1.5.1...HEAD
+[1.5.1]: https://github.com/giantswarm/cilium-app/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/giantswarm/cilium-app/compare/v1.4.5...v1.5.0
 [1.4.5]: https://github.com/giantswarm/cilium-app/compare/v1.4.4...v1.4.5
 [1.4.4]: https://github.com/giantswarm/cilium-app/compare/v1.4.3...v1.4.4

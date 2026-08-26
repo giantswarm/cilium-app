@@ -2,7 +2,7 @@ apiVersion: v2
 name: cilium
 displayName: Cilium
 home: https://cilium.io/
-version: 1.5.0
+version: 1.5.1
 appVersion: 1.20.1
 kubeVersion: ">= 1.21.0-0"
 icon: https://s.giantswarm.io/app-icons/cilium/1/light.svg
