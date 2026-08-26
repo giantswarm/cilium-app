@@ -625,8 +625,8 @@ contributors across the globe, there is almost always someone available to help.
 | hubble.relay.annotations | object | `{}` | Annotations to be added to all top-level hubble-relay objects (resources under templates/hubble-relay) |
 | hubble.relay.enabled | bool | `true` | Enable Hubble Relay (requires hubble.enabled=true) |
 | hubble.relay.extraEnv | list | `[{"name":"GOPS_CONFIG_DIR","value":"/tmp"}]` | Additional hubble-relay environment variables. |
-| hubble.relay.extraVolumeMounts | list | `[{"mountPath":"/tmp","name":"tmp-dir"}]` | Additional hubble-relay volumeMounts. |
-| hubble.relay.extraVolumes | list | `[{"emptyDir":{},"name":"tmp-dir"}]` | Additional hubble-relay volumes. |
+| hubble.relay.extraVolumeMounts | list | `[]` | Additional hubble-relay volumeMounts. |
+| hubble.relay.extraVolumes | list | `[]` | Additional hubble-relay volumes. |
 | hubble.relay.gops.enabled | bool | `true` | Enable gops for hubble-relay |
 | hubble.relay.gops.port | int | `9893` | Configure gops listen port for hubble-relay |
 | hubble.relay.image | object | `{"digest":"sha256:59be0ae7d475ab9011a5e954618c0f27b5778b17140381425b308b55ba4917f4","override":null,"pullPolicy":"IfNotPresent","repository":"gsoci.azurecr.io/giantswarm/hubble-relay","tag":"v1.20.1","useDigest":true}` | Hubble-relay container image. |
