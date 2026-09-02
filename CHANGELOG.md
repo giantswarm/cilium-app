@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Move the team annotation from the legacy `application.giantswarm.io/team` key to
+  `io.giantswarm.application.team`, in both this chart and the bundled
+  `cilium-giantswarm-cni-customconf` subchart. No template reads `.Chart.Annotations` and no
+  template emits a team label, so rendered output is byte-identical.
+- Point `home` at this repository instead of `https://cilium.io/`, as the standard requires.
+  Upstream remains listed under `sources`.
+
+### Added
+
+- Declare the `io.giantswarm.application.audience` (`all`) and
+  `io.giantswarm.application.managed` (`true`) annotations, completing the
+  [chart metadata standard](https://docs.giantswarm.io/reference/platform-api/chart-metadata/).
+
 ## [1.6.0] - 2026-08-26
 
 ### Changed
