@@ -3325,7 +3325,25 @@ operator:
   # type: [null, array]
   # @schema
   tolerations:
-    - operator: Exists
+    # Giant Swarm: the operator must be schedulable before the CNI, the CCM/CPI
+    # and the provider CSI node agents are up, otherwise those components (which
+    # depend on Cilium) and the operator deadlock. See
+    # https://github.com/giantswarm/giantswarm/issues/34121
+    # Toleration for agentNotReadyTaintKey is added by the template automatically.
+    # All providers (CAPA, CAPZ, CAPVCD, CAPV):
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+    - key: node.kubernetes.io/not-ready
+      operator: Exists
+    - key: node.cloudprovider.kubernetes.io/uninitialized
+      operator: Exists
+    - key: node.cluster.x-k8s.io/uninitialized
+      operator: Exists
+    # CAPA only:
+    - key: ebs.csi.aws.com/agent-not-ready
+      operator: Exists
+    - key: karpenter.sh/unregistered
+      operator: Exists
   # -- Additional cilium-operator container arguments.
   extraArgs: []
   # -- Additional cilium-operator environment variables.
