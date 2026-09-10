@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Replace the catch-all `operator.tolerations: [{operator: Exists}]` with the explicit set of taints
+  cilium-operator has to tolerate on our providers, so it stays schedulable during bootstrap without
+  tolerating everything: `node-role.kubernetes.io/control-plane`, `node.kubernetes.io/not-ready`,
+  `node.cloudprovider.kubernetes.io/uninitialized` and `node.cluster.x-k8s.io/uninitialized` on all
+  providers (CAPA, CAPZ, CAPVCD, CAPV), plus `ebs.csi.aws.com/agent-not-ready` and
+  `karpenter.sh/unregistered` on CAPA. The `node.cilium.io/agent-not-ready` toleration is still added
+  by the template itself. See [#34121](https://github.com/giantswarm/giantswarm/issues/34121).
 - Move the team annotation from the legacy `application.giantswarm.io/team` key to
   `io.giantswarm.application.team`, in both this chart and the bundled
   `cilium-giantswarm-cni-customconf` subchart. No template reads `.Chart.Annotations` and no
