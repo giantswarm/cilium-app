@@ -3366,18 +3366,18 @@ operator:
     # https://github.com/giantswarm/giantswarm/issues/34121
     # Toleration for agentNotReadyTaintKey is added by the template automatically.
     # All providers (CAPA, CAPZ, CAPVCD, CAPV):
-    - key: node-role.kubernetes.io/control-plane
+    - key: "node-role.kubernetes.io/control-plane"
       operator: Exists
-    - key: node.kubernetes.io/not-ready
+    - key: "node.kubernetes.io/not-ready"
       operator: Exists
-    - key: node.cloudprovider.kubernetes.io/uninitialized
+    - key: "node.cloudprovider.kubernetes.io/uninitialized"
       operator: Exists
-    - key: node.cluster.x-k8s.io/uninitialized
+    - key: "node.cluster.x-k8s.io/uninitialized"
       operator: Exists
     # CAPA only:
-    - key: ebs.csi.aws.com/agent-not-ready
+    - key: "ebs.csi.aws.com/agent-not-ready"
       operator: Exists
-    - key: karpenter.sh/unregistered
+    - key: "karpenter.sh/unregistered"
       operator: Exists
   # -- Additional cilium-operator container arguments.
   extraArgs: []
