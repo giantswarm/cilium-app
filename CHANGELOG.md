@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Upgrade Cilium to [v1.20.2](https://github.com/cilium/cilium/releases/tag/v1.20.2).
 - Move the team annotation from the legacy `application.giantswarm.io/team` key to
   `io.giantswarm.application.team`, in both this chart and the bundled
   `cilium-giantswarm-cni-customconf` subchart. No template reads `.Chart.Annotations` and no
