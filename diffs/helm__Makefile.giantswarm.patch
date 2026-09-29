@@ -1,6 +1,6 @@
 diff --git a/helm/Makefile.giantswarm b/helm/Makefile.giantswarm
 new file mode 100644
-index 0000000..ff9ffec
+index 0000000..bb84c2a
 --- /dev/null
 +++ b/helm/Makefile.giantswarm
 @@ -0,0 +1,22 @@
@@ -23,6 +23,6 @@ index 0000000..ff9ffec
 +# listed in sync/unmirrored-images.txt so sync/verify-images.sh does not flag
 +# them. See that file for what it would take to move them to gsoci; note that
 +# the chart pins these by digest, so mirroring the tag is not enough.
-+export SPIRE_INIT_REPO:=docker.io/library/busybox
++export BUSYBOX_REPO:=docker.io/library/busybox
 +export SPIRE_SERVER_REPO:=ghcr.io/spiffe/spire-server
 +export SPIRE_AGENT_REPO:=ghcr.io/spiffe/spire-agent

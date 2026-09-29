@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Upgrade Cilium to [v1.19.8](https://github.com/cilium/cilium/releases/tag/v1.19.8).
+
 ## [1.5.1] - 2026-08-19
 
 ### Changed
