@@ -3346,7 +3346,10 @@
                           "type": "string"
                         },
                         "name": {
-                          "type": "null"
+                          "type": [
+                            "null",
+                            "string"
+                          ]
                         },
                         "useSecret": {
                           "type": "boolean"

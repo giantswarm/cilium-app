@@ -17,6 +17,6 @@ export HUBBLE_UI_FRONTEND_REPO:=gsoci.azurecr.io/giantswarm/hubble-ui
 # listed in sync/unmirrored-images.txt so sync/verify-images.sh does not flag
 # them. See that file for what it would take to move them to gsoci; note that
 # the chart pins these by digest, so mirroring the tag is not enough.
-export SPIRE_INIT_REPO:=docker.io/library/busybox
+export BUSYBOX_REPO:=docker.io/library/busybox
 export SPIRE_SERVER_REPO:=ghcr.io/spiffe/spire-server
 export SPIRE_AGENT_REPO:=ghcr.io/spiffe/spire-agent
