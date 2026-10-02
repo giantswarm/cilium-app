@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Restore upstream `cilium-operator` tolerations instead of tolerating all taints.
+
 ## [1.6.1] - 2026-09-29
 
 ### Changed
