@@ -20,8 +20,3 @@
 docker.io/library/busybox
 ghcr.io/spiffe/spire-server
 ghcr.io/spiffe/spire-agent
-
-# ztunnel, used only by encryption.type=ztunnel, which we do not support.
-# gsoci.azurecr.io/giantswarm/cilium-ztunnel exists but carries only v1.0.0
-# tags, not the istio/ztunnel tag this chart pins.
-docker.io/istio/ztunnel
