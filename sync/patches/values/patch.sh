@@ -9,7 +9,7 @@ script_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) ; readonly script_d
 
 cd "${repo_dir}"
 
-source ./sync/util.sh
+source "${repo_dir}/sync/util.sh"
 
 readonly script_dir_rel=".${script_dir#"${repo_dir}"}"
 
