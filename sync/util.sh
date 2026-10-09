@@ -1,8 +1,8 @@
-#!/usr/bin/env bash
-sed_inplace() {
-    if sed --version 2>/dev/null | grep -q "GNU sed" ; then
-        sed -i "$@"
-    else
-        sed -i "" "$@"
-    fi
-}
+# Helpers sourced by the sync scripts. Not meant to be executed directly.
+
+# GNU sed takes an optional suffix for -i, BSD sed requires one.
+if sed --version >/dev/null 2>&1 ; then
+    sed_inplace() { sed -i "$@"; }
+else
+    sed_inplace() { sed -i "" "$@"; }
+fi
