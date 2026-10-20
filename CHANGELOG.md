@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Upgrade Cilium to [v1.19.9](https://github.com/cilium/cilium/releases/tag/v1.19.9).
+- Exclude the Lens namespace label `k8slens-edit-resource-version` from identity computation.
+
 ## [1.5.2] - 2026-09-29
 
 ### Changed
