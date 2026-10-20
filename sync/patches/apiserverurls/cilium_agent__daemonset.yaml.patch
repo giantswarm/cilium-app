@@ -1,0 +1,13 @@
+diff --git a/helm/cilium/templates/cilium-agent/daemonset.yaml b/helm/cilium/templates/cilium-agent/daemonset.yaml
+index d15f91f..db322fa 100644
+--- a/helm/cilium/templates/cilium-agent/daemonset.yaml
++++ b/helm/cilium/templates/cilium-agent/daemonset.yaml
+@@ -503,7 +503,7 @@ spec:
+         - "--k8s-kubeconfig-path={{ .Values.kubeConfigPath }}"
+         {{- end }}
+         {{- if hasKey .Values.k8s "apiServerURLs" }}
+-        - "--k8s-api-server-urls={{ .Values.k8s.apiServerURLs }}"
++        - "--k8s-api-server-urls={{ include "k8sAPIServerURLs" . }}"
+         {{- end }}
+         env:
+         - name: K8S_NODE_NAME

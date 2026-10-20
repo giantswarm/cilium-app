@@ -1,0 +1,51 @@
+diff --git a/helm/cilium/templates/_helpers.tpl b/helm/cilium/templates/_helpers.tpl
+index e840918..b07fd7a 100644
+--- a/helm/cilium/templates/_helpers.tpl
++++ b/helm/cilium/templates/_helpers.tpl
+@@ -166,6 +166,46 @@ To override the namespace and configMap when using `auto`:
+   {{- end }}
+ {{- end }}
+ 
++{{/*
++Return k8s.apiServerURLs. When `auto`, it lists the API server URL from k8sServiceHost and
++k8sServicePort, followed by the address of every kube-apiserver in the `default/kubernetes`
++EndpointSlice. With two or more URLs, Cilium enables its API server failover mode.
++*/}}
++{{- define "k8sAPIServerURLs" }}
++  {{- if eq (toString .Values.k8s.apiServerURLs) "auto" }}
++    {{- $urls := list }}
++    {{- if .Values.k8sServiceHost }}
++      {{- $host := include "k8sServiceHost" . | trimAll "\"" }}
++      {{- $port := include "k8sServicePort" . | trimAll "\"" }}
++      {{- if contains ":" $host }}
++        {{- $host = printf "[%s]" $host }}
++      {{- end }}
++      {{- if $port }}
++        {{- $host = printf "%s:%s" $host $port }}
++      {{- end }}
++      {{- $urls = append $urls (printf "https://%s" $host) }}
++    {{- end }}
++    {{- $slice := lookup "discovery.k8s.io/v1" "EndpointSlice" "default" "kubernetes" }}
++    {{- if $slice }}
++      {{- $port := 443 }}
++      {{- with $slice.ports }}
++        {{- $port = (first .).port }}
++      {{- end }}
++      {{- range $endpoint := $slice.endpoints }}
++        {{- range $address := $endpoint.addresses }}
++          {{- if contains ":" $address }}
++            {{- $address = printf "[%s]" $address }}
++          {{- end }}
++          {{- $urls = append $urls (printf "https://%s:%v" $address $port) }}
++        {{- end }}
++      {{- end }}
++    {{- end }}
++    {{- join " " $urls }}
++  {{- else }}
++    {{- .Values.k8s.apiServerURLs }}
++  {{- end }}
++{{- end }}
++
+ {{/*
+ Return user specify envoy.enabled or default value based on the upgradeCompatibility
+ */}}

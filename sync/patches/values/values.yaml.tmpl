@@ -2462,6 +2462,8 @@ k8s:
   # @schema
   # -- A space separated list of Kubernetes API server URLs to use with the client.
   # For example "https://192.168.0.1:6443 https://192.168.0.2:6443"
+  # Set to `auto` to list the API server from `k8sServiceHost` and `k8sServicePort`, followed by
+  # every kube-apiserver address in the `default/kubernetes` EndpointSlice (Giant Swarm addition).
   apiServerURLs: ~
 
 # -- Keep the deprecated selector labels when deploying Cilium DaemonSet.
