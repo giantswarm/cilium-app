@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Upgrade Cilium to [v1.20.3](https://github.com/cilium/cilium/releases/tag/v1.20.3).
 - Restore upstream `cilium-operator` tolerations instead of tolerating all taints.
 
 ## [1.6.1] - 2026-09-29
