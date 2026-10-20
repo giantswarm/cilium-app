@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Restore upstream `cilium-operator` tolerations instead of tolerating all taints.
+- Exclude the Lens namespace label `k8slens-edit-resource-version` from identity computation.
 
 ## [1.6.1] - 2026-09-29
 
