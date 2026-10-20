@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Upgrade Cilium to [v1.19.9](https://github.com/cilium/cilium/releases/tag/v1.19.9).
+- Exclude the Lens namespace label `k8slens-edit-resource-version` from identity computation. As the identity label `io.cilium.k8s.namespace.labels.k8slens-edit-resource-version` it is too long for a label selector, which made Cilium log `unable to construct selector in label selector` and fire `CiliumNetworkPolicyFailed`. Pods in namespaces carrying this label get a new security identity on rollout.
 
 ## [1.5.2] - 2026-09-29
 

@@ -822,7 +822,7 @@ contributors across the globe, there is almost always someone available to help.
 | l2podAnnouncements.enabled | bool | `false` | Enable L2 pod announcements |
 | l2podAnnouncements.interfacePattern | string | `""` | A regular expression matching interfaces used for sending Gratuitous ARP pod announcements |
 | l7Proxy | bool | `true` | Enable Layer 7 network policy. |
-| labels | string | `"!.*/enforce !.*fluxcd\\.io/.* !.*kubernetes\\.io/managed-by.* !job-name"` |  |
+| labels | string | `"!.*/enforce !.*fluxcd\\.io/.* !.*kubernetes\\.io/managed-by.* !job-name !io\\.cilium\\.k8s\\.namespace\\.labels\\.k8slens-edit-resource-version"` |  |
 | livenessProbe.failureThreshold | int | `10` | failure threshold of liveness probe |
 | livenessProbe.periodSeconds | int | `30` | interval between checks of the liveness probe |
 | livenessProbe.requireK8sConnectivity | bool | `false` | whether to require k8s connectivity as part of the check. |
