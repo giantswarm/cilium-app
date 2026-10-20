@@ -2493,7 +2493,10 @@ localRedirectPolicies:
   # @schema@
   addressMatcherCIDRs: ~
 # To include or exclude matched resources from cilium identity evaluation
-labels: "!.*/enforce !.*fluxcd\\.io/.* !.*kubernetes\\.io/managed-by.* !job-name"
+# The Lens namespace label k8slens-edit-resource-version becomes the identity label
+# io.cilium.k8s.namespace.labels.k8slens-edit-resource-version, which is too long for a
+# label selector name part (63 bytes). See https://github.com/giantswarm/giantswarm/issues/38501
+labels: "!.*/enforce !.*fluxcd\\.io/.* !.*kubernetes\\.io/managed-by.* !job-name !io\\.cilium\\.k8s\\.namespace\\.labels\\.k8slens-edit-resource-version"
 # logOptions allows you to define logging options. eg:
 # logOptions:
 #   format: json

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upgrade Cilium to [v1.20.3](https://github.com/cilium/cilium/releases/tag/v1.20.3).
 - Restore upstream `cilium-operator` tolerations instead of tolerating all taints.
+- Exclude the Lens namespace label `k8slens-edit-resource-version` from identity computation.
 
 ## [1.5.3] - 2026-10-20
 
