@@ -9,7 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Upgrade Cilium to [v1.20.3](https://github.com/cilium/cilium/releases/tag/v1.20.3).
 - Restore upstream `cilium-operator` tolerations instead of tolerating all taints.
+- Exclude the Lens namespace label `k8slens-edit-resource-version` from identity computation.
+
+## [1.5.3] - 2026-10-20
+
+### Changed
+
+- Upgrade Cilium to [v1.19.9](https://github.com/cilium/cilium/releases/tag/v1.19.9).
 - Exclude the Lens namespace label `k8slens-edit-resource-version` from identity computation.
 
 ## [1.6.1] - 2026-09-29
@@ -29,6 +37,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Declare the `io.giantswarm.application.audience` (`all`) and
   `io.giantswarm.application.managed` (`true`) annotations, completing the
   [chart metadata standard](https://docs.giantswarm.io/reference/platform-api/chart-metadata/).
+
+## [1.5.2] - 2026-09-29
+
+### Changed
+
+- Upgrade Cilium to [v1.19.8](https://github.com/cilium/cilium/releases/tag/v1.19.8).
 
 ## [1.6.0] - 2026-08-26
 
@@ -618,6 +632,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [Unreleased]: https://github.com/giantswarm/cilium-app/compare/v1.6.1...HEAD
 [1.6.1]: https://github.com/giantswarm/cilium-app/compare/v1.6.0...v1.6.1
 [1.6.0]: https://github.com/giantswarm/cilium-app/compare/v1.5.1...v1.6.0
+[1.5.3]: https://github.com/giantswarm/cilium-app/compare/v1.5.2...v1.5.3
+[1.5.2]: https://github.com/giantswarm/cilium-app/compare/v1.5.1...v1.5.2
 [1.5.1]: https://github.com/giantswarm/cilium-app/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/giantswarm/cilium-app/compare/v1.4.5...v1.5.0
 [1.4.5]: https://github.com/giantswarm/cilium-app/compare/v1.4.4...v1.4.5
