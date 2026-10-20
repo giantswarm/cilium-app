@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Support `k8s.apiServerURLs: auto` to enable Cilium's API server failover mode with the API endpoint and the kube-apiserver addresses.
+- Support `k8s.apiServerURLs: auto` to enable Cilium's API server failover mode with the API endpoint and the `kubernetes` Service ClusterIP.
 
 ### Changed
 
