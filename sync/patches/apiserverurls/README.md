@@ -2,10 +2,12 @@
 
 `k8s.apiServerURLs: auto` derives the list of API server URLs at install time. It lists the
 API server from `k8sServiceHost`/`k8sServicePort` (resolved from `kube-public/cluster-info` when
-`auto`), followed by every kube-apiserver address in the `default/kubernetes` EndpointSlice.
-With two or more URLs, Cilium enables its API server failover mode: agents rotate through the
-list until their first sync and then reach the API through the `kubernetes` Service, so they
-no longer depend on the API load balancer.
+`auto`), followed by the ClusterIP of the `default/kubernetes` Service. With two or more URLs,
+Cilium enables its API server failover mode: agents rotate through the list until their first
+sync and then reach the API through the `kubernetes` Service, so they no longer depend on the
+API load balancer. The ClusterIP is also reachable while an agent restarts, because the
+datapath keeps translating it. Control plane node IPs are not listed: they change on every
+control plane rollout, and Flux does not render the chart again when they do.
 
 ## How were patches generated?
 

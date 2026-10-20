@@ -168,8 +168,8 @@ To override the namespace and configMap when using `auto`:
 
 {{/*
 Return k8s.apiServerURLs. When `auto`, it lists the API server URL from k8sServiceHost and
-k8sServicePort, followed by the address of every kube-apiserver in the `default/kubernetes`
-EndpointSlice. With two or more URLs, Cilium enables its API server failover mode.
+k8sServicePort, followed by the ClusterIP of the `default/kubernetes` Service. Both addresses
+survive control plane rollouts. With two or more URLs, Cilium enables its API server failover mode.
 */}}
 {{- define "k8sAPIServerURLs" }}
   {{- if eq (toString .Values.k8s.apiServerURLs) "auto" }}
@@ -185,20 +185,17 @@ EndpointSlice. With two or more URLs, Cilium enables its API server failover mod
       {{- end }}
       {{- $urls = append $urls (printf "https://%s" $host) }}
     {{- end }}
-    {{- $slice := lookup "discovery.k8s.io/v1" "EndpointSlice" "default" "kubernetes" }}
-    {{- if $slice }}
+    {{- $service := lookup "v1" "Service" "default" "kubernetes" }}
+    {{- if $service }}
+      {{- $address := $service.spec.clusterIP }}
+      {{- if contains ":" $address }}
+        {{- $address = printf "[%s]" $address }}
+      {{- end }}
       {{- $port := 443 }}
-      {{- with $slice.ports }}
+      {{- with $service.spec.ports }}
         {{- $port = (first .).port }}
       {{- end }}
-      {{- range $endpoint := $slice.endpoints }}
-        {{- range $address := $endpoint.addresses }}
-          {{- if contains ":" $address }}
-            {{- $address = printf "[%s]" $address }}
-          {{- end }}
-          {{- $urls = append $urls (printf "https://%s:%v" $address $port) }}
-        {{- end }}
-      {{- end }}
+      {{- $urls = append $urls (printf "https://%s:%v" $address $port) }}
     {{- end }}
     {{- join " " $urls }}
   {{- else }}
