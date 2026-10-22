@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml b/helm/cilium/templates/cilium-agent/daemonset.yaml
-index d453fd9..d15f91f 100644
+index d453fd9..db322fa 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-agent/daemonset.yaml
 +++ b/helm/cilium/templates/cilium-agent/daemonset.yaml
 @@ -212,6 +212,18 @@ spec:
@@ -21,6 +21,15 @@ index d453fd9..d15f91f 100644
          {{- if and .Values.k8sServiceHostRef.name .Values.k8sServiceHostRef.key }}
          - name: KUBERNETES_SERVICE_HOST
            valueFrom:
+@@ -491,7 +503,7 @@ spec:
+         - "--k8s-kubeconfig-path={{ .Values.kubeConfigPath }}"
+         {{- end }}
+         {{- if hasKey .Values.k8s "apiServerURLs" }}
+-        - "--k8s-api-server-urls={{ .Values.k8s.apiServerURLs }}"
++        - "--k8s-api-server-urls={{ include "k8sAPIServerURLs" . }}"
+         {{- end }}
+         env:
+         - name: K8S_NODE_NAME
 @@ -504,6 +516,18 @@ spec:
              fieldRef:
                apiVersion: v1

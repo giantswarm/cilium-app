@@ -1,7 +1,16 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-configmap.yaml b/helm/cilium/templates/cilium-configmap.yaml
-index a49d25e..9b5a2eb 100644
+index a49d25e..0b66eca 100644
 --- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-configmap.yaml
 +++ b/helm/cilium/templates/cilium-configmap.yaml
+@@ -969,7 +969,7 @@ data:
+   k8s-require-ipv6-pod-cidr: {{ .Values.k8s.requireIPv6PodCIDR | quote }}
+ {{- end }}
+ {{- if (not (kindIs "invalid" .Values.k8s.apiServerURLs)) }}
+-  k8s-api-server-urls: {{ .Values.k8s.apiServerURLs | quote }}
++  k8s-api-server-urls: {{ include "k8sAPIServerURLs" . | quote }}
+ {{- end }}
+ {{- if and .Values.endpointRoutes .Values.endpointRoutes.enabled }}
+   enable-endpoint-routes: {{ .Values.endpointRoutes.enabled | quote }}
 @@ -986,10 +986,7 @@ data:
    enable-endpoint-lockdown-on-policy-overflow: {{ .Values.endpointLockdownOnMapOverflow | quote }}
  {{- if .Values.cni.configMap }}
