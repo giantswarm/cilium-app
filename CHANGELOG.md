@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgrade Cilium to [v1.20.3](https://github.com/cilium/cilium/releases/tag/v1.20.3).
+- Upgrade Cilium to [v1.20.4](https://github.com/cilium/cilium/releases/tag/v1.20.4).
+- Envoy xDS mode defaults to `split` again, following upstream ([cilium/cilium#49383](https://github.com/cilium/cilium/pull/49383)).
+  Since 1.6.0 the chart set `envoy-xds-mode: ads`, which saturates `cilium-agent` CPU under
+  CiliumIdentity churn ([cilium/cilium#48548](https://github.com/cilium/cilium/issues/48548)).
+  Clusters upgrading from 1.6.x switch from `ads` to `split`. Set `envoy.xdsMode: ads` to keep the old mode.
 - Restore upstream `cilium-operator` tolerations instead of tolerating all taints.
 - Exclude the Lens namespace label `k8slens-edit-resource-version` from identity computation.
 
