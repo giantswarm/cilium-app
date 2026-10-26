@@ -167,6 +167,43 @@ To override the namespace and configMap when using `auto`:
 {{- end }}
 
 {{/*
+Return k8s.apiServerURLs. When `auto`, it lists the API server URL from k8sServiceHost and
+k8sServicePort, followed by the ClusterIP of the `default/kubernetes` Service. Both addresses
+survive control plane rollouts. With two or more URLs, Cilium enables its API server failover mode.
+*/}}
+{{- define "k8sAPIServerURLs" }}
+  {{- if eq (toString .Values.k8s.apiServerURLs) "auto" }}
+    {{- $urls := list }}
+    {{- if .Values.k8sServiceHost }}
+      {{- $host := include "k8sServiceHost" . | trimAll "\"" }}
+      {{- $port := include "k8sServicePort" . | trimAll "\"" }}
+      {{- if contains ":" $host }}
+        {{- $host = printf "[%s]" $host }}
+      {{- end }}
+      {{- if $port }}
+        {{- $host = printf "%s:%s" $host $port }}
+      {{- end }}
+      {{- $urls = append $urls (printf "https://%s" $host) }}
+    {{- end }}
+    {{- $service := lookup "v1" "Service" "default" "kubernetes" }}
+    {{- if $service }}
+      {{- $address := $service.spec.clusterIP }}
+      {{- if contains ":" $address }}
+        {{- $address = printf "[%s]" $address }}
+      {{- end }}
+      {{- $port := 443 }}
+      {{- with $service.spec.ports }}
+        {{- $port = (first .).port }}
+      {{- end }}
+      {{- $urls = append $urls (printf "https://%s:%v" $address $port) }}
+    {{- end }}
+    {{- join " " $urls }}
+  {{- else }}
+    {{- .Values.k8s.apiServerURLs }}
+  {{- end }}
+{{- end }}
+
+{{/*
 Return user specify envoy.enabled or default value based on the upgradeCompatibility
 */}}
 {{- define "envoyDaemonSetEnabled" }}

@@ -503,7 +503,7 @@ spec:
         - "--k8s-kubeconfig-path={{ .Values.kubeConfigPath }}"
         {{- end }}
         {{- if hasKey .Values.k8s "apiServerURLs" }}
-        - "--k8s-api-server-urls={{ .Values.k8s.apiServerURLs }}"
+        - "--k8s-api-server-urls={{ include "k8sAPIServerURLs" . }}"
         {{- end }}
         env:
         - name: K8S_NODE_NAME
