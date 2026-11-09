@@ -64,6 +64,7 @@ render optional \
         --set clustermesh.useAPIServer=true \
         --set standaloneDnsProxy.enabled=true \
         --set dnsProxy.proxyPort=10094 \
+        --set authentication.enabled=true \
         --set authentication.mutual.spire.enabled=true \
         --set authentication.mutual.spire.install.enabled=true
 
