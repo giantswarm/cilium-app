@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index 6051dba..acbed78 100644
+index 6051dba..2b1eda1 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
 @@ -572,7 +572,7 @@ bpf:
@@ -340,15 +340,6 @@ index 6051dba..acbed78 100644
      enabled: true
      port: 9963
      serviceMonitor:
-@@ -4402,7 +4450,7 @@ authentication:
-   # -- Enable authentication processing and garbage collection.
-   # Note that if disabled, policy enforcement will still block requests that require authentication.
-   # But the resulting authentication requests for these requests will not be processed, therefore the requests not be allowed.
--  enabled: false
-+  enabled: true
-   # -- Buffer size of the channel Cilium uses to receive authentication events from the signal map.
-   queueSize: 1024
-   # -- Buffer size of the channel Cilium uses to receive certificate expiration events from auth handlers.
 @@ -4639,3 +4687,12 @@ standaloneDnsProxy:
      digest: "${STANDALONE_DNS_PROXY_DIGEST}"
      useDigest: ${USE_DIGESTS}

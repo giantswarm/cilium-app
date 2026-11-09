@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Support `k8s.apiServerURLs: auto` to enable Cilium's API server failover mode with the API endpoint and the `kubernetes` Service ClusterIP.
 
+### Changed
+
+- Default `authentication.enabled` to `false` (`mesh-auth-enabled: "false"`), following upstream since Cilium 1.19. With it enabled, `cilium-agent` can deadlock during endpoint deletion under pod churn. Mutual authentication is deprecated in Cilium 1.20 and scheduled for removal in 1.21. Policies with `authentication.mode: required` need SPIRE mutual authentication (`authentication.mutual.spire.enabled: true`), which now also needs `authentication.enabled: true` set explicitly, otherwise the chart fails to render. While it is disabled, `cilium-operator` marks such policies invalid.
+
 ## [1.6.2] - 2026-10-26
 
 ### Changed
