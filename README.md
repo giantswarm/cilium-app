@@ -2,11 +2,11 @@
 
 # cilium chart
 
-Giant Swarm offers a cilium App which can be installed in workload clusters.
+Giant Swarm offers a cilium App for workload clusters.
 
 ## Installing
 
-Install this app onto a workload cluster by creating an [App resource](https://docs.giantswarm.io/reference/platform-api/crd/apps.application.giantswarm.io/) in the management cluster, as explained in [App management](https://docs.giantswarm.io/tutorials/fleet-management/app-platform/).
+This app is installed by default in every workload cluster, as part of the Giant Swarm release.
 
 ## Upgrading cilium version
 
