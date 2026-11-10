@@ -942,7 +942,7 @@ contributors across the globe, there is almost always someone available to help.
 | operator.removeNodeTaints | bool | `true` | Remove Cilium node taint from Kubernetes nodes that have a healthy Cilium pod running. |
 | operator.replicas | int | `2` | Number of replicas to run for the cilium-operator deployment |
 | operator.resources | object | `{"limits":{"ephemeral-storage":"4Gi","memory":"2Gi"},"requests":{"cpu":"100m","ephemeral-storage":"2Gi","memory":"256Mi"}}` | cilium-operator resource limits & requests ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ |
-| operator.rollOutPods | bool | `false` | Roll out cilium-operator pods automatically when configmap is updated. |
+| operator.rollOutPods | bool | `true` | Roll out cilium-operator pods automatically when configmap is updated. |
 | operator.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":65532,"runAsNonRoot":true,"runAsUser":65532,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context to be added to cilium-operator pods |
 | operator.setNodeNetworkStatus | bool | `true` | Set Node condition NetworkUnavailable to 'false' with the reason 'CiliumIsUp' for nodes that have a healthy Cilium pod. |
 | operator.setNodeTaints | string | same as removeNodeTaints | Taint nodes where Cilium is scheduled but not running. This prevents pods from being scheduled to nodes where Cilium is not the default CNI provider. |
