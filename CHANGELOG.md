@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Default `operator.rollOutPods` to `true`, so `cilium-operator` restarts when `cilium-config` changes. The operator reads its config only at startup.
+- Default `operator.rollOutPods` to `true`, so `cilium-operator` restarts when the rendered `cilium-config` changes. The operator reads its config only at startup.
 
 ## [1.7.0] - 2026-11-10
 
