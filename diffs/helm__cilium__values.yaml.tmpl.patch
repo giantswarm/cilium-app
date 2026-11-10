@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index 6051dba..2b1eda1 100644
+index 6051dba..2ae0cb6 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
 @@ -572,7 +572,7 @@ bpf:
@@ -251,6 +251,15 @@ index 6051dba..2b1eda1 100644
    port: 9962
    serviceMonitor:
      # -- Enable service monitors.
+@@ -3270,7 +3305,7 @@ operator:
+   # -- Enable the cilium-operator component (required).
+   enabled: true
+   # -- Roll out cilium-operator pods automatically when configmap is updated.
+-  rollOutPods: false
++  rollOutPods: true
+   # -- cilium-operator image.
+   image:
+     # @schema
 @@ -3345,7 +3380,9 @@ operator:
    # -- Additional cilium-operator container arguments.
    extraArgs: []
