@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-11-10
+
 ### Added
 
 - Support `k8s.apiServerURLs: auto` to enable Cilium's API server failover mode with the API endpoint and the `kubernetes` Service ClusterIP.
@@ -643,7 +645,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2022-03-25
 
-[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v1.6.2...HEAD
+[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v1.7.0...HEAD
+[1.7.0]: https://github.com/giantswarm/cilium-app/compare/v1.6.2...v1.7.0
 [1.6.2]: https://github.com/giantswarm/cilium-app/compare/v1.6.1...v1.6.2
 [1.6.1]: https://github.com/giantswarm/cilium-app/compare/v1.6.0...v1.6.1
 [1.6.0]: https://github.com/giantswarm/cilium-app/compare/v1.5.1...v1.6.0
