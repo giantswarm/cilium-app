@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- The E2E connectivity test also creates a `policies.kyverno.io/v1` PolicyException next to the `kyverno.io/v2` one, so the test pods are excepted from the CEL (ValidatingPolicy) versions of the policies too.
+
 ## [1.8.0] - 2026-11-11
 
 ### Changed
