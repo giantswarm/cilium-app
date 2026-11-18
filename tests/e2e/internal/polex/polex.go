@@ -159,7 +159,7 @@ func NewCEL() *unstructured.Unstructured {
 			"matchConditions": []map[string]interface{}{
 				{
 					"name":       "cilium-test-namespaces",
-					"expression": "has(request.namespace) && request.namespace.startsWith('cilium-test')",
+					"expression": "has(request.namespace) && (request.namespace == 'cilium-test' || request.namespace.startsWith('cilium-test-'))",
 				},
 			},
 		},
