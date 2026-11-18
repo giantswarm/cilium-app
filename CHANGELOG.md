@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Upgrade Cilium to [v1.20.5](https://github.com/cilium/cilium/releases/tag/v1.20.5).
+- Tolerate the `node-role.kubernetes.io/etcd` taint in `cilium-operator` and the SPIRE agent, following upstream.
+
 ## [1.8.0] - 2026-11-11
 
 ### Changed
