@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Upgrade Cilium to [v1.19.11](https://github.com/cilium/cilium/releases/tag/v1.19.11).
 - The release workflows authenticate as the `giantswarm-release` GitHub App instead of the shared taylorbot account (giantswarm/giantswarm#2280).
 
 ## [1.5.4] - 2026-10-26
