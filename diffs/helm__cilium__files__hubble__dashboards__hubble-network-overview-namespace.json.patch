@@ -1,0 +1,10 @@
+diff --git a/vendor/cilium/install/kubernetes/cilium/files/hubble/dashboards/hubble-network-overview-namespace.json b/helm/cilium/files/hubble/dashboards/hubble-network-overview-namespace.json
+index cddb473..3e3de4e 100644
+--- a/vendor/cilium/install/kubernetes/cilium/files/hubble/dashboards/hubble-network-overview-namespace.json
++++ b/helm/cilium/files/hubble/dashboards/hubble-network-overview-namespace.json
+@@ -998,4 +998,3 @@
+     "version": 18,
+     "weekStart": ""
+   }
+-  
+\ No newline at end of file

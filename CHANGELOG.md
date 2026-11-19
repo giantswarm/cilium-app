@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- The sync normalizes whitespace, final newlines and script modes in the patched chart, so it passes the generic pre-commit hooks.
+
 ## [1.8.1] - 2026-11-18
 
 ### Changed
