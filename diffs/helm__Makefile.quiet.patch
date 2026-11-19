@@ -1,19 +1,19 @@
 diff --git a/vendor/cilium/Makefile.quiet b/helm/Makefile.quiet
-index f615f53..f4ba278 100644
+index 3976611..f4ba278 100644
 --- a/vendor/cilium/Makefile.quiet
 +++ b/helm/Makefile.quiet
 @@ -18,13 +18,13 @@ ifeq ($(V),0)
  	SUBMAKEOPTS="-s"
  else
  	# The whitespace at below EOLs is required for verbose case!
--	ECHO_CC=:
--	ECHO_CHECK=:
--	ECHO_CLEAN=:
--	ECHO_DOCKER=:
--	ECHO_GEN=:
--	ECHO_GINKGO=:
--	ECHO_GO=:
--	ECHO_TEST=:
+-	ECHO_CC=: 
+-	ECHO_CHECK=: 
+-	ECHO_CLEAN=: 
+-	ECHO_DOCKER=: 
+-	ECHO_GEN=: 
+-	ECHO_GINKGO=: 
+-	ECHO_GO=: 
+-	ECHO_TEST=: 
 +	ECHO_CC=: $(empty)
 +	ECHO_CHECK=: $(empty)
 +	ECHO_CLEAN=: $(empty)

@@ -12,7 +12,6 @@ set -x
 vendir sync
 helm dependency update helm/cilium/
 { set +x; } 2>/dev/null
-./sync/normalize.sh vendor/cilium
 
 # Patches
 ./sync/patches/eni/patch.sh

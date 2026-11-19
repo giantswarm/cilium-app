@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Make the vendored chart pass the generic pre-commit hooks: no trailing
+# Make the patched chart pass the generic pre-commit hooks: no trailing
 # whitespace, a final newline, and executable scripts with a shebang.
 set -o errexit
 set -o nounset
