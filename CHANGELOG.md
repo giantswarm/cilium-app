@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The E2E connectivity test also creates a `policies.kyverno.io/v1` PolicyException next to the `kyverno.io/v2` one, so the test pods are excepted from the CEL (ValidatingPolicy) versions of the policies too.
 - The sync normalizes whitespace, final newlines and script modes in the patched chart, so it passes the generic pre-commit hooks.
 - E2E tests only: bump `helm.sh/helm/v3` to `v3.22.1` and `golang.org/x/crypto` to `v0.59.0`. Helm `v3.22.1` uses `ProtonMail/go-crypto`, so the test module no longer imports `golang.org/x/crypto/openpgp` ([GO-2026-5932](https://pkg.go.dev/vuln/GO-2026-5932)).
 
