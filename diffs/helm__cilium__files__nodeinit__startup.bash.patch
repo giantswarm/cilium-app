@@ -1,0 +1,3 @@
+diff --git a/vendor/cilium/install/kubernetes/cilium/files/nodeinit/startup.bash b/helm/cilium/files/nodeinit/startup.bash
+old mode 100644
+new mode 100755

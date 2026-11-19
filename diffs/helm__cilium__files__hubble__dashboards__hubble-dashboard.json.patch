@@ -1,0 +1,12 @@
+diff --git a/vendor/cilium/install/kubernetes/cilium/files/hubble/dashboards/hubble-dashboard.json b/helm/cilium/files/hubble/dashboards/hubble-dashboard.json
+index 783aa13..c307629 100644
+--- a/vendor/cilium/install/kubernetes/cilium/files/hubble/dashboards/hubble-dashboard.json
++++ b/helm/cilium/files/hubble/dashboards/hubble-dashboard.json
+@@ -1,6 +1,6 @@
+ {
+   "__inputs": [
+-    {   
++    {
+       "name": "DS_PROMETHEUS",
+       "label": "prometheus",
+       "description": "",

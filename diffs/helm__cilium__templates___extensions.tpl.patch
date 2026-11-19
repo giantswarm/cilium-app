@@ -1,0 +1,13 @@
+diff --git a/vendor/cilium/install/kubernetes/cilium/templates/_extensions.tpl b/helm/cilium/templates/_extensions.tpl
+index 151911a..f6e1a9a 100644
+--- a/vendor/cilium/install/kubernetes/cilium/templates/_extensions.tpl
++++ b/helm/cilium/templates/_extensions.tpl
+@@ -209,7 +209,6 @@ Allow packagers to define affinity for cilium-envoy pods.
+ {{- define "envoy.affinity" -}}
+ {{- with .Values.envoy.affinity }}
+ affinity:
+-  {{- toYaml . | nindent 2 }}     
++  {{- toYaml . | nindent 2 }}
+ {{- end }}
+ {{- end }}
+-

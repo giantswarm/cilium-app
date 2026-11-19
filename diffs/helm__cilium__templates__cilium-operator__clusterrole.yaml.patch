@@ -1,0 +1,13 @@
+diff --git a/vendor/cilium/install/kubernetes/cilium/templates/cilium-operator/clusterrole.yaml b/helm/cilium/templates/cilium-operator/clusterrole.yaml
+index 4d7c090..e0c8c49 100644
+--- a/vendor/cilium/install/kubernetes/cilium/templates/cilium-operator/clusterrole.yaml
++++ b/helm/cilium/templates/cilium-operator/clusterrole.yaml
+@@ -415,7 +415,7 @@ rules:
+   verbs:
+   - get
+   - list
+-  - watch  
++  - watch
+ {{- end }}
+ {{- if or .Values.gatewayAPI.enabled .Values.clustermesh.mcsapi.enabled }}
+ - apiGroups:

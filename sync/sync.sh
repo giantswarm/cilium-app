@@ -20,6 +20,7 @@ helm dependency update helm/cilium/
 ./sync/patches/chart_yaml/patch.sh
 ./sync/patches/readme/patch.sh
 ./sync/patches/values/patch.sh
+./sync/normalize.sh helm
 
 # Store diffs
 rm -f ./diffs/*

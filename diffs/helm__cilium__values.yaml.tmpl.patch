@@ -1,5 +1,5 @@
 diff --git a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl b/helm/cilium/values.yaml.tmpl
-index 6051dba..2ae0cb6 100644
+index 56088e8..0b68629 100644
 --- a/vendor/cilium/install/kubernetes/cilium/values.yaml.tmpl
 +++ b/helm/cilium/values.yaml.tmpl
 @@ -572,7 +572,7 @@ bpf:
@@ -260,7 +260,7 @@ index 6051dba..2ae0cb6 100644
    # -- cilium-operator image.
    image:
      # @schema
-@@ -3345,7 +3380,9 @@ operator:
+@@ -3347,7 +3382,9 @@ operator:
    # -- Additional cilium-operator container arguments.
    extraArgs: []
    # -- Additional cilium-operator environment variables.
@@ -271,7 +271,7 @@ index 6051dba..2ae0cb6 100644
    # -- Additional cilium-operator hostPath mounts.
    extraHostPathMounts: []
    # - name: host-mnt-data
-@@ -3356,9 +3393,13 @@ operator:
+@@ -3358,9 +3395,13 @@ operator:
    #   mountPropagation: HostToContainer
  
    # -- Additional cilium-operator volumes.
@@ -287,7 +287,7 @@ index 6051dba..2ae0cb6 100644
    # -- Annotations to be added to all top-level cilium-operator objects (resources under templates/cilium-operator)
    annotations: {}
    # -- HostNetwork setting
-@@ -3367,6 +3408,7 @@ operator:
+@@ -3369,6 +3410,7 @@ operator:
    hostUsers: true
    # -- Security context to be added to cilium-operator pods
    podSecurityContext:
@@ -295,7 +295,7 @@ index 6051dba..2ae0cb6 100644
      seccompProfile:
        type: RuntimeDefault
    # -- Annotations to be added to cilium-operator pods
-@@ -3377,7 +3419,7 @@ operator:
+@@ -3379,7 +3421,7 @@ operator:
    podDisruptionBudget:
      # -- enable PodDisruptionBudget
      # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
@@ -304,7 +304,7 @@ index 6051dba..2ae0cb6 100644
      # @schema
      # type: [null, integer, string]
      # @schema
-@@ -3396,13 +3438,14 @@ operator:
+@@ -3398,13 +3440,14 @@ operator:
      unhealthyPodEvictionPolicy: null
    # -- cilium-operator resource limits & requests
    # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -326,7 +326,7 @@ index 6051dba..2ae0cb6 100644
  
    # -- Security context to be added to cilium-operator pods
    securityContext:
-@@ -3410,7 +3453,12 @@ operator:
+@@ -3412,7 +3455,12 @@ operator:
        drop:
        - ALL
      allowPrivilegeEscalation: false
@@ -340,7 +340,7 @@ index 6051dba..2ae0cb6 100644
  
    # -- Interval for endpoint garbage collection.
    endpointGCInterval: "5m0s"
-@@ -3434,7 +3482,7 @@ operator:
+@@ -3436,7 +3484,7 @@ operator:
    # -- Enable prometheus metrics for cilium-operator on the configured port at
    # /metrics
    prometheus:
@@ -349,7 +349,7 @@ index 6051dba..2ae0cb6 100644
      enabled: true
      port: 9963
      serviceMonitor:
-@@ -4639,3 +4687,12 @@ standaloneDnsProxy:
+@@ -4643,3 +4691,12 @@ standaloneDnsProxy:
      digest: "${STANDALONE_DNS_PROXY_DIGEST}"
      useDigest: ${USE_DIGESTS}
      pullPolicy: "${PULL_POLICY}"
