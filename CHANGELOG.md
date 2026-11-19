@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- E2E tests only: bump `helm.sh/helm/v3` to `v3.22.1` and `golang.org/x/crypto` to `v0.59.0`. Helm `v3.22.1` uses `ProtonMail/go-crypto`, so the test module no longer imports `golang.org/x/crypto/openpgp` ([GO-2026-5932](https://pkg.go.dev/vuln/GO-2026-5932)).
+
 ## [1.8.1] - 2026-11-18
 
 ### Changed
