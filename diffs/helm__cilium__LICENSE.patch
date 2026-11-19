@@ -1,0 +1,9 @@
+diff --git a/vendor/cilium/install/kubernetes/cilium/LICENSE b/helm/cilium/LICENSE
+index a2e486a..0c4b990 100644
+--- a/vendor/cilium/install/kubernetes/cilium/LICENSE
++++ b/helm/cilium/LICENSE
+@@ -199,4 +199,3 @@
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-

@@ -1,0 +1,11 @@
+diff --git a/vendor/cilium/install/kubernetes/cilium/files/cilium-agent/dashboards/cilium-dashboard.json b/helm/cilium/files/cilium-agent/dashboards/cilium-dashboard.json
+index 21d0cbf..485a5a1 100644
+--- a/vendor/cilium/install/kubernetes/cilium/files/cilium-agent/dashboards/cilium-dashboard.json
++++ b/helm/cilium/files/cilium-agent/dashboards/cilium-dashboard.json
+@@ -11205,4 +11205,4 @@
+   "uid": "vtuWtdumz",
+   "version": 1,
+   "weekStart": ""
+-}
+\ No newline at end of file
++}

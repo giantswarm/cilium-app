@@ -415,7 +415,7 @@ rules:
   verbs:
   - get
   - list
-  - watch  
+  - watch
 {{- end }}
 {{- if or .Values.gatewayAPI.enabled .Values.clustermesh.mcsapi.enabled }}
 - apiGroups:

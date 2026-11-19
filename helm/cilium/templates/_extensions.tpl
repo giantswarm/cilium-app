@@ -209,7 +209,6 @@ Allow packagers to define affinity for cilium-envoy pods.
 {{- define "envoy.affinity" -}}
 {{- with .Values.envoy.affinity }}
 affinity:
-  {{- toYaml . | nindent 2 }}     
+  {{- toYaml . | nindent 2 }}
 {{- end }}
 {{- end }}
-

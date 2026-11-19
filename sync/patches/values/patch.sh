@@ -21,6 +21,10 @@ cp "${script_dir_rel}/Makefile.giantswarm" "./helm/Makefile.giantswarm"
 # "../.."), because we don't have that deep file structure inside ./helm
 # directory.
 cp ./vendor/cilium/{Makefile.defs,Makefile.quiet,VERSION} ./helm/
+# Makefile.quiet's verbose ECHO_* values end in a space that the build needs
+# ("ECHO_GEN=: "); end them with $(empty) so the space survives whitespace
+# trimming.
+sed_inplace 's#^\([[:space:]]*ECHO_[A-Z]*=:\)[[:space:]]*$#\1 $(empty)#' ./helm/Makefile.quiet
 # replace "include ../../Makefile.defs" with "include Makefile.defs"
 sed_inplace 's#include \.\./\.\./Makefile.defs#include Makefile.defs#g' ./helm/Makefile
 # replace "--workdir /src/install/kubernetes" with "--workdir /src"

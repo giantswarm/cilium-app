@@ -1,0 +1,3 @@
+diff --git a/vendor/cilium/install/kubernetes/cilium/files/nodeinit/prestop.bash b/helm/cilium/files/nodeinit/prestop.bash
+old mode 100644
+new mode 100755
