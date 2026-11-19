@@ -18,13 +18,13 @@ ifeq ($(V),0)
 	SUBMAKEOPTS="-s"
 else
 	# The whitespace at below EOLs is required for verbose case!
-	ECHO_CC=:
-	ECHO_CHECK=:
-	ECHO_CLEAN=:
-	ECHO_DOCKER=:
-	ECHO_GEN=:
-	ECHO_GINKGO=:
-	ECHO_GO=:
-	ECHO_TEST=:
+	ECHO_CC=: $(empty)
+	ECHO_CHECK=: $(empty)
+	ECHO_CLEAN=: $(empty)
+	ECHO_DOCKER=: $(empty)
+	ECHO_GEN=: $(empty)
+	ECHO_GINKGO=: $(empty)
+	ECHO_GO=: $(empty)
+	ECHO_TEST=: $(empty)
 	SUBMAKEOPTS=
 endif
