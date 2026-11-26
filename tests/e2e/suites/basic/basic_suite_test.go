@@ -24,6 +24,7 @@ import (
 	helmv2 "github.com/fluxcd/helm-controller/api/v2"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	cr "sigs.k8s.io/controller-runtime/pkg/client"
@@ -107,6 +108,15 @@ func TestBasic(t *testing.T) {
 				By("Applying policy exceptions")
 				p := polex.New()
 				err := wcClient.Create(context.Background(), p)
+				Expect(err).ShouldNot(HaveOccurred())
+
+				// The CEL exception needs the policies.kyverno.io/v1 API. Without it,
+				// the cluster can't run CEL policies either, so there is nothing to except.
+				err = wcClient.Create(context.Background(), polex.NewCEL())
+				if meta.IsNoMatchError(err) {
+					logger.Log("policies.kyverno.io/v1 PolicyException is not served, skipping the CEL PolicyException")
+					err = nil
+				}
 				Expect(err).ShouldNot(HaveOccurred())
 
 				By("Running connectivity tests")
@@ -283,9 +293,15 @@ func TestBasic(t *testing.T) {
 			// Both resources are created by the connectivity test, which never runs
 			// if BeforeSuite fails. Tolerate NotFound so cleanup doesn't mask the
 			// original failure with a 404.
-			By("Deleting cilium-test PolicyException")
+			By("Deleting cilium-test PolicyExceptions")
 			p := polex.New()
 			err := wcClient.Delete(context.Background(), p)
+			Expect(cr.IgnoreNotFound(err)).ShouldNot(HaveOccurred())
+
+			err = wcClient.Delete(context.Background(), polex.NewCEL())
+			if meta.IsNoMatchError(err) {
+				err = nil
+			}
 			Expect(cr.IgnoreNotFound(err)).ShouldNot(HaveOccurred())
 
 			By("Deleting cilium-test-1 namespace")
