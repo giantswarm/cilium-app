@@ -1,9 +1,9 @@
 diff --git a/helm/cilium/templates/hubble-ui/networkpolicy.yaml b/helm/cilium/templates/hubble-ui/networkpolicy.yaml
 new file mode 100644
-index 0000000..62e8d73
+index 0000000..f5cd373
 --- /dev/null
 +++ b/helm/cilium/templates/hubble-ui/networkpolicy.yaml
-@@ -0,0 +1,32 @@
+@@ -0,0 +1,47 @@
 +{{- if .Values.hubble.enabled }}
 +apiVersion: networking.k8s.io/v1
 +kind: NetworkPolicy
@@ -18,12 +18,6 @@ index 0000000..62e8d73
 +  name: hubble-ui
 +  namespace: {{ .Release.Namespace }}
 +spec:
-+  ingress:
-+    - ports:
-+        - port: 8081
-+          protocol: TCP
-+  egress:
-+    - {}
 +  podSelector:
 +    matchLabels:
 +      k8s-app: hubble-ui
@@ -35,4 +29,25 @@ index 0000000..62e8d73
 +  policyTypes:
 +    - Ingress
 +    - Egress
++  ingress:
++    # Web UI, reached through port-forward or the optional Ingress.
++    - ports:
++        - port: 8081
++          protocol: TCP
++  egress:
++    # The backend watches namespaces and Cilium resources through the
++    # Kubernetes API.
++    - ports:
++        - port: 443
++          protocol: TCP
++        - port: 6443
++          protocol: TCP
++    # Flows API of Hubble Relay.
++    - to:
++        - podSelector:
++            matchLabels:
++              k8s-app: hubble-relay
++      ports:
++        - port: {{ include "hubble-relay.config.listenPort" . }}
++          protocol: TCP
 +{{- end }}

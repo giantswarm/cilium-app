@@ -11,16 +11,37 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  ingress:
-    - ports:
-        - port: {{ .Values.hubble.relay.listenPort }}
-        - port: {{ .Values.hubble.relay.prometheus.port }}
-  egress:
-    - {}
   podSelector:
     matchLabels:
       k8s-app: hubble-relay
   policyTypes:
     - Ingress
     - Egress
+  ingress:
+    # Flows API for Hubble UI.
+    - from:
+        - podSelector:
+            matchLabels:
+              k8s-app: hubble-ui
+      ports:
+        - port: {{ include "hubble-relay.config.listenPort" . }}
+          protocol: TCP
+    {{- if .Values.hubble.relay.prometheus.enabled }}
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: alloy
+              app.kubernetes.io/instance: alloy-metrics
+      ports:
+        - port: {{ .Values.hubble.relay.prometheus.port }}
+          protocol: TCP
+    {{- end }}
+  egress:
+    # Hubble server of the Cilium agents, on the host network of every node.
+    - ports:
+        - port: {{ .Values.hubble.peerService.targetPort }}
+          protocol: TCP
 {{- end }}
