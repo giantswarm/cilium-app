@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-11-27
+
 ### Changed
 
 - Narrow the Hubble Relay, Hubble UI and certificate generation network policies to the flows each component needs.
@@ -664,7 +666,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2022-03-25
 
-[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v1.8.1...HEAD
+[Unreleased]: https://github.com/giantswarm/cilium-app/compare/v1.9.0...HEAD
+[1.9.0]: https://github.com/giantswarm/cilium-app/compare/v1.8.1...v1.9.0
 [1.8.1]: https://github.com/giantswarm/cilium-app/compare/v1.8.0...v1.8.1
 [1.8.0]: https://github.com/giantswarm/cilium-app/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/giantswarm/cilium-app/compare/v1.6.2...v1.7.0
