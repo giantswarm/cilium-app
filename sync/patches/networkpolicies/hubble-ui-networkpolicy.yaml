@@ -12,12 +12,6 @@ metadata:
   name: hubble-ui
   namespace: {{ .Release.Namespace }}
 spec:
-  ingress:
-    - ports:
-        - port: 8081
-          protocol: TCP
-  egress:
-    - {}
   podSelector:
     matchLabels:
       k8s-app: hubble-ui
@@ -29,4 +23,25 @@ spec:
   policyTypes:
     - Ingress
     - Egress
+  ingress:
+    # Web UI, reached through port-forward or the optional Ingress.
+    - ports:
+        - port: 8081
+          protocol: TCP
+  egress:
+    # The backend watches namespaces and Cilium resources through the
+    # Kubernetes API.
+    - ports:
+        - port: 443
+          protocol: TCP
+        - port: 6443
+          protocol: TCP
+    # Flows API of Hubble Relay.
+    - to:
+        - podSelector:
+            matchLabels:
+              k8s-app: hubble-relay
+      ports:
+        - port: {{ include "hubble-relay.config.listenPort" . }}
+          protocol: TCP
 {{- end }}
